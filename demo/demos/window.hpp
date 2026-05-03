@@ -92,6 +92,8 @@ inline constexpr const char* warning       = "#d0b16f";
 inline constexpr const char* amberBg       = "#6a4620";
 inline constexpr const char* slate         = "#5f6872";
 inline constexpr const char* slateHover    = "#6d7782";
+inline constexpr const char* accent        = "#1a6fc4";
+inline constexpr const char* accentHover   = "#2179cf";
 }
 
 // -----------------------------------------------------------------------------
@@ -274,16 +276,16 @@ private:
         btn.style.borderWidth        = 1.f;
         btn.style.borderRadius       = 4.f;
         btn.style.fontSize           = 12.f;
-        btn.style.backgroundColor    = active ? glint_demo_theme::primaryHover : glint_demo_theme::surface;
-        btn.style.borderColor        = active ? glint_demo_theme::slateHover   : glint_demo_theme::border;
-        btn.style.color              = active ? glint_demo_theme::heading       : glint_demo_theme::muted;
-        btn.hover.backgroundColor    = active ? glint_demo_theme::primaryHover : glint_demo_theme::surfaceHover;
-        btn.hover.borderColor        = active ? glint_demo_theme::slateHover   : glint_demo_theme::slate;
+        btn.style.backgroundColor    = active ? glint_demo_theme::accent      : glint_demo_theme::surface;
+        btn.style.borderColor        = active ? glint_demo_theme::accent      : glint_demo_theme::border;
+        btn.style.color              = active ? glint_demo_theme::heading      : glint_demo_theme::muted;
+        btn.hover.backgroundColor    = active ? glint_demo_theme::accentHover : glint_demo_theme::surfaceHover;
+        btn.hover.borderColor        = active ? glint_demo_theme::accentHover : glint_demo_theme::slate;
         btn.hover.borderWidth        = 1.f;
         btn.hover.borderRadius       = 4.f;
         btn.hover.color              = glint_demo_theme::heading;
-        btn.pressed.backgroundColor  = glint_demo_theme::primary;
-        btn.pressed.borderColor      = glint_demo_theme::slateHover;
+        btn.pressed.backgroundColor  = glint_demo_theme::accent;
+        btn.pressed.borderColor      = glint_demo_theme::accent;
         btn.pressed.borderWidth      = 1.f;
         btn.pressed.borderRadius     = 4.f;
         btn.pressed.color            = glint_demo_theme::heading;
@@ -298,16 +300,16 @@ private:
         btn.style.borderWidth        = 1.f;
         btn.style.borderRadius       = 4.f;
         btn.style.fontSize           = 12.f;
-        btn.style.backgroundColor    = active ? glint_demo_theme::primaryHover : glint_demo_theme::surface;
-        btn.style.borderColor        = active ? glint_demo_theme::slateHover   : glint_demo_theme::border;
-        btn.style.color              = active ? glint_demo_theme::heading       : glint_demo_theme::muted;
-        btn.hover.backgroundColor    = active ? glint_demo_theme::primaryHover : glint_demo_theme::surfaceHover;
-        btn.hover.borderColor        = active ? glint_demo_theme::slateHover   : glint_demo_theme::slate;
+        btn.style.backgroundColor    = active ? glint_demo_theme::accent      : glint_demo_theme::surface;
+        btn.style.borderColor        = active ? glint_demo_theme::accent      : glint_demo_theme::border;
+        btn.style.color              = active ? glint_demo_theme::heading      : glint_demo_theme::muted;
+        btn.hover.backgroundColor    = active ? glint_demo_theme::accentHover : glint_demo_theme::surfaceHover;
+        btn.hover.borderColor        = active ? glint_demo_theme::accentHover : glint_demo_theme::slate;
         btn.hover.borderWidth        = 1.f;
         btn.hover.borderRadius       = 4.f;
         btn.hover.color              = glint_demo_theme::heading;
-        btn.pressed.backgroundColor  = glint_demo_theme::primary;
-        btn.pressed.borderColor      = glint_demo_theme::slateHover;
+        btn.pressed.backgroundColor  = glint_demo_theme::accent;
+        btn.pressed.borderColor      = glint_demo_theme::accent;
         btn.pressed.borderWidth      = 1.f;
         btn.pressed.borderRadius     = 4.f;
         btn.pressed.color            = glint_demo_theme::heading;
@@ -420,7 +422,7 @@ private:
         item.style.fontSize              = 13.f;
         item.style.paddingLeft           = 14.f;
         item.style.color                 = glint_demo_theme::text;
-        item.selectedStyle.backgroundColor = glint_demo_theme::surfaceHover;
+        item.selectedStyle.backgroundColor = glint_demo_theme::accent;
         item.selectedStyle.color           = glint_demo_theme::heading;
         item.selectedStyle.fontSize        = 13.f;
         item.selectedStyle.height          = 36.f;
