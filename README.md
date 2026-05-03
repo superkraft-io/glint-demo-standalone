@@ -52,13 +52,14 @@ node third_party/glint/scripts/init_skia.mjs --source --backend <backend>
 
 ```sh
 # macOS — Metal (recommended)
-node third_party/glint/scripts/init_skia.mjs --source --backend metal
+node third_party/glint/scripts/init_skia.mjs --source --backend metal --config Both
 
 # Windows — Direct3D 12 (recommended)
-node third_party/glint/scripts/init_skia.mjs --source --backend d3d12
+node third_party/glint/scripts/init_skia.mjs --source --backend d3d12 --config Both
 ```
 
 > This step takes a while. It only needs to be run once (or again if you switch backends).
+> `--config Both` builds both Debug and Release Skia libraries, which are required for the respective CMake build configurations.
 
 ### 4. Configure with CMake
 
