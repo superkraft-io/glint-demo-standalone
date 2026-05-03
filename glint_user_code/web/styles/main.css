@@ -1,0 +1,477 @@
+/*
+ * main.css — glint_demo UI stylesheet
+ *
+ * Loaded at runtime via glint_document::loadStylesheet() which routes through
+ * the document's onRequest interceptor before falling back to disk.
+ *
+ * Selector reference for glint:
+ *   body   — the root canvas (typeNameOverride = "body")
+ *   div    — any glint_element added via _c.add.div() or default elements
+ *   img    — image elements (_c.add.image()), including SVG assets — tagName() returns "img"
+ *   #id    — element with el->id = "id"
+ *   .cls   — element with el->element.className containing "cls"
+ *            (requires GlintCssDomElement adapter wired to each element)
+ *
+ * NOTE: These rules are applied programmatically via GlintCssCascade::resolve()
+ * and GlintCssApply::apply() — inline styles (_c.style.*) always win
+ * over rules here (they are treated as the author "inline" origin in the cascade).
+ */
+
+/* ── Font faces ──────────────────────────────────────────────────────────────
+ *
+ * Each @font-face fires an onRequest callback for its src url(), allowing the
+ * host to intercept and serve font bytes from an embedded resource or any
+ * custom source.  The URL paths below resolve through glint_assets_path() in
+ * the existing onRequest handler → <workspace>/glint_assets/<path>.
+ *
+ * Font-family names deliberately match the strings already used in C++:
+ *   glint_load_font(pG, "Kanit-Regular", KANIT_REGULAR_FN)
+ *   _c.style.fontFace = "Kanit-Regular";
+ * so that CSS rules using font-family: Kanit-Regular are immediately effective.
+ */
+
+/* Roboto */
+@font-face {
+  font-family: "Roboto-Regular";
+  src: url("/fonts/roboto/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Kanit variants — named individually for explicit fontFace use in C++ */
+@font-face {
+  font-family: "Kanit-Thin";
+  src: url("/fonts/kanit/Kanit-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-ThinItalic";
+  src: url("/fonts/kanit/Kanit-ThinItalic.ttf") format("truetype");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-ExtraLight";
+  src: url("/fonts/kanit/Kanit-ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-ExtraLightItalic";
+  src: url("/fonts/kanit/Kanit-ExtraLightItalic.ttf") format("truetype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-Light";
+  src: url("/fonts/kanit/Kanit-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-LightItalic";
+  src: url("/fonts/kanit/Kanit-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-Regular";
+  src: url("/fonts/kanit/Kanit-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-Italic";
+  src: url("/fonts/kanit/Kanit-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-Medium";
+  src: url("/fonts/kanit/Kanit-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-MediumItalic";
+  src: url("/fonts/kanit/Kanit-MediumItalic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-SemiBold";
+  src: url("/fonts/kanit/Kanit-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-SemiBoldItalic";
+  src: url("/fonts/kanit/Kanit-SemiBoldItalic.ttf") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-Bold";
+  src: url("/fonts/kanit/Kanit-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-BoldItalic";
+  src: url("/fonts/kanit/Kanit-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-ExtraBold";
+  src: url("/fonts/kanit/Kanit-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-ExtraBoldItalic";
+  src: url("/fonts/kanit/Kanit-ExtraBoldItalic.ttf") format("truetype");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit-Black";
+  src: url("/fonts/kanit/Kanit-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit-BlackItalic";
+  src: url("/fonts/kanit/Kanit-BlackItalic.ttf") format("truetype");
+  font-weight: 900;
+  font-style: italic;
+}
+
+/*
+ * Unified Kanit family — all weights under one font-family name so that
+ * CSS font-weight selects the correct file automatically.
+ * The named variants above (Kanit-Thin, Kanit-Regular …) are kept for
+ * explicit style.fontFace assignments in C++.
+ */
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-ThinItalic.ttf") format("truetype");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-ExtraLightItalic.ttf") format("truetype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-MediumItalic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-SemiBoldItalic.ttf") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-ExtraBoldItalic.ttf") format("truetype");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/kanit/Kanit-BlackItalic.ttf") format("truetype");
+  font-weight: 900;
+  font-style: italic;
+}
+
+/* Display / decorative */
+@font-face {
+  font-family: "Monoton";
+  src: url("/fonts/monoton/Monoton-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PinyonScript";
+  src: url("/fonts/pinyon-script/PinyonScript-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ShadowsIntoLight";
+  src: url("/fonts/shadows-into-light/ShadowsIntoLight-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* ── Root canvas ─────────────────────────────────────────────────────────────── */
+
+body {
+  background-color: #111111;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: Kanit;
+}
+
+/* ── Generic containers ──────────────────────────────────────────────────────── */
+
+div {
+  box-sizing: border-box;
+}
+
+/* Header bar — target by id once assigned: el->id = "header" */
+#header {
+  background-color: #111111;
+  height: 52px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+}
+
+/* Footer bar */
+#footer {
+  height: 22px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-flags {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  filter: saturate(0);
+  transition: 100ms;
+  gap: 4px;
+}
+
+.footer-flags:hover {
+  filter: saturate(1);
+}
+
+/* Latency badge */
+#latency-badge {
+  background-color: #00cc44;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 2px 6px;
+  gap: 4px;
+  color: #000000;
+  font-size: 12px;
+  font-family: Kanit-Regular;
+}
+
+/* Title label group */
+#title-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Typography ──────────────────────────────────────────────────────────────── */
+
+/* Plugin name thin-italic part */
+#title-thin {
+  color: #ffffff;
+  font-size: 20px;
+  font-family: Kanit-ThinItalic;
+  user-select: none;
+}
+
+/* Plugin name regular part */
+#title-regular {
+  color: #ffffff;
+  font-size: 20px;
+  font-family: Kanit-Regular;
+  user-select: none;
+}
+
+/* Dim text (e.g. "Made in") */
+.text-dim {
+  color: #aaaaaa;
+  font-size: 14px;
+  font-family: Kanit-Regular;
+  user-select: none;
+}
+
+/* ── Images ──────────────────────────────────────────────────────────────────── */
+
+img {
+  object-fit: contain;
+}
+
+/* Logo image */
+#logo {
+  width: 82px;
+  height: 24px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/* Flag images in footer */
+.flag {
+  width: 22px;
+  height: 18px;
+  object-fit: contain;
+}
+
+/* ── SVG icons ───────────────────────────────────────────────────────────────── */
+
+svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── IO monitor buttons ──────────────────────────────────────────────────────── */
+
+.io-button {
+  background-color: #2a2a2a;
+  border-color: #555555;
+  border-width: 1px;
+  border-radius: 11px;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: Kanit-Medium;
+}
+
+.io-button.active {
+  background-color: #3399ff;
+}
+
+button {
+  border-width: 1px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: Kanit-Medium;
+  transition: 0.2s;
+}
+
+button:hover {
+  background-color: #353535;;
+} 
+
+button:active {
+  background-color: #222222;
+}

@@ -1,0 +1,319 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "cmake: configure",
+      "type": "shell",
+      "command": "cmake --preset windows-vs2022",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: Debug",
+      "type": "shell",
+      "command": "cmake --build build/windows-vs2022 --config Debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile",
+      "dependsOn": "cmake: configure"
+    },
+    {
+      "label": "build: RelWithDebInfo",
+      "type": "shell",
+      "command": "cmake --build build/windows-vs2022 --config RelWithDebInfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile",
+      "dependsOn": "cmake: configure"
+    },
+    {
+      "label": "build: Release",
+      "type": "shell",
+      "command": "cmake --build build/windows-vs2022 --config Release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile",
+      "dependsOn": "cmake: configure"
+    },
+    {
+      "label": "cmake: configure (macOS Debug)",
+      "type": "shell",
+      "command": "cmake --preset macos-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: macOS Debug",
+      "type": "shell",
+      "command": "cmake --build --preset macos-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (macOS Debug)"
+    },
+    {
+      "label": "cmake: configure (macOS RelWithDebInfo)",
+      "type": "shell",
+      "command": "cmake --preset macos-relwithdebinfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: macOS RelWithDebInfo",
+      "type": "shell",
+      "command": "cmake --build --preset macos-relwithdebinfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (macOS RelWithDebInfo)"
+    },
+    {
+      "label": "cmake: configure (macOS Release)",
+      "type": "shell",
+      "command": "cmake --preset macos-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: macOS Release",
+      "type": "shell",
+      "command": "cmake --build --preset macos-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (macOS Release)"
+    },
+
+    // ── glint bundler ─────────────────────────────────────────────────────────
+    {
+      "label": "glint_demo: Bundle Shallow",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/third_party/glint/scripts/bundler/glint_bundler.mjs",
+        "--input",  "${workspaceFolder}/glint_user_code/web",
+        "--output", "${workspaceFolder}/glint_user_code/cpp/bundle",
+        "--mode",   "shallow"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "glint_demo: Bundle Deep",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/third_party/glint/scripts/bundler/glint_bundler.mjs",
+        "--input",  "${workspaceFolder}/glint_user_code/web",
+        "--output", "${workspaceFolder}/glint_user_code/cpp/bundle",
+        "--mode",   "deep"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+
+    // ── 💽 No bundle ──────────────────────────────────────────────────────────
+    {
+      "label": "💽 glint_demo macOS Build Debug (CMake)",
+      "dependsOn": ["build: macOS Debug"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "💽 glint_demo macOS Build RelWithDebInfo (CMake)",
+      "dependsOn": ["build: macOS RelWithDebInfo"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "💽 glint_demo macOS Build Release (CMake)",
+      "dependsOn": ["build: macOS Release"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ── 📦 Shallow bundle ─────────────────────────────────────────────────────
+    {
+      "label": "📦 glint_demo macOS Build Debug Shallow (CMake)",
+      "type": "shell",
+      "command": "cmake --preset macos-debug -DGLINT_BUNDLE_SHALLOW=ON -DGLINT_BUNDLE_DEEP=OFF && cmake --build --preset macos-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Shallow"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "📦 glint_demo macOS Build RelWithDebInfo Shallow (CMake)",
+      "type": "shell",
+      "command": "cmake --preset macos-relwithdebinfo -DGLINT_BUNDLE_SHALLOW=ON -DGLINT_BUNDLE_DEEP=OFF -DGLINT_BUNDLE_DEEP=OFF && cmake --build --preset macos-relwithdebinfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Shallow"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "📦 glint_demo macOS Build Release Shallow (CMake)",
+      "type": "shell",
+      "command": "cmake --preset macos-release -DGLINT_BUNDLE_SHALLOW=ON -DGLINT_BUNDLE_DEEP=OFF -DGLINT_BUNDLE_DEEP=OFF && cmake --build --preset macos-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Shallow"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc"
+    },
+
+    // ── 🧱 Deep bundle ────────────────────────────────────────────────────────
+    {
+      "label": "🧱 glint_demo macOS Build Debug Deep (CMake)",
+      "type": "shell",
+      "command": "cmake --preset macos-debug -DGLINT_BUNDLE_DEEP=ON -DGLINT_BUNDLE_SHALLOW=OFF && cmake --build --preset macos-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Deep"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "🧱 glint_demo macOS Build RelWithDebInfo Deep (CMake)",
+      "type": "shell",
+      "command": "cmake --preset macos-relwithdebinfo -DGLINT_BUNDLE_DEEP=ON -DGLINT_BUNDLE_SHALLOW=OFF -DGLINT_BUNDLE_SHALLOW=OFF && cmake --build --preset macos-relwithdebinfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Deep"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "🧱 glint_demo macOS Build Release Deep (CMake)",
+      "type": "shell",
+      "command": "cmake --preset macos-release -DGLINT_BUNDLE_DEEP=ON -DGLINT_BUNDLE_SHALLOW=OFF -DGLINT_BUNDLE_SHALLOW=OFF && cmake --build --preset macos-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Deep"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc"
+    },
+
+    // ── 💽 Win No bundle ──────────────────────────────────────────────────────
+    {
+      "label": "💽 glint_demo Win Build Debug (CMake)",
+      "dependsOn": ["build: Debug"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "💽 glint_demo Win Build RelWithDebInfo (CMake)",
+      "dependsOn": ["build: RelWithDebInfo"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "💽 glint_demo Win Build Release (CMake)",
+      "dependsOn": ["build: Release"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ── 📦 Win Shallow bundle ─────────────────────────────────────────────────
+    {
+      "label": "📦 glint_demo Win Build Debug Shallow (CMake)",
+      "type": "shell",
+      "command": "cmake --preset windows-vs2022 -DGLINT_BUNDLE_SHALLOW=ON -DGLINT_BUNDLE_DEEP=OFF; cmake --build build/windows-vs2022 --config Debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Shallow"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "📦 glint_demo Win Build RelWithDebInfo Shallow (CMake)",
+      "type": "shell",
+      "command": "cmake --preset windows-vs2022 -DGLINT_BUNDLE_SHALLOW=ON -DGLINT_BUNDLE_DEEP=OFF -DGLINT_BUNDLE_DEEP=OFF; cmake --build build/windows-vs2022 --config RelWithDebInfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Shallow"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "📦 glint_demo Win Build Release Shallow (CMake)",
+      "type": "shell",
+      "command": "cmake --preset windows-vs2022 -DGLINT_BUNDLE_SHALLOW=ON -DGLINT_BUNDLE_DEEP=OFF -DGLINT_BUNDLE_DEEP=OFF; cmake --build build/windows-vs2022 --config Release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Shallow"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile"
+    },
+
+    // ── 🧱 Win Deep bundle ────────────────────────────────────────────────────
+    {
+      "label": "🧱 glint_demo Win Build Debug Deep (CMake)",
+      "type": "shell",
+      "command": "cmake --preset windows-vs2022 -DGLINT_BUNDLE_DEEP=ON -DGLINT_BUNDLE_SHALLOW=OFF; cmake --build build/windows-vs2022 --config Debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Deep"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "🧱 glint_demo Win Build RelWithDebInfo Deep (CMake)",
+      "type": "shell",
+      "command": "cmake --preset windows-vs2022 -DGLINT_BUNDLE_DEEP=ON -DGLINT_BUNDLE_SHALLOW=OFF -DGLINT_BUNDLE_SHALLOW=OFF; cmake --build build/windows-vs2022 --config RelWithDebInfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Deep"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "🧱 glint_demo Win Build Release Deep (CMake)",
+      "type": "shell",
+      "command": "cmake --preset windows-vs2022 -DGLINT_BUNDLE_DEEP=ON -DGLINT_BUNDLE_SHALLOW=OFF -DGLINT_BUNDLE_SHALLOW=OFF; cmake --build build/windows-vs2022 --config Release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["glint_demo: Bundle Deep"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

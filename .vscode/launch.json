@@ -1,0 +1,178 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ── Windows bundle variants ────────────────────────────────────────────
+    { "name": "🪟 Windows" },
+
+    // Debug
+    {
+      "name": "├─ 💽 Debug (no bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/Debug/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/Debug",
+      "preLaunchTask": "💽 glint_demo Win Build Debug (CMake)"
+    },
+    {
+      "name": "├─ 📦 Debug (shallow bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/Debug/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/Debug",
+      "preLaunchTask": "📦 glint_demo Win Build Debug Shallow (CMake)"
+    },
+    {
+      "name": "└─ 🧱 Debug (deep bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/Debug/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/Debug",
+      "preLaunchTask": "🧱 glint_demo Win Build Debug Deep (CMake)"
+    },
+
+    { "name": " " },
+
+    // Release (DebInfo)
+    {
+      "name": "├─ 💽 Release w DebInfo (no bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/RelWithDebInfo/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/RelWithDebInfo",
+      "preLaunchTask": "💽 glint_demo Win Build RelWithDebInfo (CMake)"
+    },
+    {
+      "name": "├─ 📦 Release w DebInfo (shallow bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/RelWithDebInfo/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/RelWithDebInfo",
+      "preLaunchTask": "📦 glint_demo Win Build RelWithDebInfo Shallow (CMake)"
+    },
+    {
+      "name": "└─ 🧱 Release w DebInfo (deep bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/RelWithDebInfo/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/RelWithDebInfo",
+      "preLaunchTask": "🧱 glint_demo Win Build RelWithDebInfo Deep (CMake)"
+    },
+
+    { "name": "  " },
+
+    // Release
+    {
+      "name": "├─ 💽 Release (no bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/Release/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/Release",
+      "preLaunchTask": "💽 glint_demo Win Build Release (CMake)"
+    },
+    {
+      "name": "├─ 📦 Release (shallow bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/Release/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/Release",
+      "preLaunchTask": "📦 glint_demo Win Build Release Shallow (CMake)"
+    },
+    {
+      "name": "└─ 🧱 Release (deep bundle) ",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/windows-vs2022/Release/glint_demo.exe",
+      "cwd": "${workspaceFolder}/demo/build/windows-vs2022/Release",
+      "preLaunchTask": "🧱 glint_demo Win Build Release Deep (CMake)"
+    },
+
+
+    { "name": "    " },
+
+
+    // ── macOS bundle variants ──────────────────────────────────────────────
+    { "name": "🍏 macOS" },
+
+    // Debug
+    {
+      "name": "├─ 💽 Debug (no bundle)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "💽 glint_demo macOS Build Debug (CMake)"
+    },
+    {
+      "name": "├─ 📦 Debug (shallow bundle)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "📦 glint_demo macOS Build Debug Shallow (CMake)"
+    },
+    {
+      "name": "└─ 🧱 Debug (deep bundle)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "🧱 glint_demo macOS Build Debug Deep (CMake)"
+    }, 
+
+    { "name": "       " },
+
+    // Release (DebInfo)
+    {
+      "name": "├─ 💽 Release w DebInfo (no bundle)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "💽 glint_demo macOS Build RelWithDebInfo (CMake)"
+    },
+    {
+      "name": "├─ 📦 Release w DebInfo (shallow bundle)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "📦 glint_demo macOS Build RelWithDebInfo Shallow (CMake)"
+    },
+    {
+      "name": "└─ 🧱 Release w DebInfo (deep bundle)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "🧱 glint_demo macOS Build RelWithDebInfo Deep (CMake)"
+    },
+
+    { "name": "      " },
+
+    // Release
+    {
+      "name": "├─ 💽 Release (no bundle)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "💽 glint_demo macOS Build Release (CMake)"
+    },
+    {
+      "name": "├─ 📦 Release (shallow bundle",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "📦 glint_demo macOS Build Release Shallow (CMake)"
+    },
+    {
+      "name": "└─ 🧱 Release (deep bundle",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/macos/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/macos",
+      "preLaunchTask": "🧱 glint_demo macOS Build Release Deep (CMake)"
+    }
+  ]
+}
