@@ -8,8 +8,7 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "GLINT_RENDER_GPU": "ON",
-        "GLINT_ENABLE_D3D12": "OFF",
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
+        "GLINT_ENABLE_D3D12": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },

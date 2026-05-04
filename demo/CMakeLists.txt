@@ -34,15 +34,14 @@ endif()
 
 add_subdirectory("${GLINT_REPO_ROOT}/third_party/glint" "${CMAKE_CURRENT_BINARY_DIR}/glint")
 
-# Skia is always built with /MT (Release runtime). Override glint's interface
-# property so all configs link the same runtime and avoid LNK2038 mismatches.
+# Match Skia's runtime: Debug builds use /MTd, Release builds use /MT.
 if(WIN32)
   foreach(_glint_tgt glint_core glint_host glint_host_win32 glint_host_win32_support)
     if(TARGET ${_glint_tgt})
-      set_property(TARGET ${_glint_tgt} PROPERTY INTERFACE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+      set_property(TARGET ${_glint_tgt} PROPERTY INTERFACE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
   endforeach()
-  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 if(GLINT_USER_SHADER_HEADER_PATH)
@@ -63,7 +62,7 @@ if(WIN32)
   )
 
   set_property(TARGET glint_demo PROPERTY
-    MSVC_RUNTIME_LIBRARY "MultiThreaded")
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 else()
   add_executable(glint_demo
     demo_main.cpp
@@ -115,11 +114,4 @@ if(GLINT_BUNDLE_DEEP)
   file(GLOB _GLINT_BUNDLE_DEEP_SRCS
     "${GLINT_USER_CODE_DIR}/cpp/bundle/deep/groups/*.cpp")
   target_sources(glint_demo PRIVATE ${_GLINT_BUNDLE_DEEP_SRCS})
-endif()
-
-if(EXISTS "${GLINT_SKIA_BIN_DIR}/icudtl.dat")
-  add_custom_command(TARGET glint_demo POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${GLINT_SKIA_BIN_DIR}/icudtl.dat"
-            "$<TARGET_FILE_DIR:glint_demo>/icudtl.dat")
 endif()
