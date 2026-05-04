@@ -113,3 +113,15 @@ cmake --build --preset macos
 
 Open the `glint_demo` folder in VS Code. Launch configurations and build tasks are already set up in `.vscode/`. Use the **Run and Debug** panel to build and launch the demo.
 
+---
+
+## License
+
+The **Glint engine** (`third_party/glint`) is a commercial product.
+
+- Free for non-commercial use: https://superkraft.io/license-free
+- Commercial use & terms: https://superkraft.io/terms
+- Licensing inquiries: **hello@superkraft.io**
+
+The demo code in this repository is provided solely for evaluation purposes.
+
