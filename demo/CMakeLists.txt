@@ -82,6 +82,7 @@ target_include_directories(glint_demo PRIVATE
 
 if(WIN32)
   target_link_libraries(glint_demo PRIVATE glint::host_win32)
+  glint_configure_win32_app(glint_demo)
 elseif(APPLE)
   target_link_libraries(glint_demo PRIVATE glint::host_mac)
 else()
