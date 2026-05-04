@@ -30,12 +30,30 @@ cd glint_demo
 git submodule update --init --recursive
 ```
 
-### 3. Build Skia
+### 3. Init Skia
 
-Run the following command from the repo root to download and compile Skia for your chosen render backend. This only needs to be run once (or again if you switch backends).
+#### Option A — Prebuilt libraries (recommended, fast)
+
+Download prebuilt Skia libraries — no Python, no lengthy compile. This only needs to be run once (or again if you switch backends).
 
 ```sh
-node third_party/glint/scripts/init_skia.mjs --source --backend <backend>
+# macOS — Metal (recommended)
+node third_party/glint/scripts/init_skia.mjs --prebuilt --backend metal
+
+# Windows — Direct3D 12 (recommended)
+node third_party/glint/scripts/init_skia.mjs --prebuilt --backend d3d12
+```
+
+#### Option B — Build from source
+
+If you need a custom configuration, you can build Skia from source instead. This takes significantly longer.
+
+```sh
+# macOS — Metal (recommended)
+node third_party/glint/scripts/init_skia.mjs --source --backend metal --config Both
+
+# Windows — Direct3D 12 (recommended)
+node third_party/glint/scripts/init_skia.mjs --source --backend d3d12 --config Both
 ```
 
 **Available backends by platform:**
@@ -48,18 +66,7 @@ node third_party/glint/scripts/init_skia.mjs --source --backend <backend>
 | `dawn` | macOS, Windows | Dawn / WebGPU (GPU) |
 | `cpu` | macOS, Windows | Software CPU renderer |
 
-**Examples:**
-
-```sh
-# macOS — Metal (recommended)
-node third_party/glint/scripts/init_skia.mjs --source --backend metal --config Both
-
-# Windows — Direct3D 12 (recommended)
-node third_party/glint/scripts/init_skia.mjs --source --backend d3d12 --config Both
-```
-
-> This step takes a while. It only needs to be run once (or again if you switch backends).
-> `--config Both` builds both Debug and Release Skia libraries, which are required for the respective CMake build configurations.
+> `--config Both` builds both Debug and Release Skia libraries, which are required for the respective CMake build configurations. Only applicable for `--source`.
 
 ### 4. Configure with CMake
 
