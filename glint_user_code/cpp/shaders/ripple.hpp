@@ -65,8 +65,8 @@ public:
     b.uniform("speed")      = getFloat("speed",      260.f);
     b.uniform("duration")   = getFloat("duration",   1.6f);
     b.uniform("age")        = age;
-    b.uniform("center")     = SkV2{mCurrentRect.L + getFloat("centerX", w * 0.5f),
-                                   mCurrentRect.T + getFloat("centerY", h * 0.5f)};
+    b.uniform("center")     = SkV2{mCurrentRect.L + getFloat("centerX", w * 0.5f / mDpr) * mDpr,
+                                   mCurrentRect.T + getFloat("centerY", h * 0.5f / mDpr) * mDpr};
   }
 
 private:
