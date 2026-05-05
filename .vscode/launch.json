@@ -167,7 +167,7 @@
       "preLaunchTask": "📦 glint_demo macOS Build Release Shallow (CMake)"
     },
     {
-      "name": "└─ 🧱 Release (deep bundle",
+      "name": "└─ 🧱 Release (deep bundle)",
       "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/demo/build/macos/glint_demo",
