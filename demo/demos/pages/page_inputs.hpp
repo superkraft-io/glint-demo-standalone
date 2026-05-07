@@ -42,6 +42,46 @@ inline void glint_demos_window::buildInputs()
     spacer.style.width = "100%";
   });
 
+  // Range slider
+  {
+    mContent->add.div([](glint_component_style& lbl) {
+      lbl.innerText = "Range slider (type=\"range\")";
+      lbl.style.color = glint_demo_theme::heading;
+      lbl.style.fontSize = 14.f;
+      lbl.style.width = "100%";
+      lbl.style.textAlign = EAlign::Near;
+      lbl.style.marginBottom = 8.f;
+    });
+
+    auto* sliderFeedback = mContent->add.div([](glint_component_style& fb) {
+      fb.innerText = "Value: 50";
+      fb.style.color = glint_demo_theme::muted;
+      fb.style.fontSize = 12.f;
+      fb.style.width = "100%";
+      fb.style.textAlign = EAlign::Near;
+      fb.style.marginBottom = 6.f;
+    });
+
+    glint_element* fbPtr = sliderFeedback;
+    auto* sl = mContent->add.input([fbPtr](glint_input& inp) {
+      inp.type  = "range";
+      inp.min   = 0.f;
+      inp.max   = 100.f;
+      inp.style.width  = "100%";
+      inp.style.height = 24.f;
+      inp.onChange = [fbPtr](const std::string& v) {
+        fbPtr->innerText = std::string("Value: ") + v;
+        fbPtr->setDirty(false);
+      };
+    });
+    sl->setFloatValue(50.f);
+
+    mContent->add.div([](glint_component_style& spacer) {
+      spacer.style.height = 16.f;
+      spacer.style.width = "100%";
+    });
+  }
+
   // onChange / onSubmit feedback
   {
     mContent->add.div([](glint_component_style& lbl) {

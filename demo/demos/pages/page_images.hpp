@@ -5,7 +5,7 @@ inline void glint_demos_window::buildImages()
   static constexpr const char* kHeroImage    = "url(/img/demo.png)";
   static constexpr const char* kDemoSvgImage = "url(/img/demo.svg)";
 
-  // â”€â”€ Intro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Intro -----------------------------------------------------------------
   addHeading("Images");
 
   mContent->add.div([](auto& sub) {
@@ -22,7 +22,7 @@ inline void glint_demos_window::buildImages()
     sub.style.marginBottom = 16.f;
   });
 
-  // â”€â”€ Helper: labelled image card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Helper: labelled image card -------------------------------------------
   // Adds label + image-box into 'row' (a glint_component_adder context).
   auto makeImgCard = [](auto& row, const char* label, const char* bgImg,
                         const char* bgSize     = "cover",
@@ -56,9 +56,9 @@ inline void glint_demos_window::buildImages()
     });
   };
 
-  // â”€â”€ Row 1: background-image on a <div> â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 1: background-image on a <div> ------------------------------------
   mContent->add.div([](auto& hdr) {
-    hdr.innerText       = "background-image: url(...)  â€”  the basic technique";
+    hdr.innerText       = "background-image: url(...) -  the basic technique";
     hdr.style.color     = glint_demo_theme::heading;
     hdr.style.fontSize  = 12.f;
     hdr.style.width     = "100%";
@@ -77,7 +77,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 2: background-size â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 2: background-size ------------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "background-size  (cover / contain / 100% 100% / explicit px)";
     hdr.style.color     = glint_demo_theme::heading;
@@ -101,7 +101,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 3: background-position â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 3: background-position --------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "background-position  (center / corners / custom %)";
     hdr.style.color     = glint_demo_theme::heading;
@@ -126,7 +126,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 4: background-repeat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 4: background-repeat ----------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "background-repeat  (using a small pattern image)";
     hdr.style.color     = glint_demo_theme::heading;
@@ -149,7 +149,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 5: background shorthand â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 5: background shorthand -------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "style.background = \"url(...) position/size repeat\"  (shorthand)";
     hdr.style.color     = glint_demo_theme::heading;
@@ -200,7 +200,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 6: opacity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 6: opacity --------------------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "opacity applied to image elements";
     hdr.style.color     = glint_demo_theme::heading;
@@ -252,7 +252,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 7: border-radius shaping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 7: border-radius shaping -----------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "border-radius shaping  (pill / circle / rounded rect)";
     hdr.style.color     = glint_demo_theme::heading;
@@ -303,7 +303,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 8: SVG background image â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 8: SVG background image -------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "SVG as background-image  (rasterized to element bounds)";
     hdr.style.color     = glint_demo_theme::heading;
@@ -356,7 +356,7 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 9: background-image + gradient overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 9: background-image + gradient overlay ----------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "background-image + gradient overlay  (pseudo-layering with children)";
     hdr.style.color     = glint_demo_theme::heading;

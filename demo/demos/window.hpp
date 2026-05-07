@@ -122,6 +122,11 @@ enum class DemoSection
   Stroke,
   Images,
   BlendModes,
+  Textarea,
+  Radios,
+  Progress,
+  Tooltips,
+  DatePicker,
   _Count
 };
 
@@ -152,6 +157,11 @@ static constexpr const char* kSectionNames[] = {
   "Stroke",
   "Images",
   "Blend Modes",
+  "Textarea",
+  "Radios",
+  "Progress",
+  "Tooltips",
+  "Date Picker",
 };
 
 // -----------------------------------------------------------------------------
@@ -464,6 +474,11 @@ private:
     case DemoSection::Stroke:            buildStroke();           break;
     case DemoSection::Images:            buildImages();           break;
     case DemoSection::BlendModes:        buildBlendModes();       break;
+    case DemoSection::Textarea:           buildTextarea();         break;
+    case DemoSection::Radios:             buildRadios();           break;
+    case DemoSection::Progress:           buildProgress();         break;
+    case DemoSection::Tooltips:           buildTooltips();         break;
+    case DemoSection::DatePicker:         buildDatePicker();       break;
     default: break;
     }
 
@@ -596,6 +611,11 @@ private:
   void buildStroke();
   void buildImages();
   void buildBlendModes();
+  void buildTextarea();
+  void buildRadios();
+  void buildProgress();
+  void buildTooltips();
+  void buildDatePicker();
 
 };
 
@@ -622,3 +642,8 @@ inline glint_demos_window* glint_demos_window::sInstance = nullptr;
 #include "pages/page_stroke.hpp"
 #include "pages/page_images.hpp"
 #include "pages/page_blend_modes.hpp"
+#include "pages/page_textarea.hpp"
+#include "pages/page_radios.hpp"
+#include "pages/page_progress.hpp"
+#include "pages/page_tooltips.hpp"
+#include "pages/page_datepicker.hpp"

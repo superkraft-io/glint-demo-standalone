@@ -2,7 +2,7 @@
 
 inline void glint_demos_window::buildStroke()
 {
-  // â”€â”€ Intro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Intro ------------------------------------------------------------------
   mContent->add.div([](auto& sub) {
     sub.innerText          = "SVG stroke properties on box borders: stroke, stroke-width, stroke-dasharray, "
                              "stroke-dashoffset, stroke-linecap, stroke-linejoin, stroke-miterlimit, stroke-opacity.";
@@ -13,7 +13,7 @@ inline void glint_demos_window::buildStroke()
     sub.style.marginBottom = 14.f;
   });
 
-  // â”€â”€ Helper: labelled demo box â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Helper: labelled demo box ----------------------------------------------
   // Adds a flex-column card (box 90Ã—90 + label + desc) into parentRow.
   auto addBox = [&](glint_element* parentRow, const char* label, const char* desc,
                     std::function<void(glint_component_style&)> setup)
@@ -53,7 +53,7 @@ inline void glint_demos_window::buildStroke()
     });
   };
 
-  // â”€â”€ 1. border-style â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 1. border-style --------------------------------------------------------
   addHeading("border-style  (solid / dashed / dotted)");
   {
     auto* row = addRow(12.f);
@@ -82,7 +82,7 @@ inline void glint_demos_window::buildStroke()
     });
   }
 
-  // â”€â”€ 2. stroke-dasharray â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 2. stroke-dasharray ----------------------------------------------------
   addHeading("stroke-dasharray  (custom dash intervals)");
   {
     auto* row = addRow(12.f);
@@ -116,7 +116,7 @@ inline void glint_demos_window::buildStroke()
     });
   }
 
-  // â”€â”€ 3. stroke-linecap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 3. stroke-linecap -----------------------------------------------------
   addHeading("stroke-linecap  (butt / round / square)");
   {
     auto* row = addRow(12.f);
@@ -143,7 +143,7 @@ inline void glint_demos_window::buildStroke()
     });
   }
 
-  // â”€â”€ 4. stroke-linejoin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 4. stroke-linejoin ----------------------------------------------------
   addHeading("stroke-linejoin  (miter / round / bevel)");
   {
     auto* row = addRow(12.f);
@@ -173,7 +173,7 @@ inline void glint_demos_window::buildStroke()
     });
   }
 
-  // â”€â”€ 5. stroke-opacity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 5. stroke-opacity -----------------------------------------------------
   addHeading("stroke-opacity");
   {
     auto* row = addRow(12.f);
@@ -195,7 +195,7 @@ inline void glint_demos_window::buildStroke()
     }
   }
 
-  // â”€â”€ 6. stroke (color override) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 6. stroke (color override) --------------------------------------------
   addHeading("stroke  (color override)");
   {
     auto* row = addRow(12.f);
@@ -220,7 +220,7 @@ inline void glint_demos_window::buildStroke()
     }
   }
 
-  // â”€â”€ 7. stroke-width override â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 7. stroke-width override ----------------------------------------------
   addHeading("stroke-width  (overrides border-width for paint)");
   {
     auto* row = addRow(12.f);
@@ -243,7 +243,7 @@ inline void glint_demos_window::buildStroke()
 
   addSpacer(12.f);
 
-  // â”€â”€ 8. Continuous marching ants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 8. Continuous marching ants -------------------------------------------
   addHeading("Animated marching ants  (continuous loop)");
 
   mContent->add.div([](auto& desc) {
@@ -327,7 +327,7 @@ inline void glint_demos_window::buildStroke()
     }
   };
 
-  // â”€â”€ 9. Hover-animated stroke props â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 9. Hover-animated stroke props ----------------------------------------
   addHeading("Hover-animated stroke properties");
 
   // Custom element: W-shaped zigzag path so the miter spike / bevel
@@ -504,7 +504,7 @@ inline void glint_demos_window::buildStroke()
 
   addSpacer(20.f);
 
-  // â”€â”€ 10. Easing comparison â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- 10. Easing comparison -------------------------------------------------
   addHeading("Easing comparison  (5 stroke props x 5 easing functions)");
   {
     mContent->add.div([](auto& desc) {

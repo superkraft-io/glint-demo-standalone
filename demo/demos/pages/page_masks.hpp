@@ -2,7 +2,7 @@
 
 inline void glint_demos_window::buildMasks()
 {
-  // â”€â”€ Intro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Intro ----------------------------------------------------------------
   addHeading("CSS mask  (style.mask)");
 
   mContent->add.div([](auto& sub) {
@@ -18,7 +18,7 @@ inline void glint_demos_window::buildMasks()
     sub.style.marginBottom = 16.f;
   });
 
-  // â”€â”€ Helper: labelled mask card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Helper: labelled mask card --------------------------------------------
   auto makeCard = [](auto& row, const char* label, glint_color bg, const char* maskStr,
                      float w = 150.f, float h = 100.f)
   {
@@ -45,7 +45,7 @@ inline void glint_demos_window::buildMasks()
     });
   };
 
-  // â”€â”€ Row 1: Linear-gradient masks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 1: Linear-gradient masks -----------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "linear-gradient masks";
     hdr.style.color     = glint_demo_theme::heading;
@@ -69,7 +69,7 @@ inline void glint_demos_window::buildMasks()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 2: Radial-gradient masks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 2: Radial-gradient masks -----------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "radial-gradient masks";
     hdr.style.color     = glint_demo_theme::heading;
@@ -92,7 +92,7 @@ inline void glint_demos_window::buildMasks()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 3: Diagonal & corner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 3: Diagonal & corner ---------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "diagonal & corner masks";
     hdr.style.color     = glint_demo_theme::heading;
@@ -116,7 +116,7 @@ inline void glint_demos_window::buildMasks()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 4: Partial alpha â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 4: Partial alpha --------------------------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "partial alpha (semi-transparent mask stops)";
     hdr.style.color     = glint_demo_theme::heading;
@@ -139,7 +139,7 @@ inline void glint_demos_window::buildMasks()
 
   addSpacer(10.f);
 
-  // â”€â”€ Row 5: mask applied to text content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Row 5: mask applied to text content ----------------------------------
   mContent->add.div([](auto& hdr) {
     hdr.innerText       = "mask applied to text content";
     hdr.style.color     = glint_demo_theme::heading;

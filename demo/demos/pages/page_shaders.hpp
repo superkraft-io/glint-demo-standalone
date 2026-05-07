@@ -13,7 +13,7 @@ inline void glint_demos_window::buildShaders()
     sub.style.marginBottom = 14.f;
   });
 
-  // â”€â”€ Procedural background shaders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Procedural background shaders ----------------------------------------
   addHeading("Background \xe2\x80\x94 Procedural (style.filter)");
 
   // Out-ptrs set during the synchronous mContent->add.div call below.
@@ -140,7 +140,7 @@ inline void glint_demos_window::buildShaders()
     });
   });
 
-  // â”€â”€ Backdrop shaders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Backdrop shaders -----------------------------------------------------
   addHeading("Backdrop \xe2\x80\x94 Samples Canvas Below (style.backdropFilter)");
 
   mContent->add.div([](auto& note) {
@@ -369,7 +369,7 @@ inline void glint_demos_window::buildShaders()
     });
   });
 
-  // â”€â”€ Lens Refraction (draggable) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // -- Lens Refraction (draggable) ------------------------------------------
   addSpacer(20.f);
   addHeading("Lens Refraction  \xe2\x80\x94  Draggable  (lens_refraction)");
 

@@ -475,3 +475,24 @@ button:hover {
 button:active {
   background-color: #222222;
 }
+
+/* ── glint_progress ──────────────────────────────────────────────────────── */
+.glint_progress_fill--green {
+  border-radius: 9999px;
+  background-color: #244224;
+}
+
+.glint_progress_fill--red {
+  border-radius: 9999px;
+  background-color: #5a3030;
+}
+
+.glint_progress_fill--amber {
+  border-radius: 9999px;
+  background-color: #6a4620;
+}
+
+.glint_progress_fill--slate {
+  border-radius: 9999px;
+  background-color: #5f6872;
+}
