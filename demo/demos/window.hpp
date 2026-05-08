@@ -127,6 +127,7 @@ enum class DemoSection
   Progress,
   Tooltips,
   DatePicker,
+  Cursors,
   _Count
 };
 
@@ -162,6 +163,7 @@ static constexpr const char* kSectionNames[] = {
   "Progress",
   "Tooltips",
   "Date Picker",
+  "Cursors",
 };
 
 // -----------------------------------------------------------------------------
@@ -479,6 +481,7 @@ private:
     case DemoSection::Progress:           buildProgress();         break;
     case DemoSection::Tooltips:           buildTooltips();         break;
     case DemoSection::DatePicker:         buildDatePicker();       break;
+    case DemoSection::Cursors:             buildCursors();          break;
     default: break;
     }
 
@@ -616,6 +619,7 @@ private:
   void buildProgress();
   void buildTooltips();
   void buildDatePicker();
+  void buildCursors();
 
 };
 
@@ -647,3 +651,4 @@ inline glint_demos_window* glint_demos_window::sInstance = nullptr;
 #include "pages/page_progress.hpp"
 #include "pages/page_tooltips.hpp"
 #include "pages/page_datepicker.hpp"
+#include "pages/page_cursors.hpp"
