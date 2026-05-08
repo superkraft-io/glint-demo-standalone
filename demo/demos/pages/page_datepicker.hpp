@@ -138,17 +138,25 @@ inline void glint_demos_window::buildDatePicker()
   btn->onClick = [btn, fb2Ptr]()
   {
     // Compute screen-space anchor rect from the button's mRect,
-    // subtracting ancestor scroll offsets before calling ClientToScreen.
-    float cl = btn->mRect.L, cb = btn->mRect.B;
+    // subtracting ancestor scroll offsets for any scrollable parents.
+    float cl = btn->mRect.L, ct = btn->mRect.T;
     for (glint_element* p = btn->mParent; p; p = p->mParent) {
       cl -= p->mScrollLeft;
-      cb -= p->mScrollTop;
+      ct -= p->mScrollTop;
     }
-    POINT topLeft{ (LONG)cl, (LONG)cb };
+    const float bW = btn->mRect.W(), bH = btn->mRect.H();
+
+#if defined(_WIN32) || defined(OS_WIN)
+    POINT bottomLeft{ (LONG)cl, (LONG)(ct + bH) };
     if (HWND hwnd = btn->mRoot ? btn->mRoot->hwnd : nullptr)
-      ::ClientToScreen(hwnd, &topLeft);
-    RECT anchor{ topLeft.x, topLeft.y - (LONG)btn->mRect.H(),
-                 topLeft.x + (LONG)btn->mRect.W(), topLeft.y };
+      ::ClientToScreen(hwnd, &bottomLeft);
+    RECT anchor{ bottomLeft.x, bottomLeft.y - (LONG)bH,
+                 bottomLeft.x + (LONG)bW,  bottomLeft.y };
+#else
+    RECT anchor = (btn->mRoot && btn->mRoot->macWindow)
+      ? btn->mRoot->macWindow->contentRectToScreen(cl, ct, bW, bH)
+      : RECT{};
+#endif
 
     auto onChanged = [fb2Ptr](int y, int m, int d) {
       sWinY = y; sWinM = m; sWinD = d;
