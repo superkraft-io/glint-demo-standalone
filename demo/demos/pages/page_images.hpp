@@ -10,7 +10,7 @@ inline void glint_demos_window::buildImages()
 
   mContent->add.div([](auto& sub) {
     sub.innerText =
-      "Images can be rendered via style.backgroundImage (the background-image / background CSS "
+      "Images can be rendered via style.backgroundImage (the background-img / background CSS "
       "shorthand) applied to any div element. Key sub-properties: background-size (cover / contain "
       "/ 100%% 100%% / explicit px), background-position (top left / center / custom %), "
       "background-repeat (no-repeat / repeat / repeat-x / repeat-y), and opacity. "
@@ -22,8 +22,8 @@ inline void glint_demos_window::buildImages()
     sub.style.marginBottom = 16.f;
   });
 
-  // -- Helper: labelled image card -------------------------------------------
-  // Adds label + image-box into 'row' (a glint_component_adder context).
+  // -- Helper: labelled img card -------------------------------------------
+  // Adds label + img-box into 'row' (a glint_component_adder context).
   auto makeImgCard = [](auto& row, const char* label, const char* bgImg,
                         const char* bgSize     = "cover",
                         const char* bgPosition = "center",
@@ -56,9 +56,9 @@ inline void glint_demos_window::buildImages()
     });
   };
 
-  // -- Row 1: background-image on a <div> ------------------------------------
+  // -- Row 1: background-img on a <div> ------------------------------------
   mContent->add.div([](auto& hdr) {
-    hdr.innerText       = "background-image: url(...) -  the basic technique";
+    hdr.innerText       = "background-img: url(...) -  the basic technique";
     hdr.style.color     = glint_demo_theme::heading;
     hdr.style.fontSize  = 12.f;
     hdr.style.width     = "100%";
@@ -128,7 +128,7 @@ inline void glint_demos_window::buildImages()
 
   // -- Row 4: background-repeat ----------------------------------------------
   mContent->add.div([](auto& hdr) {
-    hdr.innerText       = "background-repeat  (using a small pattern image)";
+    hdr.innerText       = "background-repeat  (using a small pattern img)";
     hdr.style.color     = glint_demo_theme::heading;
     hdr.style.fontSize  = 12.f;
     hdr.style.width     = "100%";
@@ -202,7 +202,7 @@ inline void glint_demos_window::buildImages()
 
   // -- Row 6: opacity --------------------------------------------------------
   mContent->add.div([](auto& hdr) {
-    hdr.innerText       = "opacity applied to image elements";
+    hdr.innerText       = "opacity applied to img elements";
     hdr.style.color     = glint_demo_theme::heading;
     hdr.style.fontSize  = 12.f;
     hdr.style.width     = "100%";
@@ -304,9 +304,9 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // -- Row 8: SVG background image -------------------------------------------
+  // -- Row 8: SVG background img -------------------------------------------
   mContent->add.div([](auto& hdr) {
-    hdr.innerText       = "SVG as background-image  (rasterized to element bounds)";
+    hdr.innerText       = "SVG as background-img  (rasterized to element bounds)";
     hdr.style.color     = glint_demo_theme::heading;
     hdr.style.fontSize  = 12.f;
     hdr.style.width     = "100%";
@@ -357,9 +357,9 @@ inline void glint_demos_window::buildImages()
 
   addSpacer(10.f);
 
-  // -- Row 9: background-image + gradient overlay ----------------------------
+  // -- Row 9: background-img + gradient overlay ----------------------------
   mContent->add.div([](auto& hdr) {
-    hdr.innerText       = "background-image + gradient overlay  (pseudo-layering with children)";
+    hdr.innerText       = "background-img + gradient overlay  (pseudo-layering with children)";
     hdr.style.color     = glint_demo_theme::heading;
     hdr.style.fontSize  = 12.f;
     hdr.style.width     = "100%";

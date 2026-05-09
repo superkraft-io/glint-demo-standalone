@@ -7,8 +7,8 @@ inline void glint_demos_window::buildMasks()
 
   mContent->add.div([](auto& sub) {
     sub.innerText =
-      "style.mask accepts the same gradient / url() syntax as CSS mask-image. "
-      "The alpha channel of the mask image controls visibility: white (alpha=255) = fully visible, "
+      "style.mask accepts the same gradient / url() syntax as CSS mask-img. "
+      "The alpha channel of the mask img controls visibility: white (alpha=255) = fully visible, "
       "black/transparent (alpha=0) = fully hidden. "
       "Each card has a solid-colour content box; the gradient is the mask applied on top.";
     sub.style.color        = glint_demo_theme::muted;
