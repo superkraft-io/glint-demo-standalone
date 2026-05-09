@@ -222,8 +222,9 @@ inline void glint_demos_window::buildImages()
       row.add.div([op](auto& wrap) {
         wrap.style.width = 120.f;
 
-        char label[32];
-        snprintf(label, sizeof(label), "opacity: %.0f%%", op * 100.f);
+        char buf[32];
+        snprintf(buf, sizeof(buf), "opacity: %.0f%%", op * 100.f);
+        std::string label = buf;
 
         wrap.add.div([label](auto& lbl) {
           lbl.innerText          = label;

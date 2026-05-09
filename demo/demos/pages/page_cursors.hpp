@@ -31,24 +31,45 @@ inline void glint_demos_window::buildCursors()
     });
   };
 
-  // Adds a single cursor tile to a parent row.
-  // The text label is placed in a child div so that the parent's flex
-  // centering (alignItems + justifyContent) actually centres it both ways.
-  auto addTile = [](glint_element* parent, const char* cursorName) {
-    parent->add.div([cursorName](glint_component_style& d) {
-      d.style.cursor           = cursorName;
-      d.style.userSelect       = "none";
-      d.style.width            = 96.f;
-      d.style.height           = 50.f;
-      d.style.backgroundColor  = glint_demo_theme::surface;
-      d.style.borderWidth      = 1.f;
-      d.style.borderColor      = glint_demo_theme::border;
-      d.style.borderRadius     = 6.f;
-      d.style.display          = "flex";
-      d.style.alignItems       = "center";
-      d.style.justifyContent   = "center";
+  // Color cycle: grey → green → red → yellow → grey …
+  static constexpr const char* kTileColors[4] = {
+    glint_demo_theme::surface,  // 0 – default grey
+    "#1a4a1a",                  // 1 – green
+    "#4a1a1a",                  // 2 – red
+    "#4a3d00",                  // 3 – yellow
+  };
+  static constexpr const char* kTileTextColors[4] = {
+    glint_demo_theme::muted,
+    "#6ddd6d",
+    "#dd6d6d",
+    "#ddcc00",
+  };
 
-      d.add.div([cursorName](glint_component_style& lbl) {
+  // ── Shared color-bucket state ─────────────────────────────────────────────
+  struct TileColorState {
+    std::vector<std::string> names[4]; // [1]=green  [2]=red  [3]=yellow
+  };
+  auto* colorState = new TileColorState();
+
+  // Adds a single cursor tile (button) to a parent row.
+  // Clicking cycles the background colour: grey → green → red → yellow → …
+  auto addTile = [colorState](glint_element* parent, const char* cursorName) {
+    auto* colorIdx = new int(0);  // heap-allocated per-tile state; lives for the lifetime of the page
+
+    glint_button* tile = parent->add.button([cursorName](glint_button& btn) {
+      btn.style.cursor          = cursorName;
+      btn.style.userSelect      = "none";
+      btn.style.width           = 96.f;
+      btn.style.height          = 50.f;
+      btn.style.backgroundColor = glint_demo_theme::surface;
+      btn.style.borderWidth     = 1.f;
+      btn.style.borderColor     = glint_demo_theme::border;
+      btn.style.borderRadius    = 6.f;
+      btn.style.display         = "flex";
+      btn.style.alignItems      = "center";
+      btn.style.justifyContent  = "center";
+
+      btn.add.div([cursorName](glint_component_style& lbl) {
         lbl.innerText        = cursorName;
         lbl.style.fontSize   = 11.f;
         lbl.style.color      = glint_demo_theme::muted;
@@ -56,16 +77,37 @@ inline void glint_demos_window::buildCursors()
         lbl.style.userSelect = "none";
       });
     });
+
+    tile->onClick = [tile, colorIdx, colorState, name = std::string(cursorName)]() {
+      int oldIdx = *colorIdx;
+      // remove from old color bucket
+      if (oldIdx != 0) {
+        auto& v = colorState->names[oldIdx];
+        for (auto it = v.begin(); it != v.end(); )
+          it = (*it == name) ? v.erase(it) : std::next(it);
+      }
+      // advance color index
+      *colorIdx = (oldIdx + 1) % 4;
+      // add to new color bucket
+      if (*colorIdx != 0)
+        colorState->names[*colorIdx].push_back(name);
+      // update tile visuals
+      tile->style.backgroundColor = kTileColors[*colorIdx];
+      tile->style.borderColor     = kTileTextColors[*colorIdx];
+      if (!tile->mChildren.empty())
+        tile->mChildren[0]->style.color = kTileTextColors[*colorIdx];
+      tile->setDirty(false);
+    };
   };
 
   // ── Intro ─────────────────────────────────────────────────────────────────
   mContent->add.div([](glint_component_style& d) {
-    d.innerText          = "Hover each tile to preview the cursor.";
+    d.innerText          = "Hover each tile to preview the cursor. Click to colorize.";
     d.style.color        = glint_demo_theme::muted;
     d.style.fontSize     = 12.f;
     d.style.width        = "100%";
     d.style.textAlign    = EAlign::Near;
-    d.style.marginBottom = 16.f;
+    d.style.marginBottom = 12.f;
   });
 
   // ── General ───────────────────────────────────────────────────────────────
