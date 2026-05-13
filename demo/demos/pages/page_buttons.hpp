@@ -123,4 +123,97 @@ inline void glint_demos_window::buildButtons()
     ctrPtr->innerText = std::string("Clicks: ") + std::to_string(*clicks);
     ctrPtr->setDirty(false);
   };
+
+  addSpacer(20.f);
+  addHeading("classList  (add / remove / toggle / contains)");
+
+  // Status label
+  glint_element* clsStatusPtr = nullptr;
+  mContent->add.div([](glint_component_style& s) {
+    s.innerText          = "No classes applied";
+    s.style.color        = glint_demo_theme::muted;
+    s.style.fontSize     = 12.f;
+    s.style.width        = "100%";
+    s.style.textAlign    = EAlign::Near;
+    s.style.marginBottom = 8.f;
+  }, &clsStatusPtr);
+
+  // Target box whose classes we'll mutate.
+  // Only layout properties are set inline; visual properties (color, bg, border)
+  // come entirely from the CSS classes (.demo-default, .demo-active, etc.).
+  glint_element* clsBoxPtr = nullptr;
+  mContent->add.div([](glint_component_style& box) {
+    box.innerText             = "Target element";
+    box.className             = "demo-default";
+    box.style.width           = "100%";
+    box.style.height          = 52.f;
+    box.style.borderRadius    = 6.f;
+    box.style.display         = "flex";
+    box.style.alignItems      = "center";
+    box.style.justifyContent  = "center";
+    box.style.fontSize        = 13.f;
+    box.style.marginBottom    = 10.f;
+  }, &clsBoxPtr);
+
+  // Helper that updates only the status label text.
+  // Visual changes on clsBoxPtr are driven entirely by CSS class rules —
+  // classList._notifyChange() re-cascades and redraws automatically.
+  auto refreshStatus = [clsBoxPtr, clsStatusPtr]() {
+    const bool active  = clsBoxPtr->classList.contains("demo-active");
+    const bool outline = clsBoxPtr->classList.contains("demo-outline");
+    const bool faded   = clsBoxPtr->classList.contains("demo-faded");
+
+    std::string msg;
+    if (!active && !outline && !faded)
+      msg = "No classes applied";
+    else
+    {
+      if (active)  msg += ".demo-active  ";
+      if (outline) msg += ".demo-outline  ";
+      if (faded)   msg += ".demo-faded";
+    }
+    clsStatusPtr->innerText = msg;
+    clsStatusPtr->setDirty(false);
+  };
+
+  auto* clsBtnRow = mContent->add.div([](glint_component_style& row) {
+    row.style.display       = "flex";
+    row.style.flexDirection = "row";
+    row.style.gap           = 8.f;
+    row.style.width         = "100%";
+  });
+
+  struct ClsBtn { const char* label; std::function<void()> action; };
+  std::vector<ClsBtn> clsBtns;
+
+  // Capture shared_ptr so lambdas stay valid even if clsBtns is destroyed
+  auto refreshFn = std::make_shared<std::function<void()>>(refreshStatus);
+
+  clsBtns = {
+    { "add .demo-active",     [clsBoxPtr, refreshFn]{ clsBoxPtr->classList.add("demo-active");     (*refreshFn)(); } },
+    { "remove .demo-active",  [clsBoxPtr, refreshFn]{ clsBoxPtr->classList.remove("demo-active");  (*refreshFn)(); } },
+    { "toggle .demo-outline", [clsBoxPtr, refreshFn]{ clsBoxPtr->classList.toggle("demo-outline"); (*refreshFn)(); } },
+    { "toggle .demo-faded",   [clsBoxPtr, refreshFn]{ clsBoxPtr->classList.toggle("demo-faded");   (*refreshFn)(); } },
+  };
+
+  for (const auto& cb : clsBtns)
+  {
+    clsBtnRow->add.template fromClass<glint_button>([cb](glint_button& btn) {
+      btn.innerText             = cb.label;
+      btn.style.height          = 30.f;
+      btn.style.padding         = "0 10";
+      btn.style.borderRadius    = 4.f;
+      btn.style.fontSize        = 12.f;
+      btn.style.backgroundColor = glint_demo_theme::surface;
+      btn.style.color           = glint_demo_theme::text;
+      btn.style.borderColor     = glint_demo_theme::border;
+      btn.style.borderWidth     = 1.f;
+      btn.hover.backgroundColor = glint_demo_theme::surfaceHover;
+      btn.hover.color           = glint_demo_theme::text;
+      btn.hover.borderColor     = glint_demo_theme::border;
+      btn.hover.borderWidth     = 1.f;
+      btn.hover.borderRadius    = 4.f;
+      btn.onClick               = cb.action;
+    });
+  }
 }

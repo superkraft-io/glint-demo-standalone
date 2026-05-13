@@ -210,7 +210,7 @@ inline void glint_demos_window::buildImages()
   });
 
   static const float kOpacities[] = { 1.0f, 0.75f, 0.5f, 0.25f, 0.1f };
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&](glint_component_style& row) {
     row.style.display       = "flex";
     row.style.flexDirection = "row";
     row.style.gap           = 14.f;
@@ -219,14 +219,14 @@ inline void glint_demos_window::buildImages()
     row.style.marginBottom  = 12.f;
     for (float op : kOpacities)
     {
-      row.add.div([op](auto& wrap) {
+      row.add.div([op](glint_component_style& wrap) {
         wrap.style.width = 120.f;
 
         char buf[32];
         snprintf(buf, sizeof(buf), "opacity: %.0f%%", op * 100.f);
         std::string label = buf;
 
-        wrap.add.div([label](auto& lbl) {
+        wrap.add.div([label](glint_component_style& lbl) {
           lbl.innerText          = label;
           lbl.style.color        = glint_demo_theme::text;
           lbl.style.fontSize     = 11.f;
@@ -236,7 +236,7 @@ inline void glint_demos_window::buildImages()
           lbl.style.marginBottom = 4.f;
         });
 
-        wrap.add.div([op](auto& box) {
+        wrap.add.div([op](glint_component_style& box) {
           box.style.width              = "100%";
           box.style.height             = 90.f;
           box.style.borderRadius       = 6.f;
@@ -262,11 +262,11 @@ inline void glint_demos_window::buildImages()
     hdr.style.marginBottom = 8.f;
   });
 
-  auto addShapeCard = [](auto& row, const char* label, float w, float h, float radius) {
-    row.add.div([=](auto& wrap) {
+  auto addShapeCard = [](glint_component_style& row, const char* label, float w, float h, float radius) {
+    row.add.div([=](glint_component_style& wrap) {
       wrap.style.width = w;
 
-      wrap.add.div([=](auto& lbl) {
+      wrap.add.div([=](glint_component_style& lbl) {
         lbl.innerText          = label;
         lbl.style.color        = glint_demo_theme::text;
         lbl.style.fontSize     = 11.f;
@@ -276,7 +276,7 @@ inline void glint_demos_window::buildImages()
         lbl.style.marginBottom = 4.f;
       });
 
-      wrap.add.div([=](auto& box) {
+      wrap.add.div([=](glint_component_style& box) {
         box.style.width              = "100%";
         box.style.height             = h;
         box.style.borderRadius       = radius;

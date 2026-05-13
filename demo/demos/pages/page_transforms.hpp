@@ -229,4 +229,155 @@ inline void glint_demos_window::buildTransforms()
     note.style.width    = "100%";
     note.style.textAlign = EAlign::Near;
   });
+
+  addSpacer(20.f);
+
+  // ── CSS position: absolute / relative / z-index ───────────────────────────
+  addHeading("CSS positioning  (position: relative / absolute, z-index)");
+
+  mContent->add.div([](auto& sub) {
+    sub.innerText          = "A position:relative container acts as the containing block. "
+                             "position:absolute children are placed via top/right/bottom/left offsets. "
+                             "z-index controls paint order among positioned siblings.";
+    sub.style.color        = glint_demo_theme::muted;
+    sub.style.fontSize     = 12.f;
+    sub.style.width        = "100%";
+    sub.style.textAlign    = EAlign::Near;
+    sub.style.marginBottom = 10.f;
+  });
+
+  // Containing block  —  position: relative
+  mContent->add.div([](auto& container) {
+    container.style.position        = "relative";
+    container.style.width           = "100%";
+    container.style.height          = 180.f;
+    container.style.backgroundColor = glint_demo_theme::panelBg;
+    container.style.borderColor     = glint_demo_theme::border;
+    container.style.borderWidth     = 1.f;
+    container.style.borderRadius    = 8.f;
+    container.style.marginBottom    = 12.f;
+
+    // Centre label (in normal flow so it occupies the "background")
+    container.add.div([](auto& label) {
+      label.innerText       = "position: relative  (containing block)";
+      label.style.color     = glint_demo_theme::subtle;
+      label.style.fontSize  = 11.f;
+      label.style.width     = "100%";
+      label.style.textAlign = EAlign::Center;
+      label.style.padding   = "8";
+    });
+
+    // Top-left pin
+    container.add.div([](auto& pin) {
+      pin.style.position        = "absolute";
+      pin.style.top             = 10.f;
+      pin.style.left            = 10.f;
+      pin.style.width           = 110.f;
+      pin.style.height          = 32.f;
+      pin.style.backgroundColor = glint_demo_theme::accent;
+      pin.style.borderRadius    = 4.f;
+      pin.style.display         = "flex";
+      pin.style.alignItems      = "center";
+      pin.style.justifyContent  = "center";
+      pin.style.zIndex          = 2;
+      pin.add.div([](auto& lbl) {
+        lbl.innerText      = "top:10 left:10";
+        lbl.style.color    = "#ffffff";
+        lbl.style.fontSize = 11.f;
+      });
+    });
+
+    // Top-right pin
+    container.add.div([](auto& pin) {
+      pin.style.position        = "absolute";
+      pin.style.top             = 10.f;
+      pin.style.right           = 10.f;
+      pin.style.width           = 110.f;
+      pin.style.height          = 32.f;
+      pin.style.backgroundColor = glint_demo_theme::success;
+      pin.style.backgroundColor = glint_color(255, 60, 140, 100);
+      pin.style.borderRadius    = 4.f;
+      pin.style.display         = "flex";
+      pin.style.alignItems      = "center";
+      pin.style.justifyContent  = "center";
+      pin.style.zIndex          = 2;
+      pin.add.div([](auto& lbl) {
+        lbl.innerText      = "top:10 right:10";
+        lbl.style.color    = "#ffffff";
+        lbl.style.fontSize = 11.f;
+      });
+    });
+
+    // Bottom-left pin
+    container.add.div([](auto& pin) {
+      pin.style.position        = "absolute";
+      pin.style.bottom          = 10.f;
+      pin.style.left            = 10.f;
+      pin.style.width           = 110.f;
+      pin.style.height          = 32.f;
+      pin.style.backgroundColor = glint_color(255, 160, 100, 50);
+      pin.style.borderRadius    = 4.f;
+      pin.style.display         = "flex";
+      pin.style.alignItems      = "center";
+      pin.style.justifyContent  = "center";
+      pin.style.zIndex          = 2;
+      pin.add.div([](auto& lbl) {
+        lbl.innerText      = "bottom:10 left:10";
+        lbl.style.color    = "#ffffff";
+        lbl.style.fontSize = 11.f;
+      });
+    });
+
+    // Bottom-right pin
+    container.add.div([](auto& pin) {
+      pin.style.position        = "absolute";
+      pin.style.bottom          = 10.f;
+      pin.style.right           = 10.f;
+      pin.style.width           = 110.f;
+      pin.style.height          = 32.f;
+      pin.style.backgroundColor = glint_color(255, 150, 60, 150);
+      pin.style.borderRadius    = 4.f;
+      pin.style.display         = "flex";
+      pin.style.alignItems      = "center";
+      pin.style.justifyContent  = "center";
+      pin.style.zIndex          = 2;
+      pin.add.div([](auto& lbl) {
+        lbl.innerText      = "bottom:10 right:10";
+        lbl.style.color    = "#ffffff";
+        lbl.style.fontSize = 11.f;
+      });
+    });
+
+    // Centre absolute — sits behind the corner pins via z-index
+    container.add.div([](auto& pin) {
+      pin.style.position        = "absolute";
+      pin.style.top             = "50%";
+      pin.style.left            = "50%";
+      pin.style.width           = 130.f;
+      pin.style.height          = 36.f;
+      pin.style.backgroundColor = glint_demo_theme::surface;
+      pin.style.borderColor     = glint_demo_theme::border;
+      pin.style.borderWidth     = 1.f;
+      pin.style.borderRadius    = 6.f;
+      pin.style.display         = "flex";
+      pin.style.alignItems      = "center";
+      pin.style.justifyContent  = "center";
+      pin.style.zIndex          = 1;
+      pin.add.div([](auto& lbl) {
+        lbl.innerText      = "center  z-index:1";
+        lbl.style.color    = glint_demo_theme::muted;
+        lbl.style.fontSize = 11.f;
+      });
+    });
+  });
+
+  mContent->add.div([](auto& note) {
+    note.innerText       = "Note: translate(-50%, -50%) is not applied here because the transform "
+                           "public surface is currently the translate subset only. "
+                           "The centre box is offset by its own width/height manually via top:50% left:50%.";
+    note.style.color     = glint_demo_theme::subtle;
+    note.style.fontSize  = 11.f;
+    note.style.width     = "100%";
+    note.style.textAlign = EAlign::Near;
+  });
 }

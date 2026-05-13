@@ -496,3 +496,57 @@ button:active {
   border-radius: 9999px;
   background-color: #5f6872;
 }
+
+/* ── Keyframes for the Transitions page animation showcase ──────────────────── */
+
+@keyframes glint-demo-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes glint-demo-pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.1; }
+  100% { opacity: 1; }
+}
+
+@keyframes glint-demo-bounce {
+  0%   { transform: translateY(0); }
+  35%  { transform: translateY(-22px); }
+  60%  { transform: translateY(-8px); }
+  80%  { transform: translateY(-16px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes glint-demo-slide-in {
+  from { transform: translateX(-40px); opacity: 0; }
+  to   { transform: translateX(0px);   opacity: 1; }
+}
+
+/* ── CSS classes for the classList interactive demo ─────────────────────────── */
+
+.demo-default {
+  background-color: #2a2a35;
+  color: #c8c8d4;
+  border-color: #44445a;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.demo-active {
+  background-color: #1a6fc4;
+  color: #ffffff;
+  border-color: #2179cf;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.demo-outline {
+  border-color: #7ec07e;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.demo-faded {
+  opacity: 0.3;
+}
