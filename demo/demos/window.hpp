@@ -111,6 +111,7 @@ enum class DemoSection
   Lists,
   Scroll,
   Colors,
+  Generic,
   Transforms,
   Filters,
   BackdropFilters,
@@ -147,6 +148,7 @@ static constexpr const char* kSectionNames[] = {
   "Lists",
   "Scroll",
   "Colors",
+  "Generic",
   "Transforms",
   "Filters",
   "Backdrop Filters",
@@ -465,6 +467,7 @@ private:
     case DemoSection::Lists:    buildLists();    break;
     case DemoSection::Scroll:      buildScroll();      break;
     case DemoSection::Colors:      buildColors();      break;
+    case DemoSection::Generic:     buildGeneric();     break;
     case DemoSection::Transforms:   buildTransforms();   break;
     case DemoSection::Filters:          buildFilters();          break;
     case DemoSection::BackdropFilters:   buildBackdropFilters();  break;
@@ -603,6 +606,7 @@ private:
   void buildLists();
   void buildScroll();
   void buildColors();
+  void buildGeneric();
   void buildFilters();
   void buildBackdropFilters();
   void buildTransforms();
@@ -635,6 +639,7 @@ inline glint_demos_window* glint_demos_window::sInstance = nullptr;
 #include "pages/page_lists.hpp"
 #include "pages/page_scroll.hpp"
 #include "pages/page_colors.hpp"
+#include "pages/page_generic.hpp"
 #include "pages/page_filters.hpp"
 #include "pages/page_backdrop_filters.hpp"
 #include "pages/page_transforms.hpp"

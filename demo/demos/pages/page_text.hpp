@@ -259,5 +259,29 @@ inline void glint_demos_window::buildText()
       });
     }
   });
+
+  addSpacer(16.f);
+
+  // ── text-decoration ───────────────────────────────────────────────────────
+  addHeading("text-decoration");
+
+  const struct { const char* label; const char* decoration; const char* color; } decRows[] = {
+    { "underline",               "underline",              glint_demo_theme::text    },
+    { "line-through",            "line-through",           glint_demo_theme::text    },
+    { "underline line-through",  "underline line-through", glint_demo_theme::warning },
+    { "none  (explicit reset)",  "none",                   glint_demo_theme::muted   },
+  };
+  for (const auto& dr : decRows)
+  {
+    mContent->add.div([dr](glint_component_style& d) {
+      d.innerText            = std::string(dr.label) + "  \xe2\x80\x94  sample text with decoration applied";
+      d.style.color          = dr.color;
+      d.style.fontSize       = 14.f;
+      d.style.width          = "100%";
+      d.style.textAlign      = EAlign::Near;
+      d.style.textDecoration = dr.decoration;
+      d.style.marginBottom   = 6.f;
+    });
+  }
 }
 

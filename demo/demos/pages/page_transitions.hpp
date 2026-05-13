@@ -238,5 +238,108 @@ inline void glint_demos_window::buildTransitions()
     note.style.width     = "100%";
     note.style.textAlign = EAlign::Near;
   });
+
+  addSpacer(20.f);
+
+  // ── @keyframes animations (style.animation) ────────────────────────────────
+  addHeading("@keyframes animations  (style.animation)");
+
+  mContent->add.div([](auto& sub) {
+    sub.innerText          = "Keyframes are declared in main.css (@keyframes). "
+                             "Assigned via style.animation using the CSS animation shorthand: "
+                             "\"name duration easing iteration-count\".";
+    sub.style.color        = glint_demo_theme::muted;
+    sub.style.fontSize     = 12.f;
+    sub.style.width        = "100%";
+    sub.style.textAlign    = EAlign::Near;
+    sub.style.marginBottom = 14.f;
+  });
+
+  struct AnimEntry
+  {
+    const char* label;
+    const char* desc;
+    const char* animation;
+    glint_color  color;
+  };
+  const AnimEntry anims[] = {
+    {
+      "glint-demo-spin",
+      "2s linear infinite  —  continuous Z-axis rotation",
+      "glint-demo-spin 2s linear infinite",
+      glint_color(255, 76, 140, 196),
+    },
+    {
+      "glint-demo-pulse",
+      "1.5s ease-in-out infinite  —  opacity fade in/out",
+      "glint-demo-pulse 1.5s ease-in-out infinite",
+      glint_color(255, 126, 192, 126),
+    },
+    {
+      "glint-demo-bounce",
+      "0.9s ease-in-out infinite  —  translateY up/down",
+      "glint-demo-bounce 0.9s ease-in-out infinite",
+      glint_color(255, 208, 177, 111),
+    },
+    {
+      "glint-demo-slide-in",
+      "0.5s ease-out 1 normal forwards  —  one-shot slide + fade",
+      "glint-demo-slide-in 0.5s ease-out 1 normal forwards",
+      glint_color(255, 180, 100, 200),
+    },
+  };
+
+  for (const auto& ae : anims)
+  {
+    mContent->add.div([ae](auto& row) {
+      row.style.display       = "flex";
+      row.style.flexDirection = "row";
+      row.style.alignItems    = "center";
+      row.style.gap           = 20.f;
+      row.style.width         = "100%";
+      row.style.height        = 72.f;
+      row.style.marginBottom  = 10.f;
+
+      // Animated preview box
+      row.add.div([ae](auto& preview) {
+        preview.style.width           = 52.f;
+        preview.style.height          = 52.f;
+        preview.style.backgroundColor = ae.color;
+        preview.style.borderRadius    = 6.f;
+        preview.style.animation       = ae.animation;
+      });
+
+      // Info column
+      row.add.div([ae](auto& info) {
+        info.style.display       = "flex";
+        info.style.flexDirection = "column";
+        info.style.gap           = 4.f;
+        info.style.flexGrow      = 1.f;
+
+        info.add.div([ae](auto& name) {
+          name.innerText      = ae.label;
+          name.style.color    = glint_demo_theme::text;
+          name.style.fontSize = 13.f;
+          name.style.textAlign = EAlign::Near;
+        });
+
+        info.add.div([ae](auto& desc) {
+          desc.innerText      = ae.desc;
+          desc.style.color    = glint_demo_theme::subtle;
+          desc.style.fontSize = 11.f;
+          desc.style.textAlign = EAlign::Near;
+        });
+      });
+    });
+  }
+
+  mContent->add.div([](auto& note) {
+    note.innerText       = "Keyframe definitions live in glint_user_code/web/styles/main.css. "
+                           "The animation property format mirrors the CSS animation shorthand.";
+    note.style.color     = glint_demo_theme::subtle;
+    note.style.fontSize  = 11.f;
+    note.style.width     = "100%";
+    note.style.textAlign = EAlign::Near;
+  });
 }
 
