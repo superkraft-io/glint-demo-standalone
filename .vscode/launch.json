@@ -173,6 +173,95 @@
       "program": "${workspaceFolder}/demo/build/macos/glint_demo",
       "cwd": "${workspaceFolder}/demo/build/macos",
       "preLaunchTask": "🧱 glint_demo macOS Build Release Deep (CMake)"
+    },
+
+
+    { "name": "         " },
+
+
+    // ── Linux (WSL) bundle variants ────────────────────────────────────────
+    { "name": "🐧 Linux (WSL)" },
+
+    // Debug
+    {
+      "name": "├─ 💽 Debug (CPU)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/linux/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/linux",
+      "environment": [{ "name": "DISPLAY", "value": ":0" }],
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "pipeTransport": {
+        "pipeCwd": "${workspaceFolder}",
+        "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+        "pipeArgs": ["-d", "Ubuntu-24.04"],
+        "debuggerPath": "/usr/bin/gdb"
+      },
+      "sourceFileMap": { "/mnt/c/": "C:/" },
+      "preLaunchTask": "💽 glint_demo Linux Build Debug (CMake)"
+    },
+    {
+      "name": "└─ 💽 Debug (OpenGL GPU)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/linux-opengl/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/linux-opengl",
+      "environment": [{ "name": "DISPLAY", "value": ":0" }],
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "pipeTransport": {
+        "pipeCwd": "${workspaceFolder}",
+        "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+        "pipeArgs": ["-d", "Ubuntu-24.04"],
+        "debuggerPath": "/usr/bin/gdb"
+      },
+      "sourceFileMap": { "/mnt/c/": "C:/" },
+      "preLaunchTask": "💽 glint_demo Linux Build Debug OpenGL (CMake)"
+    },
+
+    { "name": "          " },
+
+    // Release (DebInfo)
+    {
+      "name": "└─ 💽 Release w DebInfo",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/linux/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/linux",
+      "environment": [{ "name": "DISPLAY", "value": ":0" }],
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "pipeTransport": {
+        "pipeCwd": "${workspaceFolder}",
+        "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+        "pipeArgs": ["-d", "Ubuntu-24.04"],
+        "debuggerPath": "/usr/bin/gdb"
+      },
+      "sourceFileMap": { "/mnt/c/": "C:/" },
+      "preLaunchTask": "💽 glint_demo Linux Build RelWithDebInfo (CMake)"
+    },
+
+    { "name": "           " },
+
+    // Release
+    {
+      "name": "└─ 💽 Release",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo/build/linux/glint_demo",
+      "cwd": "${workspaceFolder}/demo/build/linux",
+      "environment": [{ "name": "DISPLAY", "value": ":0" }],
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "pipeTransport": {
+        "pipeCwd": "${workspaceFolder}",
+        "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+        "pipeArgs": ["-d", "Ubuntu-24.04"],
+        "debuggerPath": "/usr/bin/gdb"
+      },
+      "sourceFileMap": { "/mnt/c/": "C:/" },
+      "preLaunchTask": "💽 glint_demo Linux Build Release (CMake)"
     }
   ]
 }

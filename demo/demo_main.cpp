@@ -13,7 +13,21 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
   return 0;
 }
 
-#else  // macOS / other POSIX
+#elif defined(__linux__)
+
+#include <unistd.h>
+
+int main()
+{
+  glint_demos_window::open();
+
+  while (glint_demos_window::isOpen())
+    ::usleep(16000);
+
+  return 0;
+}
+
+#else  // macOS
 
 // Implemented in demo_mac_main.mm (Objective-C++) to access Cocoa NSApp.
 void glint_demo_run_mac();

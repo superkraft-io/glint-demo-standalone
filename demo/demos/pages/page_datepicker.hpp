@@ -152,6 +152,10 @@ inline void glint_demos_window::buildDatePicker()
       ::ClientToScreen(hwnd, &bottomLeft);
     RECT anchor{ bottomLeft.x, bottomLeft.y - (LONG)bH,
                  bottomLeft.x + (LONG)bW,  bottomLeft.y };
+#elif defined(__linux__)
+    RECT anchor = (btn->mRoot && btn->mRoot->linuxWindow)
+      ? btn->mRoot->linuxWindow->contentRectToScreen(cl, ct, bW, bH)
+      : RECT{};
 #else
     RECT anchor = (btn->mRoot && btn->mRoot->macWindow)
       ? btn->mRoot->macWindow->contentRectToScreen(cl, ct, bW, bH)

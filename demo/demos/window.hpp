@@ -428,7 +428,6 @@ private:
       const DemoSection section = static_cast<DemoSection>(s);
       if (!sectionBelongsToMode(section, mMode))
         continue;
-
       mSidebar->items.add([s](glint_list_item& item) {
         item.innerText                   = kSectionNames[s];
         item.id                          = kSectionNames[s];
@@ -443,7 +442,6 @@ private:
         item.selectedStyle.paddingLeft     = 14.f;
       });
     }
-
     mSection = preferredSectionForMode(mMode);
     mSidebar->selectItemById(kSectionNames[static_cast<int>(mSection)]);
   }
@@ -458,9 +456,9 @@ private:
 
     switch (mSection)
     {
-    case DemoSection::Text:     buildText();     break;
+    case DemoSection::Text:       buildText();       break;
     case DemoSection::WhiteSpace: buildWhiteSpace(); break;
-    case DemoSection::Buttons:  buildButtons();  break;
+    case DemoSection::Buttons:    buildButtons();    break;
     case DemoSection::Switches:   buildSwitches();   break;
     case DemoSection::Checkboxes: buildCheckboxes(); break;
     case DemoSection::Inputs:     buildInputs();     break;
