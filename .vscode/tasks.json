@@ -314,6 +314,117 @@
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
       "problemMatcher": "$msCompile"
+    },
+
+
+    // ── Linux (WSL) configure tasks ───────────────────────────────────────────
+    {
+      "label": "cmake: configure (Linux Debug)",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --preset linux-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "cmake: configure (Linux Debug OpenGL)",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --preset linux-debug-opengl",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "cmake: configure (Linux RelWithDebInfo)",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --preset linux-relwithdebinfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "cmake: configure (Linux Release)",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --preset linux-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+
+    // ── Linux (WSL) build tasks ───────────────────────────────────────────────
+    {
+      "label": "build: Linux Debug",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --build --preset linux-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (Linux Debug)"
+    },
+    {
+      "label": "build: Linux Debug OpenGL",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --build --preset linux-debug-opengl",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (Linux Debug OpenGL)"
+    },
+    {
+      "label": "build: Linux RelWithDebInfo",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --build --preset linux-relwithdebinfo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (Linux RelWithDebInfo)"
+    },
+    {
+      "label": "build: Linux Release",
+      "type": "shell",
+      "command": "wsl -d Ubuntu-24.04 -- cmake --build --preset linux-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (Linux Release)"
+    },
+
+    // ── 💽 Linux no-bundle wrappers ───────────────────────────────────────────
+    {
+      "label": "💽 glint_demo Linux Build Debug (CMake)",
+      "dependsOn": ["build: Linux Debug"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "💽 glint_demo Linux Build Debug OpenGL (CMake)",
+      "dependsOn": ["build: Linux Debug OpenGL"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "💽 glint_demo Linux Build RelWithDebInfo (CMake)",
+      "dependsOn": ["build: Linux RelWithDebInfo"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "💽 glint_demo Linux Build Release (CMake)",
+      "dependsOn": ["build: Linux Release"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }
