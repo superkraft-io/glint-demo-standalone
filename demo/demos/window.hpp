@@ -110,6 +110,7 @@ enum class DemoSection
   Inputs,
   Lists,
   Scroll,
+  TouchDemo,
   Colors,
   Generic,
   Transforms,
@@ -147,6 +148,7 @@ static constexpr const char* kSectionNames[] = {
   "Inputs",
   "Lists",
   "Scroll",
+  "Touch Demo",
   "Colors",
   "Generic",
   "Transforms",
@@ -464,6 +466,7 @@ private:
     case DemoSection::Inputs:     buildInputs();     break;
     case DemoSection::Lists:    buildLists();    break;
     case DemoSection::Scroll:      buildScroll();      break;
+    case DemoSection::TouchDemo:   buildTouchDemo();   break;
     case DemoSection::Colors:      buildColors();      break;
     case DemoSection::Generic:     buildGeneric();     break;
     case DemoSection::Transforms:   buildTransforms();   break;
@@ -603,6 +606,7 @@ private:
   void buildInputs();
   void buildLists();
   void buildScroll();
+  void buildTouchDemo();
   void buildColors();
   void buildGeneric();
   void buildFilters();
@@ -636,6 +640,7 @@ inline glint_demos_window* glint_demos_window::sInstance = nullptr;
 #include "pages/page_inputs.hpp"
 #include "pages/page_lists.hpp"
 #include "pages/page_scroll.hpp"
+#include "pages/page_touch_demo.hpp"
 #include "pages/page_colors.hpp"
 #include "pages/page_generic.hpp"
 #include "pages/page_filters.hpp"
