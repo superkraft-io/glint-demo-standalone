@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "glint/platform/glint_apple_platform.hpp"
+#include "glint/platform/glint_platform.hpp"
 
 inline void glint_demos_window::buildDatePicker()
 {
@@ -112,7 +112,7 @@ inline void glint_demos_window::buildDatePicker()
   static glint_datepicker_window* sDpWin = nullptr;
   static int sWinY = 2025, sWinM = 3, sWinD = 14;
   // Pre-warm: create hidden so first click goes straight to reopen()
-#if !GLINT_PLATFORM_IOS
+#if !GLINT_DEMO_PLATFORM_IOS
   if (!sDpWin) sDpWin = glint_datepicker_window::open(sWinY, sWinM, sWinD, {}, nullptr, nullptr);
 #endif
 
@@ -141,7 +141,7 @@ inline void glint_demos_window::buildDatePicker()
 
   btn->onClick = [btn, fb2Ptr]()
   {
-#if GLINT_PLATFORM_IOS
+#if GLINT_DEMO_PLATFORM_IOS
     fb2Ptr->innerText = "Popup date picker is not available on iOS yet.";
     fb2Ptr->setDirty(false);
     return;
@@ -166,7 +166,7 @@ inline void glint_demos_window::buildDatePicker()
     RECT anchor = (btn->mRoot && btn->mRoot->linuxWindow)
       ? btn->mRoot->linuxWindow->contentRectToScreen(cl, ct, bW, bH)
       : RECT{};
-#elif GLINT_PLATFORM_IOS
+#elif GLINT_DEMO_PLATFORM_IOS
     RECT anchor{};
 #else
     RECT anchor = (btn->mRoot && btn->mRoot->macWindow)

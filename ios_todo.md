@@ -2,7 +2,7 @@
 [x] Inputs and textarea must reveal relevant on-screen keyboard.
 [x] Touch demo is all squished together
 [x] Font weight isnt' working for some reason
-[] Cursor page is completely useless on mobile. Add a note at the top all mobile-useless pages that says "This page is useless on mobile".
+[x] Cursor page is completely useless on mobile. Add a note at the top all mobile-useless pages that says "This page is useless on mobile".
 [] General mobile responsiveness is neededed. Transform page has every example squished horizontally. Matter of fact, go through all pages and ensure that their designs mobile-friendly and not squished togother.
 [] <select> doesn't pop any menu
 [] Need a way to view the inspector. Lets discuss

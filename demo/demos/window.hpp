@@ -9,8 +9,24 @@
  */
 
 #include "glint/glint_standalone.hpp"
-#include "glint/platform/glint_apple_platform.hpp"
-#if !GLINT_PLATFORM_IOS
+#include "glint/platform/glint_platform.hpp"
+#if defined(__APPLE__)
+#include <TargetConditionals.h>
+#endif
+
+#if defined(__APPLE__) && TARGET_OS_IPHONE
+#define GLINT_DEMO_PLATFORM_IOS 1
+#else
+#define GLINT_DEMO_PLATFORM_IOS 0
+#endif
+
+#if defined(__APPLE__) && !TARGET_OS_IPHONE
+#define GLINT_DEMO_PLATFORM_MAC 1
+#else
+#define GLINT_DEMO_PLATFORM_MAC 0
+#endif
+
+#if !GLINT_DEMO_PLATFORM_IOS
 #include "glint/glint_window.hpp"
 #endif
 #include "glint/components/glint_button.hpp"
@@ -30,7 +46,7 @@
 #include "glint_user_code/cpp/bundle/glint_bundle_library.hpp"
 #endif
 
-#if GLINT_PLATFORM_MAC
+#if GLINT_DEMO_PLATFORM_MAC
 extern "C" void glint_demo_terminate_app();
 #endif
 
@@ -138,12 +154,12 @@ static constexpr const char* kSectionNames[] = {
 };
 
 class glint_demos_window
-#if !GLINT_PLATFORM_IOS
+#if !GLINT_DEMO_PLATFORM_IOS
   : public glint_window
 #endif
 {
 public:
-#if !GLINT_PLATFORM_IOS
+#if !GLINT_DEMO_PLATFORM_IOS
   static void open()
   {
     if (sInstance && sInstance->isRunning()) return;
@@ -185,7 +201,7 @@ public:
     mViewportWidth = width;
     mViewportHeight = height;
 
-#if GLINT_PLATFORM_IOS
+#if GLINT_DEMO_PLATFORM_IOS
     const DemoLayout nextLayout = layoutForWidth(width);
     const bool safeAreaChanged = mSafeTop != safeTop || mSafeRight != safeRight
                               || mSafeBottom != safeBottom || mSafeLeft != safeLeft;
@@ -248,7 +264,7 @@ private:
 
   DemoMode mMode = DemoMode::CoreComponents;
   DemoMode mSheetMode = DemoMode::CoreComponents;
-  DemoLayout mLayout = GLINT_PLATFORM_IOS ? DemoLayout::IOSCompact : DemoLayout::Desktop;
+  DemoLayout mLayout = GLINT_DEMO_PLATFORM_IOS ? DemoLayout::IOSCompact : DemoLayout::Desktop;
   DemoSection mSection = DemoSection::Text;
   DemoSection mCoreSection = DemoSection::Text;
   DemoSection mUserSection = DemoSection::Switches;
@@ -269,7 +285,7 @@ private:
   bool mBottomSheetOpen = false;
   bool mSuppressSectionSelection = false;
 
-#if !GLINT_PLATFORM_IOS
+#if !GLINT_DEMO_PLATFORM_IOS
   static glint_demos_window* sInstance;
 #endif
 
@@ -287,7 +303,7 @@ private:
 
   DemoLayout layoutForWidth(float width) const
   {
-#if GLINT_PLATFORM_IOS
+#if GLINT_DEMO_PLATFORM_IOS
     (void) width;
     return DemoLayout::IOSCompact;
 #else
@@ -304,6 +320,26 @@ private:
   bool isIOSLayout() const
   {
     return mLayout == DemoLayout::IOSCompact;
+  }
+
+  void addMobileUselessPageNote()
+  {
+    if (!isCompactLayout() || !mContent) return;
+
+    mContent->add.div([](glint_component_style& note) {
+      note.innerText = "This page is useless on mobile";
+      note.style.width = "100%";
+      note.style.marginBottom = 14.f;
+      note.style.padding = "10 12";
+      note.style.borderRadius = 8.f;
+      note.style.borderWidth = 1.f;
+      note.style.borderColor = glint_demo_theme::warning;
+      note.style.backgroundColor = glint_demo_theme::amberBg;
+      note.style.color = glint_demo_theme::heading;
+      note.style.fontSize = 13.f;
+      note.style.lineHeight = 18.f;
+      note.style.textAlign = EAlign::Near;
+    });
   }
 
   bool usesSidebarNavigation() const
@@ -637,7 +673,7 @@ private:
     });
   }
 
-#if !GLINT_PLATFORM_IOS
+#if !GLINT_DEMO_PLATFORM_IOS
   const wchar_t* windowClassName() const override { return L"glint_demos"; }
   const wchar_t* windowTitle() const override { return L"glint Component Demos"; }
   int defaultWidth() const override { return 900; }
@@ -649,7 +685,7 @@ private:
 
   void onCreated() override
   {
-    completeDocumentSetup(GLINT_PLATFORM_MAC);
+    completeDocumentSetup(GLINT_DEMO_PLATFORM_MAC);
   }
 
   void onThreadEnded() override
@@ -657,7 +693,7 @@ private:
     detachDocument();
   }
 
-#if GLINT_PLATFORM_MAC
+#if GLINT_DEMO_PLATFORM_MAC
   void afterRun() override
   {
     glint_demo_terminate_app();
@@ -669,9 +705,9 @@ private:
   void buildUI()
 #endif
   {
-#if !GLINT_PLATFORM_IOS
+#if !GLINT_DEMO_PLATFORM_IOS
     mRoot = mOwnRoot.get();
-#if GLINT_PLATFORM_MAC
+#if GLINT_DEMO_PLATFORM_MAC
     mDispatchMain = [this](std::function<void()> fn) {
       _dispatchMain(std::move(fn));
     };
@@ -857,9 +893,9 @@ private:
 
   void scheduleRedraw()
   {
-#if !GLINT_PLATFORM_IOS && defined(_WIN32)
+#if !GLINT_DEMO_PLATFORM_IOS && defined(_WIN32)
     if (HWND h = mHWNDAtom.load()) ::InvalidateRect(h, nullptr, FALSE);
-#elif !GLINT_PLATFORM_IOS
+#elif !GLINT_DEMO_PLATFORM_IOS
     requestRedraw();
 #else
     if (mRequestRedraw) mRequestRedraw();
@@ -1007,7 +1043,7 @@ private:
   void buildCursors();
 };
 
-#if !GLINT_PLATFORM_IOS
+#if !GLINT_DEMO_PLATFORM_IOS
 inline glint_demos_window* glint_demos_window::sInstance = nullptr;
 #endif
 

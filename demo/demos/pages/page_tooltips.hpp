@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildTooltips()
 {
+  addMobileUselessPageNote();
+
   auto addHeading = [&](const char* text, float mb = 8.f) {
     mContent->add.div([=](glint_component_style& d) {
       d.innerText          = text;

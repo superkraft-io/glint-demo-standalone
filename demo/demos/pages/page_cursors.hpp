@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildCursors()
 {
+  addMobileUselessPageNote();
+
   auto addHeading = [&](const char* text) {
     mContent->add.div([=](glint_component_style& d) {
       d.innerText          = text;
