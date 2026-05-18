@@ -63,6 +63,21 @@ if(WIN32)
 
   set_property(TARGET glint_demo PROPERTY
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+  add_executable(glint_demo MACOSX_BUNDLE
+    demo_ios_main.mm
+    LaunchScreen.storyboard
+  )
+  set_source_files_properties(demo_ios_main.mm PROPERTIES
+    COMPILE_FLAGS "-x objective-c++")
+  set_source_files_properties(LaunchScreen.storyboard PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
+  set_target_properties(glint_demo PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER "io.superkraft.glintdemo"
+    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info-iOS.plist"
+    XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
+    XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "io.superkraft.glintdemo"
+    XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
 else()
   add_executable(glint_demo
     demo_main.cpp
@@ -83,12 +98,14 @@ target_include_directories(glint_demo PRIVATE
 if(WIN32)
   target_link_libraries(glint_demo PRIVATE glint::host_win32)
   glint_configure_win32_app(glint_demo)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+  target_link_libraries(glint_demo PRIVATE glint::host_ios)
 elseif(APPLE)
   target_link_libraries(glint_demo PRIVATE glint::host_mac)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   target_link_libraries(glint_demo PRIVATE glint::host_linux)
 else()
-  message(FATAL_ERROR "glint_demo currently supports Windows, macOS, and Linux only.")
+  message(FATAL_ERROR "glint_demo currently supports Windows, macOS, iOS, and Linux only.")
 endif()
 
 if(GLINT_USER_SHADER_HEADER_PATH)

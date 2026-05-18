@@ -176,6 +176,40 @@
     },
 
 
+    { "name": "          " },
+
+
+    // ── iOS Simulator ─────────────────────────────────────────────────────
+    { "name": "📱 iOS Simulator" },
+
+    {
+      "name": "├─ 💽 Debug",
+      "type": "lldb",
+      "request": "attach",
+      "targetCreateCommands": [
+        "target create \"${workspaceFolder}/demo/build/ios-sim/Debug-iphonesimulator/glint_demo.app/glint_demo\""
+      ],
+      "processCreateCommands": [
+        "platform select ios-simulator",
+        "process attach --name glint_demo --waitfor"
+      ],
+      "preLaunchTask": "📱 glint_demo iOS Launch Debug (Simulator)"
+    },
+    {
+      "name": "└─ 💽 Release",
+      "type": "lldb",
+      "request": "attach",
+      "targetCreateCommands": [
+        "target create \"${workspaceFolder}/demo/build/ios-sim/Release-iphonesimulator/glint_demo.app/glint_demo\""
+      ],
+      "processCreateCommands": [
+        "platform select ios-simulator",
+        "process attach --name glint_demo --waitfor"
+      ],
+      "preLaunchTask": "📱 glint_demo iOS Launch Release (Simulator)"
+    },
+
+
     { "name": "         " },
 
 

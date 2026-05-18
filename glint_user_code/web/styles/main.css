@@ -476,6 +476,26 @@ button:active {
   background-color: #222222;
 }
 
+/* ── Demo shell platform hooks ─────────────────────────────────────────────── */
+
+body.demo-platform-ios .demo-section-list {
+  border-width: 0px;
+  border-radius: 0px;
+}
+
+body.demo-platform-ios .demo-section-item {
+  font-family: Kanit-Medium;
+}
+
+body.demo-platform-ios .demo-ios-sheet-title {
+  font-family: Kanit-SemiBold;
+  letter-spacing: 0.2px;
+}
+
+body.demo-platform-ios .demo-ios-bottom-nav button {
+  font-size: 14px;
+}
+
 /* ── glint_progress ──────────────────────────────────────────────────────── */
 .glint_progress_fill--green {
   border-radius: 9999px;

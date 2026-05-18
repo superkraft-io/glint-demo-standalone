@@ -72,6 +72,31 @@
       }
     },
     {
+      "name": "ios-sim-base",
+      "inherits": "base",
+      "generator": "Xcode",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "binaryDir": "${sourceDir}/build/ios-sim",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_NAME": "iOS",
+        "CMAKE_OSX_SYSROOT": "iphonesimulator",
+        "CMAKE_OSX_ARCHITECTURES": "arm64",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ios-sim-debug",
+      "inherits": "ios-sim-base",
+      "binaryDir": "${sourceDir}/build/ios-sim",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
       "name": "linux",
       "inherits": "base",
       "generator": "Ninja",
@@ -155,6 +180,15 @@
     {
       "name": "macos-release",
       "configurePreset": "macos-release"
+    },
+    {
+      "name": "ios-sim-debug",
+      "configurePreset": "ios-sim-debug"
+    },
+    {
+      "name": "ios-sim-release",
+      "configurePreset": "ios-sim-debug",
+      "configuration": "Release"
     },
     {
       "name": "linux",

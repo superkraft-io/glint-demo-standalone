@@ -97,6 +97,44 @@
       "problemMatcher": "$gcc",
       "dependsOn": "cmake: configure (macOS Release)"
     },
+    {
+      "label": "cmake: configure (iOS Simulator Debug)",
+      "type": "shell",
+      "command": "cmake --preset ios-sim-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: iOS Simulator Debug",
+      "type": "shell",
+      "command": "cmake --build --preset ios-sim-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (iOS Simulator Debug)"
+    },
+    {
+      "label": "cmake: configure (iOS Simulator Release)",
+      "type": "shell",
+      "command": "cmake --preset ios-sim-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: iOS Simulator Release",
+      "type": "shell",
+      "command": "cmake --build --preset ios-sim-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (iOS Simulator Release)"
+    },
 
     // ── glint bundler ─────────────────────────────────────────────────────────
     {
@@ -150,6 +188,42 @@
       "dependsOn": ["build: macOS Release"],
       "dependsOrder": "sequence",
       "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 glint_demo iOS Build Debug (CMake)",
+      "dependsOn": ["build: iOS Simulator Debug"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 glint_demo iOS Build Release (CMake)",
+      "dependsOn": ["build: iOS Simulator Release"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 glint_demo iOS Launch Debug (Simulator)",
+      "type": "shell",
+      "command": "open -a Simulator && device=\"$(xcrun simctl list devices | awk '/(Booted)/ && /iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\" && if [[ -z \"$device\" ]]; then device=\"$(xcrun simctl list devices available | awk '/iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\"; fi && if [[ -z \"$device\" ]]; then echo 'No available iOS Simulator devices found. Install an iOS Simulator runtime in Xcode > Settings > Platforms.'; exit 1; fi && xcrun simctl boot \"$device\" >/dev/null 2>&1 || true && xcrun simctl bootstatus \"$device\" -b && (xcrun simctl terminate \"$device\" io.superkraft.glintdemo >/dev/null 2>&1 || true) && xcrun simctl install \"$device\" \"${workspaceFolder}/demo/build/ios-sim/Debug-iphonesimulator/glint_demo.app\" && xcrun simctl launch --console \"$device\" io.superkraft.glintdemo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["📱 glint_demo iOS Build Debug (CMake)"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 glint_demo iOS Launch Release (Simulator)",
+      "type": "shell",
+      "command": "open -a Simulator && device=\"$(xcrun simctl list devices | awk '/(Booted)/ && /iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\" && if [[ -z \"$device\" ]]; then device=\"$(xcrun simctl list devices available | awk '/iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\"; fi && if [[ -z \"$device\" ]]; then echo 'No available iOS Simulator devices found. Install an iOS Simulator runtime in Xcode > Settings > Platforms.'; exit 1; fi && xcrun simctl boot \"$device\" >/dev/null 2>&1 || true && xcrun simctl bootstatus \"$device\" -b && (xcrun simctl terminate \"$device\" io.superkraft.glintdemo >/dev/null 2>&1 || true) && xcrun simctl install \"$device\" \"${workspaceFolder}/demo/build/ios-sim/Release-iphonesimulator/glint_demo.app\" && xcrun simctl launch --console \"$device\" io.superkraft.glintdemo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["📱 glint_demo iOS Build Release (CMake)"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
       "problemMatcher": []
     },
 

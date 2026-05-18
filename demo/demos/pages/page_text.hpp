@@ -58,23 +58,23 @@ inline void glint_demos_window::buildText()
   // ── Font weight ─────────────────────────────────────────────────────────
   addHeading("Font weight");
 
-  static const struct { const char* family; int weight; } kWeightFaces[] = {
-    { "Kanit-Thin",       100 },
-    { "Kanit-ExtraLight", 200 },
-    { "Kanit-Light",      300 },
-    { "Kanit-Regular",    400 },
-    { "Kanit-Medium",     500 },
-    { "Kanit-SemiBold",   600 },
-    { "Kanit-Bold",       700 },
-    { "Kanit-ExtraBold",  800 },
-    { "Kanit-Black",      900 },
+  static const struct { int weight; } kWeightFaces[] = {
+    { 100 },
+    { 200 },
+    { 300 },
+    { 400 },
+    { 500 },
+    { 600 },
+    { 700 },
+    { 800 },
+    { 900 },
   };
   for (const auto& wf : kWeightFaces)
   {
     mContent->add.div([wf](glint_component_style& d) {
       d.innerText            = std::string("Kanit weight ") + std::to_string(wf.weight);
       d.style.color          = glint_demo_theme::text;
-      d.style.fontFamily     = wf.family;
+      d.style.fontFamily     = "Kanit";
       d.style.fontSize       = 14.f;
       d.style.fontWeight     = wf.weight;
       d.style.width          = "100%";

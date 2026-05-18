@@ -44,6 +44,8 @@ inline float glint_touch_demo_clamp(float value, float lo, float hi)
 
 inline void glint_demos_window::buildTouchDemo()
 {
+  const bool compactLayout = isCompactLayout();
+
   struct TouchDemoState
   {
     int wheelCount = 0;
@@ -80,6 +82,7 @@ inline void glint_demos_window::buildTouchDemo()
                                       const char* accent) {
     parent->add.div([metricValues, idx, title, initialValue, accent](glint_component_style& card) {
       card.style.flexGrow = 1.f;
+      card.style.width = "100%";
       card.style.height = 86.f;
       card.style.backgroundColor = glint_demo_theme::surfaceAlt;
       card.style.borderColor = glint_demo_theme::border;
@@ -108,11 +111,11 @@ inline void glint_demos_window::buildTouchDemo()
     });
   };
 
-  auto* headerRow = mContent->add.div([](glint_component_style& row) {
+  auto* headerRow = mContent->add.div([compactLayout](glint_component_style& row) {
     row.style.display = "flex";
-    row.style.flexDirection = "row";
-    row.style.alignItems = "center";
-    row.style.gap = 16.f;
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems = compactLayout ? "stretch" : "center";
+    row.style.gap = compactLayout ? 10.f : 16.f;
     row.style.width = "100%";
     row.style.marginBottom = 16.f;
   });
@@ -140,9 +143,12 @@ inline void glint_demos_window::buildTouchDemo()
     });
   });
 
-  headerRow->add.fromClass<glint_button>([](glint_button& btn) {
+  headerRow->add.fromClass<glint_button>([compactLayout](glint_button& btn) {
     btn.innerText = "Reset";
-    btn.style.width = 92.f;
+    if (compactLayout)
+      btn.style.width = "100%";
+    else
+      btn.style.width = 92.f;
     btn.style.height = 34.f;
     btn.style.backgroundColor = glint_demo_theme::accent;
     btn.style.borderColor = glint_demo_theme::accent;
@@ -162,9 +168,9 @@ inline void glint_demos_window::buildTouchDemo()
     btn.pressed.color = glint_demo_theme::heading;
   }, &resetBtn);
 
-  auto* mainRow = mContent->add.div([](glint_component_style& row) {
+  auto* mainRow = mContent->add.div([compactLayout](glint_component_style& row) {
     row.style.display = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.alignItems = "stretch";
     row.style.gap = 16.f;
     row.style.width = "100%";
@@ -178,25 +184,28 @@ inline void glint_demos_window::buildTouchDemo()
     col.style.gap = 12.f;
   });
 
-  auto* logCol = mainRow->add.div([](glint_component_style& col) {
-    col.style.width = 290.f;
+  auto* logCol = mainRow->add.div([compactLayout](glint_component_style& col) {
+    if (compactLayout)
+      col.style.width = "100%";
+    else
+      col.style.width = 290.f;
     col.style.display = "flex";
     col.style.flexDirection = "column";
     col.style.gap = 8.f;
   });
 
-  auto* metricRow1 = stageCol->add.div([](glint_component_style& row) {
+  auto* metricRow1 = stageCol->add.div([compactLayout](glint_component_style& row) {
     row.style.display = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap = 12.f;
     row.style.width = "100%";
   });
   addMetricCard(metricRow1, 0, "Wheel", "dx 0.0   dy 0.0   phase none / none", glint_demo_theme::accent);
   addMetricCard(metricRow1, 1, "Gesture", "none / none", glint_demo_theme::warning);
 
-  auto* metricRow2 = stageCol->add.div([](glint_component_style& row) {
+  auto* metricRow2 = stageCol->add.div([compactLayout](glint_component_style& row) {
     row.style.display = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap = 12.f;
     row.style.width = "100%";
   });
@@ -211,9 +220,9 @@ inline void glint_demos_window::buildTouchDemo()
     sectionLabel.style.textAlign = EAlign::Near;
   });
 
-  glint_element* stagePtr = stageCol->add.div([](glint_component_style& stage) {
+  glint_element* stagePtr = stageCol->add.div([compactLayout](glint_component_style& stage) {
     stage.style.width = "100%";
-    stage.style.height = 336.f;
+    stage.style.height = compactLayout ? 288.f : 336.f;
     stage.style.backgroundColor = "#142235";
     stage.style.borderColor = "#29496d";
     stage.style.borderWidth = 1.f;
@@ -243,19 +252,19 @@ inline void glint_demos_window::buildTouchDemo()
     wrap.style.justifyContent = "center";
   });
 
-  tileWrap->add.div([](glint_component_style& tile) {
+  tileWrap->add.div([compactLayout](glint_component_style& tile) {
     tile.innerText = "Gesture target";
-    tile.style.width = 176.f;
-    tile.style.height = 176.f;
+    tile.style.width = compactLayout ? 140.f : 176.f;
+    tile.style.height = compactLayout ? 140.f : 176.f;
     tile.style.backgroundColor = "#d8ebff";
     tile.style.color = "#16314f";
     tile.style.borderColor = "#ffffff";
     tile.style.borderWidth = 1.f;
-    tile.style.borderRadius = 28.f;
+    tile.style.borderRadius = compactLayout ? 22.f : 28.f;
     tile.style.display = "flex";
     tile.style.alignItems = "center";
     tile.style.justifyContent = "center";
-    tile.style.fontSize = 16.f;
+    tile.style.fontSize = compactLayout ? 14.f : 16.f;
     tile.style.transform = "translate(0px, 0px) rotate(0deg) scale(1.0)";
   }, &tilePtr);
 

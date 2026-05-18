@@ -56,6 +56,9 @@ If you need a custom configuration, you can build Skia from source instead. This
 # macOS — Metal (recommended)
 node third_party/glint/scripts/init_skia.mjs --source --backend metal --config Both
 
+# iOS Simulator on macOS — Metal
+node third_party/glint/scripts/init_skia.mjs --source --backend metal --target ios-simulator --config Both
+
 # Windows — Direct3D 12 (recommended)
 node third_party/glint/scripts/init_skia.mjs --source --backend d3d12 --config Both
 
@@ -67,7 +70,7 @@ node third_party/glint/scripts/init_skia.mjs --source --backend opengl --config 
 
 | Backend | Platform | Description |
 |---------|----------|-------------|
-| `metal` | macOS | Metal (GPU) — recommended for macOS |
+| `metal` | macOS, iOS | Metal (GPU) — recommended for Apple platforms |
 | `d3d12` | Windows | Direct3D 12 (GPU) — recommended for Windows |
 | `opengl` | Windows, Linux | OpenGL (GPU) |
 | `dawn` | macOS, Windows | Dawn / WebGPU (GPU) |
@@ -91,6 +94,13 @@ cmake --preset windows-vs2022
 ```sh
 cd demo
 cmake --preset macos
+```
+
+**iOS Simulator:**
+
+```sh
+cd demo
+cmake --preset ios-sim-debug
 ```
 
 **Linux (CPU renderer):**
@@ -119,6 +129,12 @@ cmake --build build/windows-vs2022 --config Debug
 
 ```sh
 cmake --build --preset macos
+```
+
+**iOS Simulator:**
+
+```sh
+cmake --build --preset ios-sim-debug
 ```
 
 **Linux:**

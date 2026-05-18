@@ -113,12 +113,12 @@ inline void glint_demos_window::buildFonts()
   // ── Side-by-side weight comparison (all Kanit at 28 px) ──────────────────
   addHeading("Kanit \xe2\x80\x94 weight comparison at 28 px");
 
-  static const struct { const char* id; const char* weight; } kWeights[] = {
-    { "Kanit-Thin",       "Thin"        },
-    { "Kanit-ThinItalic", "Thin Italic" },
-    { "Kanit-Regular",    "Regular"     },
-    { "Kanit-Medium",     "Medium"      },
-    { "Kanit-SemiBold",   "Semi Bold"   },
+  static const struct { int weight; const char* label; const char* style; } kWeights[] = {
+    { 100, "Thin",        "normal" },
+    { 100, "Thin Italic", "italic" },
+    { 400, "Regular",     "normal" },
+    { 500, "Medium",      "normal" },
+    { 600, "Semi Bold",   "normal" },
   };
 
   for (const auto& w : kWeights)
@@ -132,7 +132,7 @@ inline void glint_demos_window::buildFonts()
       row.style.marginBottom  = 10.f;
 
       row.add.div([=](glint_component_style& tag) {
-        tag.innerText       = w.weight;
+        tag.innerText       = w.label;
         tag.style.fontSize  = 10.f;
         tag.style.color     = glint_demo_theme::subtle;
         tag.style.width     = 72.f;
@@ -141,8 +141,10 @@ inline void glint_demos_window::buildFonts()
 
       row.add.div([=](glint_component_style& lbl) {
         lbl.innerText       = "VoiceCleaner Ultra \xe2\x80\x94 glint";
-        lbl.style.fontFamily = w.id;
+        lbl.style.fontFamily = "Kanit";
         lbl.style.fontSize  = 28.f;
+        lbl.style.fontWeight = static_cast<float>(w.weight);
+        lbl.style.fontStyle = w.style;
         lbl.style.color     = glint_demo_theme::text;
         lbl.style.textAlign = EAlign::Near;
       });

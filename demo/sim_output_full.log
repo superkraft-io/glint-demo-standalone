@@ -1,0 +1,10 @@
+glint skFont resolve: family=Kanit weight=100 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=200 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=300 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=400 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=500 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=600 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=700 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=800 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+glint skFont resolve: family=Kanit weight=900 style= -> ptr=0x600002926ed0 resolvedFamily=Helvetica resolvedWeight=400 resolvedSlant=0
+io.superkraft.glintdemo: 45086
