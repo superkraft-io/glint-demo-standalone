@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildTransitions()
 {
+  const bool compactLayout = isCompactLayout();
+
   addHeading("CSS transition  (style.transition)");
 
   mContent->add.div([](auto& sub) {
@@ -34,20 +36,22 @@ inline void glint_demos_window::buildTransitions()
     // safe because ComponentAdd::div is fully synchronous; all ops complete before
     // mContent->add.div returns.
     glint_element* barPtr = nullptr;
-    mContent->add.div([e, &barPtr](auto& row) {
+    mContent->add.div([e, &barPtr, compactLayout](auto& row) {
       row.style.display       = "flex";
-      row.style.flexDirection = "row";
-      row.style.alignItems    = "center";
+      row.style.flexDirection = compactLayout ? "column" : "row";
+      row.style.alignItems    = compactLayout ? "stretch" : "center";
       row.style.gap           = 10.f;
       row.style.width         = "100%";
-      row.style.height        = 28.f;
+      if (compactLayout) row.style.height = "auto";
+      else row.style.height = 28.f;
       row.style.marginBottom  = 6.f;
 
-      row.add.div([e](auto& lbl) {
+      row.add.div([e, compactLayout](auto& lbl) {
         lbl.innerText       = e.label;
         lbl.style.color     = glint_demo_theme::text;
         lbl.style.fontSize  = 12.f;
-        lbl.style.width     = 100.f;
+        if (compactLayout) lbl.style.width = "100%";
+        else lbl.style.width = 100.f;
         lbl.style.textAlign = EAlign::Near;
       });
 
@@ -74,9 +78,10 @@ inline void glint_demos_window::buildTransitions()
 
   // Trigger button — set onClick after fromClass returns (trigBtnPtr is then valid).
   glint_button* trigBtnPtr = nullptr;
-  mContent->add.fromClass<glint_button>([](auto& btn) {
+  mContent->add.fromClass<glint_button>([compactLayout](auto& btn) {
     btn.innerText             = ">  Animate  (10% \xe2\x86\x92 100%)";
-    btn.style.width           = 220.f;
+    if (compactLayout) btn.style.width = "100%";
+    else btn.style.width = 220.f;
     btn.style.height          = 34.f;
     btn.style.backgroundColor = glint_demo_theme::surface;
     btn.style.borderColor     = glint_demo_theme::border;
@@ -157,6 +162,7 @@ inline void glint_demos_window::buildTransitions()
   };
 
   const int nCards = static_cast<int>(sizeof(cards) / sizeof(cards[0]));
+  const int cardsPerRow = compactLayout ? 1 : 2;
   int idx = 0;
   while (idx < nCards)
   {
@@ -167,15 +173,15 @@ inline void glint_demos_window::buildTransitions()
     std::array<const CardDef*, 2>  rowCardDefs = {};
     int rowCount = 0;
 
-    mContent->add.div([&](auto& row) {
+    mContent->add.div([&, compactLayout, cardsPerRow](auto& row) {
       row.style.display       = "flex";
-      row.style.flexDirection = "row";
+      row.style.flexDirection = compactLayout ? "column" : "row";
       row.style.alignItems    = "stretch";
       row.style.gap           = 12.f;
       row.style.width         = "100%";
       row.style.marginBottom  = 10.f;
 
-      for (int col = 0; col < 2 && idx < nCards; ++col, ++idx)
+      for (int col = 0; col < cardsPerRow && idx < nCards; ++col, ++idx)
       {
         const CardDef& cd = cards[idx];
         rowCardDefs[col] = &cd;
@@ -291,13 +297,14 @@ inline void glint_demos_window::buildTransitions()
 
   for (const auto& ae : anims)
   {
-    mContent->add.div([ae](auto& row) {
+    mContent->add.div([ae, compactLayout](auto& row) {
       row.style.display       = "flex";
-      row.style.flexDirection = "row";
-      row.style.alignItems    = "center";
+      row.style.flexDirection = compactLayout ? "column" : "row";
+      row.style.alignItems    = compactLayout ? "stretch" : "center";
       row.style.gap           = 20.f;
       row.style.width         = "100%";
-      row.style.height        = 72.f;
+      if (compactLayout) row.style.height = "auto";
+      else row.style.height = 72.f;
       row.style.marginBottom  = 10.f;
 
       // Animated preview box

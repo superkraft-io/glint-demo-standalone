@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildMasks()
 {
+  const bool compactLayout = isCompactLayout();
+
   // -- Intro ----------------------------------------------------------------
   addHeading("CSS mask  (style.mask)");
 
@@ -19,11 +21,12 @@ inline void glint_demos_window::buildMasks()
   });
 
   // -- Helper: labelled mask card --------------------------------------------
-  auto makeCard = [](auto& row, const char* label, glint_color bg, const char* maskStr,
-                     float w = 150.f, float h = 100.f)
+  auto makeCard = [compactLayout](auto& row, const char* label, glint_color bg, const char* maskStr,
+                                  float w = 150.f, float h = 100.f)
   {
     row.add.div([=](auto& wrap) {
-      wrap.style.width = w;
+      if (compactLayout) wrap.style.width = "100%";
+      else wrap.style.width = w;
 
       wrap.add.div([=](auto& lbl) {
         lbl.innerText          = label;
@@ -53,9 +56,9 @@ inline void glint_demos_window::buildMasks()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -77,9 +80,9 @@ inline void glint_demos_window::buildMasks()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -100,9 +103,9 @@ inline void glint_demos_window::buildMasks()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -124,9 +127,9 @@ inline void glint_demos_window::buildMasks()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -147,10 +150,11 @@ inline void glint_demos_window::buildMasks()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  auto makeTextCard = [](auto& row, const char* label, const char* text, glint_color color, const char* maskStr)
+  auto makeTextCard = [compactLayout](auto& row, const char* label, const char* text, glint_color color, const char* maskStr)
   {
     row.add.div([=](auto& wrap) {
-      wrap.style.width = 160.f;
+      if (compactLayout) wrap.style.width = "100%";
+      else wrap.style.width = 160.f;
 
       wrap.add.div([=](auto& lbl) {
         lbl.innerText          = label;
@@ -175,9 +179,9 @@ inline void glint_demos_window::buildMasks()
     });
   };
 
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";

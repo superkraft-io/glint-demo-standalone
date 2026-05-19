@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildFilters()
 {
+  const bool compactLayout = isCompactLayout();
+
   addHeading("CSS filter  (style.filter)");
 
   mContent->add.div([](auto& sub) {
@@ -37,7 +39,7 @@ inline void glint_demos_window::buildFilters()
     { "brightness(1.3) contrast(1.2) saturate(1.8)", "Vivid boost"     },
   };
 
-  constexpr int kCols = 3;
+  const int     kCols = compactLayout ? 1 : 3;
   const int     n     = static_cast<int>(sizeof(entries) / sizeof(entries[0]));
   int           col   = 0;
 
@@ -52,9 +54,9 @@ inline void glint_demos_window::buildFilters()
       const int rowStart = i;
       const int rowEnd   = std::min(i + kCols, n);
 
-      mContent->add.div([&entries, rowStart, rowEnd](auto& row) {
+      mContent->add.div([&entries, rowStart, rowEnd, compactLayout](auto& row) {
         row.style.display       = "flex";
-        row.style.flexDirection = "row";
+        row.style.flexDirection = compactLayout ? "column" : "row";
         row.style.alignItems    = "stretch";
         row.style.gap           = 10.f;
         row.style.width         = "100%";
@@ -62,9 +64,10 @@ inline void glint_demos_window::buildFilters()
 
         for (int j = rowStart; j < rowEnd; ++j)
         {
-          row.add.div([j, &entries](auto& card) {
-            card.style.flexGrow        = 1.f;
-            card.style.width           = 0.f;
+          row.add.div([j, &entries, compactLayout](auto& card) {
+            card.style.flexGrow        = compactLayout ? 0.f : 1.f;
+            if (compactLayout) card.style.width = "100%";
+            else card.style.width = 0.f;
             card.style.height          = 138.f;
             card.style.display         = "flex";
             card.style.flexDirection   = "column";
@@ -137,27 +140,30 @@ inline void glint_demos_window::buildFilters()
 
   for (const auto& te : textEntries)
   {
-    mContent->add.div([te](auto& row2) {
+    mContent->add.div([te, compactLayout](auto& row2) {
       row2.style.display       = "flex";
-      row2.style.flexDirection = "row";
-      row2.style.alignItems    = "center";
+      row2.style.flexDirection = compactLayout ? "column" : "row";
+      row2.style.alignItems    = compactLayout ? "stretch" : "center";
       row2.style.gap           = 14.f;
       row2.style.width         = "100%";
-      row2.style.height        = 44.f;
+      if (compactLayout) row2.style.height = "auto";
+      else row2.style.height = 44.f;
       row2.style.marginBottom  = 8.f;
 
       // Code label (left, no filter)
-      row2.add.div([te](auto& codeLbl) {
+      row2.add.div([te, compactLayout](auto& codeLbl) {
         codeLbl.innerText       = te.filter;
         codeLbl.style.color     = glint_demo_theme::muted;
         codeLbl.style.fontSize  = 10.f;
-        codeLbl.style.width     = 240.f;
+        if (compactLayout) codeLbl.style.width = "100%";
+        else codeLbl.style.width = 240.f;
         codeLbl.style.textAlign = EAlign::Near;
       });
 
       // Filtered pill (right)
-      row2.add.div([te](auto& pill) {
-        pill.style.flexGrow        = 1.f;
+      row2.add.div([te, compactLayout](auto& pill) {
+        pill.style.flexGrow        = compactLayout ? 0.f : 1.f;
+        if (compactLayout) pill.style.width = "100%";
         pill.style.height          = 40.f;
         pill.style.backgroundColor = glint_demo_theme::surface;
         pill.style.borderRadius    = 6.f;

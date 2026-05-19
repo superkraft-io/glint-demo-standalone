@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildColors()
 {
+  const bool compactLayout = isCompactLayout();
+
   // ── glint_colorpicker ──────────────────────────────────────────────────
   addHeading("Color Picker  (glint_colorpicker)");
 
@@ -22,25 +24,27 @@ inline void glint_demos_window::buildColors()
   for (auto& pd : pickerDemos)
   {
     glint_colorpicker* pickerPtr = nullptr;
-    mContent->add.div([pd, &pickerPtr](auto& row) {
+    mContent->add.div([pd, &pickerPtr, compactLayout](auto& row) {
       row.style.display       = "flex";
-      row.style.flexDirection = "row";
-      row.style.alignItems    = "flex-start";
+      row.style.flexDirection = compactLayout ? "column" : "row";
+      row.style.alignItems    = compactLayout ? "stretch" : "flex-start";
       row.style.gap           = 12.f;
       row.style.width         = "100%";
       row.style.marginBottom  = 12.f;
 
-      row.add.div([pd](auto& lbl) {
+      row.add.div([pd, compactLayout](auto& lbl) {
         lbl.innerText       = pd.label;
         lbl.style.color     = glint_demo_theme::text;
         lbl.style.fontSize  = 12.f;
-        lbl.style.width     = 140.f;
+        if (compactLayout) lbl.style.width = "100%";
+        else lbl.style.width = 140.f;
         lbl.style.textAlign = EAlign::Near;
       });
 
-      row.add.template fromClass<glint_colorpicker>([pd](auto& p) {
+      row.add.template fromClass<glint_colorpicker>([pd, compactLayout](auto& p) {
         p.value       = pd.c;
-        p.style.width = 220.f;
+        if (compactLayout) p.style.width = "100%";
+        else p.style.width = 220.f;
       }, &pickerPtr);
     });
     pickerPtr->onChange = [this](glint_color) { scheduleRedraw(); };

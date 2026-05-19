@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildImages()
 {
+  const bool compactLayout = isCompactLayout();
+
   static constexpr const char* kHeroImage    = "url(/img/demo.png)";
   static constexpr const char* kDemoSvgImage = "url(/img/demo.svg)";
 
@@ -24,14 +26,15 @@ inline void glint_demos_window::buildImages()
 
   // -- Helper: labelled img card -------------------------------------------
   // Adds label + img-box into 'row' (a glint_component_adder context).
-  auto makeImgCard = [](auto& row, const char* label, const char* bgImg,
-                        const char* bgSize     = "cover",
-                        const char* bgPosition = "center",
-                        const char* bgRepeat   = "no-repeat",
-                        float w = 150.f, float h = 110.f)
+  auto makeImgCard = [compactLayout](auto& row, const char* label, const char* bgImg,
+                                     const char* bgSize     = "cover",
+                                     const char* bgPosition = "center",
+                                     const char* bgRepeat   = "no-repeat",
+                                     float w = 150.f, float h = 110.f)
   {
     row.add.div([=](auto& wrap) {
-      wrap.style.width = w;
+      if (compactLayout) wrap.style.width = "100%";
+      else wrap.style.width = w;
 
       wrap.add.div([=](auto& lbl) {
         lbl.innerText          = label;
@@ -64,9 +67,9 @@ inline void glint_demos_window::buildImages()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display    = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap        = 14.f;
     row.style.width      = "100%";
     row.style.alignItems = "flex-start";
@@ -85,9 +88,9 @@ inline void glint_demos_window::buildImages()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -109,9 +112,9 @@ inline void glint_demos_window::buildImages()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -134,9 +137,9 @@ inline void glint_demos_window::buildImages()
     hdr.style.width     = "100%";
     hdr.style.marginBottom = 8.f;
   });
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -158,9 +161,10 @@ inline void glint_demos_window::buildImages()
     hdr.style.marginBottom = 8.f;
   });
 
-  auto addShorthandCard = [](auto& row, const char* label, const char* img, const char* position, const char* size, const char* repeat) {
+  auto addShorthandCard = [compactLayout](auto& row, const char* label, const char* img, const char* position, const char* size, const char* repeat) {
     row.add.div([=](auto& wrap) {
-      wrap.style.width = 155.f;
+      if (compactLayout) wrap.style.width = "100%";
+      else wrap.style.width = 155.f;
 
       wrap.add.div([=](auto& lbl) {
         lbl.innerText          = label;
@@ -185,9 +189,9 @@ inline void glint_demos_window::buildImages()
     });
   };
 
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -210,17 +214,18 @@ inline void glint_demos_window::buildImages()
   });
 
   static const float kOpacities[] = { 1.0f, 0.75f, 0.5f, 0.25f, 0.1f };
-  mContent->add.div([&](glint_component_style& row) {
+  mContent->add.div([&, compactLayout](glint_component_style& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
     row.style.marginBottom  = 12.f;
     for (float op : kOpacities)
     {
-      row.add.div([op](glint_component_style& wrap) {
-        wrap.style.width = 120.f;
+      row.add.div([op, compactLayout](glint_component_style& wrap) {
+        if (compactLayout) wrap.style.width = "100%";
+        else wrap.style.width = 120.f;
 
         char buf[32];
         snprintf(buf, sizeof(buf), "opacity: %.0f%%", op * 100.f);
@@ -262,9 +267,10 @@ inline void glint_demos_window::buildImages()
     hdr.style.marginBottom = 8.f;
   });
 
-  auto addShapeCard = [](glint_component_style& row, const char* label, float w, float h, float radius) {
+  auto addShapeCard = [compactLayout](glint_component_style& row, const char* label, float w, float h, float radius) {
     row.add.div([=](glint_component_style& wrap) {
-      wrap.style.width = w;
+      if (compactLayout) wrap.style.width = "100%";
+      else wrap.style.width = w;
 
       wrap.add.div([=](glint_component_style& lbl) {
         lbl.innerText          = label;
@@ -289,9 +295,9 @@ inline void glint_demos_window::buildImages()
     });
   };
 
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -313,9 +319,10 @@ inline void glint_demos_window::buildImages()
     hdr.style.marginBottom = 8.f;
   });
 
-  auto addSvgCard = [](auto& row, const char* label, const char* src, const char* size) {
+  auto addSvgCard = [compactLayout](auto& row, const char* label, const char* src, const char* size) {
     row.add.div([=](auto& wrap) {
-      wrap.style.width = 130.f;
+      if (compactLayout) wrap.style.width = "100%";
+      else wrap.style.width = 130.f;
 
       wrap.add.div([=](auto& lbl) {
         lbl.innerText          = label;
@@ -340,9 +347,9 @@ inline void glint_demos_window::buildImages()
     });
   };
 
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";
@@ -366,9 +373,10 @@ inline void glint_demos_window::buildImages()
     hdr.style.marginBottom = 8.f;
   });
 
-  auto addOverlayCard = [](auto& row, const char* label, const char* gradient) {
+  auto addOverlayCard = [compactLayout](auto& row, const char* label, const char* gradient) {
     row.add.div([=](auto& wrap) {
-      wrap.style.width = 150.f;
+      if (compactLayout) wrap.style.width = "100%";
+      else wrap.style.width = 150.f;
 
       wrap.add.div([=](auto& lbl) {
         lbl.innerText          = label;
@@ -415,9 +423,9 @@ inline void glint_demos_window::buildImages()
     });
   };
 
-  mContent->add.div([&](auto& row) {
+  mContent->add.div([&, compactLayout](auto& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
     row.style.gap           = 14.f;
     row.style.width         = "100%";
     row.style.alignItems    = "flex-start";

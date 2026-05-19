@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildWhiteSpace()
 {
+  const bool compactLayout = isCompactLayout();
+
   mContent->add.div([](glint_component_style& _c) {
     _c.innerText = "white-space";
     _c.style.color = glint_demo_theme::heading;
@@ -56,8 +58,9 @@ inline void glint_demos_window::buildWhiteSpace()
         title.style.textAlign = EAlign::Near;
       });
 
-      card.add.div([&](glint_component_style& viewport) {
-        viewport.style.width = 340.f;
+      card.add.div([&, compactLayout](glint_component_style& viewport) {
+        if (compactLayout) viewport.style.width = "100%";
+        else viewport.style.width = 340.f;
         viewport.style.padding = "8";
         viewport.style.backgroundColor = glint_demo_theme::panelBg;
         viewport.style.borderColor = glint_demo_theme::border;

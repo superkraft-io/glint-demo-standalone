@@ -2,6 +2,11 @@
 
 inline void glint_demos_window::buildButtons()
 {
+  const bool compactLayout = isCompactLayout();
+  const float compactButtonRowHeight = (34.f * 4.f) + (10.f * 3.f);
+  const float compactInteractiveRowHeight = 34.f + 12.f + 20.f;
+  const float compactClassRowHeight = (30.f * 4.f) + (8.f * 3.f);
+
   auto addHeading = [&](const char* text, float marginBottom = 10.f) {
     mContent->add.div([=](glint_component_style& heading) {
       heading.innerText = text;
@@ -20,20 +25,21 @@ inline void glint_demos_window::buildButtons()
     });
   };
 
-  auto addButton = [](glint_element* parent,
-                      const char* label,
-                      float width,
-                      float height,
-                      const char* bg,
-                      const char* hoverBg,
-                      const char* text,
-                      const char* hoverText,
-                      const char* border,
-                      float radius,
-                      float fontSize) {
+  auto addButton = [compactLayout](glint_element* parent,
+                                   const char* label,
+                                   float width,
+                                   float height,
+                                   const char* bg,
+                                   const char* hoverBg,
+                                   const char* text,
+                                   const char* hoverText,
+                                   const char* border,
+                                   float radius,
+                                   float fontSize) {
     return parent->add.button([=](glint_button& btn) {
       btn.innerText = label;
-      btn.style.width = width;
+      if (compactLayout) btn.style.width = "100%";
+      else btn.style.width = width;
       btn.style.height = height;
       btn.style.backgroundColor = bg;
       btn.style.color = text;
@@ -58,12 +64,13 @@ inline void glint_demos_window::buildButtons()
 
   addHeading("Variants");
 
-  auto* row1 = mContent->add.div([](glint_component_style& row) {
+  auto* row1 = mContent->add.div([compactLayout, compactButtonRowHeight](glint_component_style& row) {
     row.style.display = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems = compactLayout ? "stretch" : "center";
     row.style.gap = 10.f;
     row.style.width = "100%";
-    row.style.height = 36.f;
+    row.style.height = compactLayout ? compactButtonRowHeight : 36.f;
     row.style.marginBottom = 10.f;
   });
 
@@ -75,12 +82,13 @@ inline void glint_demos_window::buildButtons()
   addSpacer(4.f);
   addHeading("Border radius");
 
-  auto* row2 = mContent->add.div([](glint_component_style& row) {
+  auto* row2 = mContent->add.div([compactLayout, compactButtonRowHeight](glint_component_style& row) {
     row.style.display = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems = compactLayout ? "stretch" : "center";
     row.style.gap = 10.f;
     row.style.width = "100%";
-    row.style.height = 36.f;
+    row.style.height = compactLayout ? compactButtonRowHeight : 36.f;
     row.style.marginBottom = 16.f;
   });
 
@@ -96,23 +104,24 @@ inline void glint_demos_window::buildButtons()
 
   addHeading("Interactive");
 
-  auto* row3 = mContent->add.div([](glint_component_style& row) {
+  auto* row3 = mContent->add.div([compactLayout, compactInteractiveRowHeight](glint_component_style& row) {
     row.style.display = "flex";
-    row.style.flexDirection = "row";
-    row.style.alignItems = "center";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems = compactLayout ? "stretch" : "center";
     row.style.gap = 12.f;
     row.style.width = "100%";
-    row.style.height = 40.f;
+    row.style.height = compactLayout ? compactInteractiveRowHeight : 40.f;
   });
 
   auto* btn = addButton(row3, "Click me!", 110.f, 34.f, glint_demo_theme::successBg, "#2d542d",
                         glint_demo_theme::success, glint_demo_theme::success, "#00000000", 6.f, 13.f);
 
-  auto* counter = row3->add.div([](glint_component_style& counter) {
+  auto* counter = row3->add.div([compactLayout](glint_component_style& counter) {
     counter.innerText = "Clicks: 0";
     counter.style.color = glint_demo_theme::success;
     counter.style.fontSize = 14.f;
-    counter.style.width = 120.f;
+    if (compactLayout) counter.style.width = "100%";
+    else counter.style.width = 120.f;
     counter.style.textAlign = EAlign::Near;
   });
 
@@ -176,11 +185,13 @@ inline void glint_demos_window::buildButtons()
     clsStatusPtr->setDirty(false);
   };
 
-  auto* clsBtnRow = mContent->add.div([](glint_component_style& row) {
+  auto* clsBtnRow = mContent->add.div([compactLayout, compactClassRowHeight](glint_component_style& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems    = compactLayout ? "stretch" : "center";
     row.style.gap           = 8.f;
     row.style.width         = "100%";
+    if (compactLayout) row.style.height = compactClassRowHeight;
   });
 
   struct ClsBtn { const char* label; std::function<void()> action; };
@@ -198,9 +209,10 @@ inline void glint_demos_window::buildButtons()
 
   for (const auto& cb : clsBtns)
   {
-    clsBtnRow->add.template fromClass<glint_button>([cb](glint_button& btn) {
+    clsBtnRow->add.template fromClass<glint_button>([cb, compactLayout](glint_button& btn) {
       btn.innerText             = cb.label;
       btn.style.height          = 30.f;
+      if (compactLayout) btn.style.width = "100%";
       btn.style.padding         = "0 10";
       btn.style.borderRadius    = 4.f;
       btn.style.fontSize        = 12.f;

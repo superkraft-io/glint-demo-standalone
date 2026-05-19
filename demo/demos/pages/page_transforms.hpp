@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildTransforms()
 {
+  const bool compactLayout = isCompactLayout();
+
   addHeading("CSS transform  (style.transform)");
 
   mContent->add.div([](auto& sub) {
@@ -15,31 +17,32 @@ inline void glint_demos_window::buildTransforms()
 
   // Helper: adds one demo row — label left, preview box right.
   // 'transform' is applied to a child box; the wrapper shows the layout slot.
-  auto addDemo = [this](const char* caption, const char* xformStr)
+  auto addDemo = [this, compactLayout](const char* caption, const char* xformStr)
   {
-    mContent->add.div([caption, xformStr](auto& row) {
+    mContent->add.div([caption, xformStr, compactLayout](auto& row) {
       row.style.display       = "flex";
-      row.style.flexDirection = "row";
-      row.style.alignItems    = "center";
+      row.style.flexDirection = compactLayout ? "column" : "row";
+      row.style.alignItems    = compactLayout ? "stretch" : "center";
       row.style.gap           = 16.f;
       row.style.width         = "100%";
-      row.style.height        = 120.f;
+      row.style.height        = compactLayout ? "auto" : "120";
       row.style.marginBottom  = 12.f;
 
       // Description
-      row.add.div([caption](auto& lbl) {
+      row.add.div([caption, compactLayout](auto& lbl) {
         lbl.innerText       = caption;
         lbl.style.color     = glint_demo_theme::text;
         lbl.style.fontSize  = 12.f;
-        lbl.style.width     = 200.f;
+        lbl.style.width     = compactLayout ? "100%" : "200";
         lbl.style.textAlign = EAlign::Near;
         lbl.style.overflow  = "hidden";
       });
 
       // Preview zone — flex-fills remaining width and clips so transforms
       // can't bleed leftward onto the label column.
-      row.add.div([xformStr](auto& zone) {
-        zone.style.flexGrow       = 1.f;
+      row.add.div([xformStr, compactLayout](auto& zone) {
+        zone.style.flexGrow       = compactLayout ? 0.f : 1.f;
+        zone.style.width          = "100%";
         zone.style.height         = 120.f;
         zone.style.overflow       = "hidden";
         zone.style.display        = "flex";

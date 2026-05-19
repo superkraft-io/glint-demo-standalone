@@ -2,6 +2,8 @@
 
 inline void glint_demos_window::buildSwitches()
 {
+  const bool compactLayout = isCompactLayout();
+
   auto addHeading = [&](const char* text) {
     mContent->add.div([=](glint_component_style& d) {
       d.innerText          = text;
@@ -34,19 +36,20 @@ inline void glint_demos_window::buildSwitches()
     glint_switch*  sw      = nullptr;
     glint_element* stateEl = nullptr;
 
-    mContent->add.div([&](glint_component_style& row) {
+    mContent->add.div([&, compactLayout](glint_component_style& row) {
       row.style.display       = "flex";
-      row.style.flexDirection = "row";
-      row.style.alignItems    = "center";
+      row.style.flexDirection = compactLayout ? "column" : "row";
+      row.style.alignItems    = compactLayout ? "stretch" : "center";
       row.style.gap           = 14.f;
       row.style.width         = "100%";
       row.style.marginBottom  = 4.f;
 
-      row.add.div([&](glint_component_style& lbl) {
+      row.add.div([&, compactLayout](glint_component_style& lbl) {
         lbl.innerText       = sd.label;
         lbl.style.color     = glint_demo_theme::text;
         lbl.style.fontSize  = 13.f;
-        lbl.style.width     = 140.f;
+        if (compactLayout) lbl.style.width = "100%";
+        else lbl.style.width = 140.f;
         lbl.style.textAlign = EAlign::Near;
       });
 
@@ -62,7 +65,8 @@ inline void glint_demos_window::buildSwitches()
         state.innerText      = sd.on ? "ON" : "OFF";
         state.style.color    = sd.on ? glint_demo_theme::success : glint_demo_theme::danger;
         state.style.fontSize = 11.f;
-        state.style.width    = 32.f;
+        if (compactLayout) state.style.width = "100%";
+        else state.style.width = 32.f;
         state.style.textAlign = EAlign::Near;
       }, &stateEl);
     });
@@ -81,10 +85,10 @@ inline void glint_demos_window::buildSwitches()
 
   const float szSizes[] = { 12.f, 16.f, 20.f, 26.f };
 
-  mContent->add.div([&](glint_component_style& row) {
+  mContent->add.div([&, compactLayout](glint_component_style& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
-    row.style.alignItems    = "center";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems    = compactLayout ? "flex-start" : "center";
     row.style.gap           = 20.f;
     row.style.width         = "100%";
 

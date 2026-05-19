@@ -4,6 +4,8 @@
 
 inline void glint_demos_window::buildDatePicker()
 {
+  const bool compactLayout = isCompactLayout();
+
   auto addHeading = [&](const char* text, float mb = 8.f) {
     mContent->add.div([=](glint_component_style& d) {
       d.innerText          = text;
@@ -77,19 +79,20 @@ inline void glint_demos_window::buildDatePicker()
   // -- 3. Date range (two text inputs) --------------------------------------
   addHeading("Date range (Start -- End)");
 
-  mContent->add.div([&](glint_component_style& row) {
+  mContent->add.div([&, compactLayout](glint_component_style& row) {
     row.style.display       = "flex";
-    row.style.flexDirection = "row";
-    row.style.alignItems    = "center";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems    = compactLayout ? "stretch" : "center";
     row.style.gap           = 10.f;
     row.style.width         = "100%";
     row.style.marginBottom  = 6.f;
 
-    row.add.div([](glint_component_style& lbl) {
+    row.add.div([compactLayout](glint_component_style& lbl) {
       lbl.innerText      = "Start";
       lbl.style.color    = glint_demo_theme::muted;
       lbl.style.fontSize = 12.f;
-      lbl.style.width    = 36.f;
+      if (compactLayout) lbl.style.width = "100%";
+      else lbl.style.width = 36.f;
     });
     row.add.fromClass<glint_date_input>([](glint_date_input& dp) {
       dp.setDate(2024, 1, 1);
@@ -126,9 +129,10 @@ inline void glint_demos_window::buildDatePicker()
   });
   glint_element* fb2Ptr = fb2;
 
-  auto* btn = mContent->add.button([&](glint_button& b) {
+  auto* btn = mContent->add.button([&, compactLayout](glint_button& b) {
     b.innerText            = "Pick a date\xe2\x80\xa6";
-    b.style.width          = 140.f;
+    if (compactLayout) b.style.width = "100%";
+    else b.style.width = 140.f;
     b.style.height         = 32.f;
     b.style.backgroundColor = glint_color(255, 40, 40, 40);
     b.style.color          = glint_color(255, 210, 210, 210);
