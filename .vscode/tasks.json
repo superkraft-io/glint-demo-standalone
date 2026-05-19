@@ -119,7 +119,7 @@
     {
       "label": "cmake: configure (iOS Simulator Release)",
       "type": "shell",
-      "command": "cmake --preset ios-sim-debug",
+      "command": "cmake --preset ios-sim-release",
       "options": { "cwd": "${workspaceFolder}/demo" },
       "group": "build",
       "presentation": { "reveal": "silent", "panel": "shared" },

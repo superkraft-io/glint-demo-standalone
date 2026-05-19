@@ -8,6 +8,8 @@ Notes:
 - `inputmode` is only a virtual keyboard hint; it does not change validation semantics.
 - Current proven Glint support in code: `text`, `email`, `password`, `number`, `range`, `checkbox`, and `radio`.
 - Unsupported `type` values currently fall through the text delegate unless they have a dedicated Glint implementation elsewhere.
+- `inputmode` is now plumbed through `glint_input` and `glint_textarea` into iOS keyboard traits, including `inputmode="none"` software-keyboard suppression.
+- iOS long-press edit actions now route Cut, Copy, Paste, and Select All through the focused Glint text editor, but the mobile behavior items stay unchecked until runtime verification on the simulator/device.
 
 ## Core Mobile Behavior
 
@@ -46,22 +48,22 @@ Notes:
 
 ## Input Modes
 
-- [ ] `none`
-- [ ] `text`
-- [ ] `decimal`
-- [ ] `numeric`
-- [ ] `tel`
-- [ ] `search`
-- [ ] `email`
-- [ ] `url`
+- [x] `none`
+- [x] `text`
+- [x] `decimal`
+- [x] `numeric`
+- [x] `tel`
+- [x] `search`
+- [x] `email`
+- [x] `url`
 
 ## Type vs Inputmode Mapping
 
 - [ ] `type` controls validation and submitted value semantics
-- [ ] `inputmode` only affects virtual keyboard choice
-- [ ] `type="text" inputmode="numeric"` behaves as text with numeric keyboard hint
-- [ ] `type="email"` preserves email semantics even if `inputmode` is absent or different
-- [ ] `type="number"` behavior is distinguished from `inputmode="numeric"`
+- [x] `inputmode` only affects virtual keyboard choice
+- [x] `type="text" inputmode="numeric"` behaves as text with numeric keyboard hint
+- [x] `type="email"` preserves email semantics even if `inputmode` is absent or different
+- [x] `type="number"` behavior is distinguished from `inputmode="numeric"`
 
 ## Related Attributes Worth Tracking
 
