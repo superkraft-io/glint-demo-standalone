@@ -143,11 +143,12 @@ inline void glint_demos_window::buildInputs()
   auto currentMax = std::make_shared<std::string>();
   auto currentStep = std::make_shared<std::string>();
   auto currentRequired = std::make_shared<bool>(false);
+  auto currentMultiple = std::make_shared<bool>(false);
   auto currentReadonly = std::make_shared<bool>(false);
   auto currentDisabled = std::make_shared<bool>(false);
 
   auto* configFeedback = mContent->add.div([](glint_component_style& feedback) {
-    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | maxlength=None | minlength=None | pattern=None | min=None | max=None | step=None | required=false | readonly=false | disabled=false";
+    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | maxlength=None | minlength=None | pattern=None | min=None | max=None | step=None | required=false | multiple=false | readonly=false | disabled=false";
     feedback.style.color = glint_demo_theme::muted;
     feedback.style.fontSize = 12.f;
     feedback.style.width = "100%";
@@ -223,6 +224,16 @@ inline void glint_demos_window::buildInputs()
       message = "Constraints: required value missing";
       color = glint_demo_theme::warning;
     }
+    else if (playgroundInput->type == "email" && !playgroundInput->satisfiesEmailValue())
+    {
+      message = "Constraints: invalid email";
+      color = glint_demo_theme::warning;
+    }
+    else if (playgroundInput->type == "url" && !playgroundInput->satisfiesUrlValue())
+    {
+      message = "Constraints: invalid url";
+      color = glint_demo_theme::warning;
+    }
     else if (!playgroundInput->satisfiesMinLength())
     {
       message = "Constraints: minlength not reached";
@@ -269,6 +280,7 @@ inline void glint_demos_window::buildInputs()
     playgroundInput->max = parseOptionalFloat(*currentMax, std::numeric_limits<float>::max());
     playgroundInput->step = parseOptionalFloat(*currentStep, 0.f);
     playgroundInput->required = *currentRequired;
+    playgroundInput->multiple = *currentMultiple;
     playgroundInput->readonly = *currentReadonly;
     playgroundInput->disabled = *currentDisabled;
     playgroundInput->placeholder = placeholderForType(resolvedType);
@@ -284,6 +296,7 @@ inline void glint_demos_window::buildInputs()
                                 + " | max=" + displayAttrValue(*currentMax)
                                 + " | step=" + displayAttrValue(*currentStep)
                                 + " | required=" + (*currentRequired ? "true" : "false")
+                                + " | multiple=" + (*currentMultiple ? "true" : "false")
                                 + " | readonly=" + (*currentReadonly ? "true" : "false")
                                 + " | disabled=" + (*currentDisabled ? "true" : "false");
     playgroundInput->setDirty(false);
@@ -534,11 +547,12 @@ inline void glint_demos_window::buildInputs()
   addLabeledDecimalInput(numberRuleRow, "Step", "None", currentStep);
 
   addBooleanCheckbox(attributeRow, "Required", currentRequired);
+  addBooleanCheckbox(attributeRow, "Multiple", currentMultiple);
   addBooleanCheckbox(attributeRow, "Readonly", currentReadonly);
   addBooleanCheckbox(attributeRow, "Disabled", currentDisabled);
 
   addSpacer(8.f);
-  addNote("Use the controls to compare type and keyboard combinations, then layer on maxlength, minlength, pattern, min, max, step, required, readonly, or disabled without duplicating the page.");
+  addNote("Use the controls to compare type and keyboard combinations, then layer on maxlength, minlength, pattern, min, max, step, required, multiple, readonly, or disabled without duplicating the page.");
 
   applyConfig();
 }

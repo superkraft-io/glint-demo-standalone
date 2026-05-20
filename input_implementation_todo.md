@@ -19,6 +19,8 @@ Notes:
 - `pattern` is now implemented as a non-blocking validity rule for text-like `input`, so values remain editable while non-empty mismatches report invalid and empty values only fail when another rule such as `required` applies.
 - `type="number"` now rejects non-numeric typed and pasted insertions, limiting edits to numeric edit states such as digits, a single `.`, and a leading `-`.
 - `type="number"` now validates parse, `min`, `max`, and `step` semantics with parity against the browser demo, without rewriting the current value on blur.
+- `type="email"` now validates email syntax, and `multiple` allows comma-separated addresses with browser-style validity semantics.
+- `type="url"` now validates absolute URL syntax with browser-checked parity for the tested edge cases, including rejecting `https:/`-style single-slash missing-host values.
 
 ## Core Mobile Behavior
 
@@ -85,11 +87,11 @@ Notes:
 - [x] `minlength`
 - [x] `pattern`
 - [x] `required`
+- [x] `multiple`
 - [ ] `enterkeyhint`
 - [ ] `autocomplete`
 - [ ] `autocapitalize`
 - [ ] `spellcheck`
-- [ ] `multiple`
 - [ ] `list`
 
 ## Validation Matrix
