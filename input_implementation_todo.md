@@ -11,7 +11,9 @@ Notes:
 - `inputmode` is now plumbed through `glint_input` and `glint_textarea` into iOS keyboard traits, including `inputmode="none"` software-keyboard suppression.
 - iOS simulator validation confirmed typing, Backspace, Return behavior, submit callbacks, and long-press Cut/Copy/Paste/Select All on the current input and textarea demos.
 - `enterkeyhint` is now plumbed through `glint_input` and `glint_textarea` into iOS `UIReturnKeyType`; `done`, `next`, and `send` validate on the simulator, but `search` still renders as the blue arrow action key instead of Safari's magnifying-glass search button.
-- Selection and caret correctness on iOS still need explicit verification before that tracker item should be checked off.
+- iOS simulator validation confirmed selection and caret behavior on the current input and textarea demos.
+- iOS simulator validation confirmed `search`, `tel`, and `url` work as text-like inputs with the expected search/phone/URL keyboard mapping and preserve submitted values; for the current host, they behave the same as `type="text"` plus the matching `inputmode`.
+- `maxlength` is now enforced for `input` and `textarea` in the shared text-editor path, covering typing, paste, and programmatic `setValue(...)`.
 
 ## Core Mobile Behavior
 
@@ -20,28 +22,28 @@ Notes:
 - [x] Return key behavior matches control semantics
 - [x] Tapping outside a text control dismisses the software keyboard
 - [x] Switching between focused controls updates keyboard type immediately
-- [ ] Selection and caret behavior remain correct on iOS
+- [x] Selection and caret behavior remain correct on iOS
 - [x] Copy, paste, cut, and select-all behavior works on mobile
 
 ## Input Types
 
-- [ ] `hidden`
 - [x] `text`
-- [ ] `search`
-- [ ] `tel`
-- [ ] `url`
+- [x] `search`
+- [x] `tel`
+- [x] `url`
 - [x] `email`
 - [x] `password`
+- [x] `number`
+- [x] `range`
+- [x] `checkbox`
+- [x] `radio`
+- [ ] `hidden`
 - [ ] `date`
 - [ ] `month`
 - [ ] `week`
 - [ ] `time`
 - [ ] `datetime-local`
-- [x] `number`
-- [x] `range`
 - [ ] `color`
-- [x] `checkbox`
-- [x] `radio`
 - [ ] `file`
 - [ ] `submit`
 - [ ] `image`
@@ -69,18 +71,18 @@ Notes:
 
 ## Related Attributes Worth Tracking
 
+- [x] `min`
+- [x] `max`
+- [x] `step`
+- [x] `placeholder`
+- [x] `readonly`
 - [ ] `enterkeyhint`
 - [ ] `autocomplete`
 - [ ] `autocapitalize`
 - [ ] `spellcheck`
-- [ ] `maxlength`
+- [x] `maxlength`
 - [ ] `minlength`
-- [x] `min`
-- [x] `max`
-- [x] `step`
 - [ ] `pattern`
-- [x] `placeholder`
-- [x] `readonly`
 - [ ] `required`
 - [ ] `multiple`
 - [ ] `list`

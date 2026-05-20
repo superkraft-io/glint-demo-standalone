@@ -75,7 +75,7 @@ inline void glint_demos_window::buildInputs()
   };
 
   addHeading("Configurable input playground");
-  addMeta("One input controlled by three selects. Each menu starts with None to represent an omitted attribute.");
+  addMeta("One input controlled by type and keyboard selects plus a few extra attribute toggles for quick verification.");
 
   auto* playgroundInput = mContent->add.input([](glint_input& inp) {
     inp.type = "text";
@@ -96,12 +96,25 @@ inline void glint_demos_window::buildInputs()
     row.style.marginBottom = 12.f;
   });
 
+  auto* attributeRow = mContent->add.div([compactLayout](glint_component_style& row) {
+    row.style.display = "flex";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems = compactLayout ? "stretch" : "flex-start";
+    row.style.gap = 12.f;
+    row.style.width = "100%";
+    row.style.marginBottom = 12.f;
+  });
+
   auto currentType = std::make_shared<std::string>();
   auto currentInputmode = std::make_shared<std::string>();
   auto currentEnterkeyhint = std::make_shared<std::string>();
+  auto currentMaxlength = std::make_shared<int>(-1);
+  auto currentMinlength = std::make_shared<int>(-1);
+  auto currentReadonly = std::make_shared<bool>(false);
+  auto currentDisabled = std::make_shared<bool>(false);
 
   auto* configFeedback = mContent->add.div([](glint_component_style& feedback) {
-    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None";
+    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | maxlength=None | minlength=None | readonly=false | disabled=false";
     feedback.style.color = glint_demo_theme::muted;
     feedback.style.fontSize = 12.f;
     feedback.style.width = "100%";
@@ -126,14 +139,33 @@ inline void glint_demos_window::buildInputs()
     feedback.style.textAlign = EAlign::Near;
   });
 
+  auto* lengthFeedback = mContent->add.div([](glint_component_style& feedback) {
+    feedback.innerText = "Length constraints: valid";
+    feedback.style.color = glint_demo_theme::success;
+    feedback.style.fontSize = 12.f;
+    feedback.style.width = "100%";
+    feedback.style.textAlign = EAlign::Near;
+    feedback.style.marginTop = 6.f;
+  });
+
   glint_element* configFeedbackPtr = configFeedback;
   glint_element* valueFeedbackPtr = valueFeedback;
   glint_element* submitFeedbackPtr = submitFeedback;
+  glint_element* lengthFeedbackPtr = lengthFeedback;
 
-  playgroundInput->onChange = [valueFeedbackPtr](const std::string& value) {
+  auto refreshLengthFeedback = [=]() {
+    const bool lengthValid = playgroundInput->satisfiesMinLength();
+    lengthFeedbackPtr->innerText = std::string("Length constraints: ")
+                                + (lengthValid ? "valid" : "minlength not reached");
+    lengthFeedbackPtr->style.color = lengthValid ? glint_demo_theme::success : glint_demo_theme::warning;
+    lengthFeedbackPtr->setDirty(false);
+  };
+
+  playgroundInput->onChange = [valueFeedbackPtr, refreshLengthFeedback](const std::string& value) {
     valueFeedbackPtr->innerText = value.empty() ? "Value: (empty)" : std::string("Value: ") + value;
     valueFeedbackPtr->style.color = glint_demo_theme::muted;
     valueFeedbackPtr->setDirty(false);
+    refreshLengthFeedback();
   };
 
   playgroundInput->onSubmit = [submitFeedbackPtr](const std::string& value) {
@@ -147,21 +179,31 @@ inline void glint_demos_window::buildInputs()
     playgroundInput->type = resolvedType;
     playgroundInput->inputmode = *currentInputmode;
     playgroundInput->enterkeyhint = *currentEnterkeyhint;
+    playgroundInput->maxlength = *currentMaxlength;
+    playgroundInput->minlength = *currentMinlength;
+    playgroundInput->readonly = *currentReadonly;
+    playgroundInput->disabled = *currentDisabled;
     playgroundInput->placeholder = placeholderForType(resolvedType);
 
     configFeedbackPtr->innerText = std::string("Current: type=")
                                 + displayAttrValue(*currentType, "text")
                                 + " | inputmode=" + displayAttrValue(*currentInputmode)
-                                + " | enterkeyhint=" + displayAttrValue(*currentEnterkeyhint);
+                                + " | enterkeyhint=" + displayAttrValue(*currentEnterkeyhint)
+                                + " | maxlength=" + (*currentMaxlength >= 0 ? std::to_string(*currentMaxlength) : std::string("None"))
+                                + " | minlength=" + (*currentMinlength >= 0 ? std::to_string(*currentMinlength) : std::string("None"))
+                                + " | readonly=" + (*currentReadonly ? "true" : "false")
+                                + " | disabled=" + (*currentDisabled ? "true" : "false");
     playgroundInput->setDirty(false);
     configFeedbackPtr->setDirty(false);
+    refreshLengthFeedback();
   };
 
-  auto addLabeledSelect = [&](const char* label,
+  auto addLabeledSelect = [&](glint_element* rowTarget,
+                              const char* label,
                               std::vector<std::string> options,
                               int selectedIndex,
                               std::function<void(const std::string&)> onValue) {
-    auto* group = selectorsRow->add.div([](glint_component_style& group) {
+    auto* group = rowTarget->add.div([](glint_component_style& group) {
       group.style.display = "flex";
       group.style.flexDirection = "column";
       group.style.flexGrow = 1.f;
@@ -198,6 +240,7 @@ inline void glint_demos_window::buildInputs()
   };
 
   addLabeledSelect(
+    selectorsRow,
     "Type",
     makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url" }),
     0,
@@ -207,6 +250,7 @@ inline void glint_demos_window::buildInputs()
     });
 
   addLabeledSelect(
+    selectorsRow,
     "Inputmode",
     makeOptions({ "None", "text", "decimal", "numeric", "tel", "search", "email", "url", "none" }),
     0,
@@ -216,6 +260,7 @@ inline void glint_demos_window::buildInputs()
     });
 
   addLabeledSelect(
+    selectorsRow,
     "Enterkeyhint",
     makeOptions({ "None", "enter", "done", "go", "next", "search", "send" }),
     0,
@@ -224,8 +269,48 @@ inline void glint_demos_window::buildInputs()
       applyConfig();
     });
 
+  addLabeledSelect(
+    attributeRow,
+    "Maxlength",
+    makeOptions({ "None", "5", "10", "20" }),
+    0,
+    [currentMaxlength, applyConfig](const std::string& value) {
+      *currentMaxlength = value == "None" ? -1 : std::stoi(value);
+      applyConfig();
+    });
+
+  addLabeledSelect(
+    attributeRow,
+    "Minlength",
+    makeOptions({ "None", "3", "5", "10" }),
+    0,
+    [currentMinlength, applyConfig](const std::string& value) {
+      *currentMinlength = value == "None" ? -1 : std::stoi(value);
+      applyConfig();
+    });
+
+  addLabeledSelect(
+    attributeRow,
+    "Readonly",
+    makeOptions({ "false", "true" }),
+    0,
+    [currentReadonly, applyConfig](const std::string& value) {
+      *currentReadonly = value == "true";
+      applyConfig();
+    });
+
+  addLabeledSelect(
+    attributeRow,
+    "Disabled",
+    makeOptions({ "false", "true" }),
+    0,
+    [currentDisabled, applyConfig](const std::string& value) {
+      *currentDisabled = value == "true";
+      applyConfig();
+    });
+
   addSpacer(8.f);
-  addNote("Use the three menus to compare combinations like type=None + enterkeyhint=search, or type=text + inputmode=search + enterkeyhint=search, without duplicating the page.");
+  addNote("Use the controls to compare type and keyboard combinations, then layer on maxlength, minlength, readonly, or disabled without duplicating the page.");
 
   applyConfig();
 }
