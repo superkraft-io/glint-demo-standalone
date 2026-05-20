@@ -14,6 +14,10 @@ Notes:
 - iOS simulator validation confirmed selection and caret behavior on the current input and textarea demos.
 - iOS simulator validation confirmed `search`, `tel`, and `url` work as text-like inputs with the expected search/phone/URL keyboard mapping and preserve submitted values; for the current host, they behave the same as `type="text"` plus the matching `inputmode`.
 - `maxlength` is now enforced for `input` and `textarea` in the shared text-editor path, covering typing, paste, and programmatic `setValue(...)`.
+- `minlength` is now enforced across destructive text edits for `input` and `textarea`, so backspace/delete/cut stop at the configured minimum while insertion remains allowed.
+- `required` is now implemented as a validity rule for text-editable `input` and `textarea`, so empty values report invalid when required, while disabled controls remain exempt.
+- `pattern` is now implemented as a non-blocking validity rule for text-like `input`, so values remain editable while non-empty mismatches report invalid and empty values only fail when another rule such as `required` applies.
+- `type="number"` now rejects non-numeric typed and pasted insertions, limiting edits to numeric edit states such as digits, a single `.`, and a leading `-`.
 
 ## Core Mobile Behavior
 
@@ -76,14 +80,14 @@ Notes:
 - [x] `step`
 - [x] `placeholder`
 - [x] `readonly`
+- [x] `maxlength`
+- [x] `minlength`
+- [x] `pattern`
+- [x] `required`
 - [ ] `enterkeyhint`
 - [ ] `autocomplete`
 - [ ] `autocapitalize`
 - [ ] `spellcheck`
-- [x] `maxlength`
-- [ ] `minlength`
-- [ ] `pattern`
-- [ ] `required`
 - [ ] `multiple`
 - [ ] `list`
 
