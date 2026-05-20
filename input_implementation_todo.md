@@ -9,17 +9,19 @@ Notes:
 - Current proven Glint support in code: `text`, `email`, `password`, `number`, `range`, `checkbox`, and `radio`.
 - Unsupported `type` values currently fall through the text delegate unless they have a dedicated Glint implementation elsewhere.
 - `inputmode` is now plumbed through `glint_input` and `glint_textarea` into iOS keyboard traits, including `inputmode="none"` software-keyboard suppression.
-- iOS long-press edit actions now route Cut, Copy, Paste, and Select All through the focused Glint text editor, but the mobile behavior items stay unchecked until runtime verification on the simulator/device.
+- iOS simulator validation confirmed typing, Backspace, Return behavior, submit callbacks, and long-press Cut/Copy/Paste/Select All on the current input and textarea demos.
+- `enterkeyhint` is now plumbed through `glint_input` and `glint_textarea` into iOS `UIReturnKeyType`; `done`, `next`, and `send` validate on the simulator, but `search` still renders as the blue arrow action key instead of Safari's magnifying-glass search button.
+- Selection and caret correctness on iOS still need explicit verification before that tracker item should be checked off.
 
 ## Core Mobile Behavior
 
-- [ ] Typing inserts text reliably for focused text controls
-- [ ] Backspace deletes reliably for focused text controls
-- [ ] Return key behavior matches control semantics
+- [x] Typing inserts text reliably for focused text controls
+- [x] Backspace deletes reliably for focused text controls
+- [x] Return key behavior matches control semantics
 - [x] Tapping outside a text control dismisses the software keyboard
 - [x] Switching between focused controls updates keyboard type immediately
 - [ ] Selection and caret behavior remain correct on iOS
-- [ ] Copy, paste, cut, and select-all behavior works on mobile
+- [x] Copy, paste, cut, and select-all behavior works on mobile
 
 ## Input Types
 
@@ -94,6 +96,12 @@ Notes:
 ## Platform Parity
 
 - [ ] iOS virtual keyboard mapping is correct per `type` and `inputmode`
-- [ ] iOS action button label is configurable via `enterkeyhint`
+- [ ] iOS action button label is configurable via `enterkeyhint` (search glyph still differs from Safari)
 - [ ] Desktop behavior remains consistent after mobile-specific changes
 - [ ] Unsupported types degrade predictably to a safe text-like fallback when required
+
+
+
+
+# Bugs found
+[ ] Emojis are just squares with question marks

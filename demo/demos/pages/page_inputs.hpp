@@ -2,6 +2,9 @@
 
 inline void glint_demos_window::buildInputs()
 {
+  static constexpr const char* kAutoFocusSearchInputId = "demo-inputs-search-autofocus";
+  bool hasAutoFocusSearchInput = false;
+
   auto addHeading = [&](const char* text, float marginBottom = 8.f) {
     mContent->add.div([=](glint_component_style& lbl) {
       lbl.innerText = text;
@@ -46,21 +49,31 @@ inline void glint_demos_window::buildInputs()
                           const char* type,
                           const char* inputmode,
                           const char* placeholder,
-                          const char* note) {
+                          const char* note,
+                          const char* enterkeyhint = "") {
     addHeading(heading, 4.f);
 
     std::string meta = std::string("type=\"") + type + "\"";
     if (inputmode && inputmode[0] != '\0')
       meta += std::string("  |  inputmode=\"") + inputmode + "\"";
+    if (enterkeyhint && enterkeyhint[0] != '\0')
+      meta += std::string("  |  enterkeyhint=\"") + enterkeyhint + "\"";
     addMeta(meta);
 
-    mContent->add.input([=](glint_input& inp) {
+    auto* input = mContent->add.input([=](glint_input& inp) {
       inp.type = type;
       inp.inputmode = inputmode ? inputmode : "";
+      inp.enterkeyhint = enterkeyhint ? enterkeyhint : "";
       inp.placeholder = placeholder;
       inp.style.width = "100%";
       inp.style.height = 36.f;
     });
+
+    if (!hasAutoFocusSearchInput && enterkeyhint && std::string(enterkeyhint) == "search")
+    {
+      input->id = kAutoFocusSearchInputId;
+      hasAutoFocusSearchInput = true;
+    }
 
     addNote(note);
     addSpacer(14.f);
@@ -144,6 +157,42 @@ inline void glint_demos_window::buildInputs()
 
   addSpacer(6.f);
 
+  addHeading("Enter key hints");
+
+  addInputDemo(
+    "Search return key hint",
+    "text",
+    "search",
+    "Search query",
+    "On iOS the return key label should follow the search hint.",
+    "search");
+
+  addInputDemo(
+    "Done return key hint",
+    "text",
+    "text",
+    "Finish editing",
+    "On iOS the return key label should follow the done hint.",
+    "done");
+
+  addInputDemo(
+    "Next return key hint",
+    "text",
+    "email",
+    "Move to the next field",
+    "On iOS the return key label should follow the next hint.",
+    "next");
+
+  addInputDemo(
+    "Send return key hint",
+    "text",
+    "text",
+    "Send message",
+    "On iOS the return key label should follow the send hint.",
+    "send");
+
+  addSpacer(6.f);
+
   addHeading("Fallback type showcases");
 
   addInputDemo(
@@ -169,7 +218,6 @@ inline void glint_demos_window::buildInputs()
 
   addSpacer(4.f);
 
-  // Range slider
   {
     addHeading("Range slider (type=\"range\")");
     addMeta("type=\"range\"  |  inputmode is not applicable");
@@ -201,14 +249,14 @@ inline void glint_demos_window::buildInputs()
     addSpacer(16.f);
   }
 
-  // onChange / onSubmit feedback
   {
     addHeading("onChange / onSubmit callbacks", 4.f);
-    addMeta("type=\"text\"  |  inputmode=\"search\"");
+    addMeta("type=\"text\"  |  inputmode=\"search\"  |  enterkeyhint=\"search\"");
 
     auto* inp = mContent->add.input([](glint_input& inp) {
       inp.type = "text";
       inp.inputmode = "search";
+      inp.enterkeyhint = "search";
       inp.placeholder = "Type and press Enter\xe2\x80\xa6";
       inp.style.width = "100%";
       inp.style.height = 36.f;
@@ -237,4 +285,25 @@ inline void glint_demos_window::buildInputs()
 
     addNote("Use this field to test change vs submit behavior with a non-default keyboard hint.");
   }
+
+  if (!hasAutoFocusSearchInput)
+    return;
+
+  if (mDispatchMain)
+  {
+    mDispatchMain([this]() {
+      if (!mRoot)
+        return;
+
+      if (glint_element* focusTarget = mRoot->getElementByStringId(kAutoFocusSearchInputId))
+        mRoot->SetFocus(focusTarget);
+    });
+    return;
+  }
+
+  if (!mRoot)
+    return;
+
+  if (glint_element* focusTarget = mRoot->getElementByStringId(kAutoFocusSearchInputId))
+    mRoot->SetFocus(focusTarget);
 }

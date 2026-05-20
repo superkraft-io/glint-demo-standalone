@@ -265,8 +265,8 @@ private:
   DemoMode mMode = DemoMode::CoreComponents;
   DemoMode mSheetMode = DemoMode::CoreComponents;
   DemoLayout mLayout = GLINT_DEMO_PLATFORM_IOS ? DemoLayout::IOSCompact : DemoLayout::Desktop;
-  DemoSection mSection = DemoSection::Text;
-  DemoSection mCoreSection = DemoSection::Text;
+  DemoSection mSection = DemoSection::Inputs;
+  DemoSection mCoreSection = DemoSection::Inputs;
   DemoSection mUserSection = DemoSection::Switches;
   glint_document* mRoot = nullptr;
   glint_element* mContent = nullptr;
