@@ -18,6 +18,7 @@ Notes:
 - `required` is now implemented as a validity rule for text-editable `input` and `textarea`, so empty values report invalid when required, while disabled controls remain exempt.
 - `pattern` is now implemented as a non-blocking validity rule for text-like `input`, so values remain editable while non-empty mismatches report invalid and empty values only fail when another rule such as `required` applies.
 - `type="number"` now rejects non-numeric typed and pasted insertions, limiting edits to numeric edit states such as digits, a single `.`, and a leading `-`.
+- `type="number"` now validates parse, `min`, `max`, and `step` semantics with parity against the browser demo, without rewriting the current value on blur.
 
 ## Core Mobile Behavior
 
@@ -94,7 +95,7 @@ Notes:
 ## Validation Matrix
 
 - [ ] Text-like types sanitize and validate correctly
-- [ ] Numeric types enforce numeric parsing rules correctly
+- [x] Numeric types enforce numeric parsing rules correctly
 - [ ] Date and time types enforce normalized value formats correctly
 - [ ] File inputs reflect picker results and selected files correctly
 - [ ] Button-like types do not pretend to be text-editable controls

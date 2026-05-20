@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <memory>
 
 inline void glint_demos_window::buildInputs()
@@ -123,18 +124,30 @@ inline void glint_demos_window::buildInputs()
     row.style.marginBottom = 12.f;
   });
 
+  auto* numberRuleRow = mContent->add.div([](glint_component_style& row) {
+    row.style.display = "flex";
+    row.style.flexDirection = "row";
+    row.style.alignItems = "flex-start";
+    row.style.gap = 12.f;
+    row.style.width = "100%";
+    row.style.marginBottom = 12.f;
+  });
+
   auto currentType = std::make_shared<std::string>();
   auto currentInputmode = std::make_shared<std::string>();
   auto currentEnterkeyhint = std::make_shared<std::string>();
   auto currentMaxlength = std::make_shared<int>(-1);
   auto currentMinlength = std::make_shared<int>(-1);
   auto currentPattern = std::make_shared<std::string>();
+  auto currentMin = std::make_shared<std::string>();
+  auto currentMax = std::make_shared<std::string>();
+  auto currentStep = std::make_shared<std::string>();
   auto currentRequired = std::make_shared<bool>(false);
   auto currentReadonly = std::make_shared<bool>(false);
   auto currentDisabled = std::make_shared<bool>(false);
 
   auto* configFeedback = mContent->add.div([](glint_component_style& feedback) {
-    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | maxlength=None | minlength=None | pattern=None | required=false | readonly=false | disabled=false";
+    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | maxlength=None | minlength=None | pattern=None | min=None | max=None | step=None | required=false | readonly=false | disabled=false";
     feedback.style.color = glint_demo_theme::muted;
     feedback.style.fontSize = 12.f;
     feedback.style.width = "100%";
@@ -177,7 +190,35 @@ inline void glint_demos_window::buildInputs()
     std::string message = "Constraints: valid";
     const char* color = glint_demo_theme::success;
 
-    if (!playgroundInput->satisfiesRequired())
+    if (playgroundInput->type == "number")
+    {
+      if (!playgroundInput->satisfiesRequired())
+      {
+        message = "Constraints: required value missing";
+        color = glint_demo_theme::warning;
+      }
+      else if (!playgroundInput->hasValidNumberValue())
+      {
+        message = "Constraints: invalid number";
+        color = glint_demo_theme::warning;
+      }
+      else if (!playgroundInput->satisfiesMinValue())
+      {
+        message = "Constraints: below min";
+        color = glint_demo_theme::warning;
+      }
+      else if (!playgroundInput->satisfiesMaxValue())
+      {
+        message = "Constraints: above max";
+        color = glint_demo_theme::warning;
+      }
+      else if (!playgroundInput->satisfiesStepValue())
+      {
+        message = "Constraints: step mismatch";
+        color = glint_demo_theme::warning;
+      }
+    }
+    else if (!playgroundInput->satisfiesRequired())
     {
       message = "Constraints: required value missing";
       color = glint_demo_theme::warning;
@@ -213,12 +254,20 @@ inline void glint_demos_window::buildInputs()
 
   auto applyConfig = [=]() {
     const std::string resolvedType = currentType->empty() ? std::string("text") : *currentType;
+    auto parseOptionalFloat = [](const std::string& value, float unsetValue) {
+      if (value.empty() || value == "-" || value == "." || value == "-.") return unsetValue;
+      try { return std::stof(value); } catch (...) { return unsetValue; }
+    };
+
     playgroundInput->type = resolvedType;
     playgroundInput->inputmode = *currentInputmode;
     playgroundInput->enterkeyhint = *currentEnterkeyhint;
     playgroundInput->maxlength = *currentMaxlength;
     playgroundInput->minlength = *currentMinlength;
     playgroundInput->pattern = *currentPattern;
+    playgroundInput->min = parseOptionalFloat(*currentMin, std::numeric_limits<float>::lowest());
+    playgroundInput->max = parseOptionalFloat(*currentMax, std::numeric_limits<float>::max());
+    playgroundInput->step = parseOptionalFloat(*currentStep, 0.f);
     playgroundInput->required = *currentRequired;
     playgroundInput->readonly = *currentReadonly;
     playgroundInput->disabled = *currentDisabled;
@@ -231,6 +280,9 @@ inline void glint_demos_window::buildInputs()
                                 + " | maxlength=" + (*currentMaxlength >= 0 ? std::to_string(*currentMaxlength) : std::string("None"))
                                 + " | minlength=" + (*currentMinlength >= 0 ? std::to_string(*currentMinlength) : std::string("None"))
                                 + " | pattern=" + displayAttrValue(*currentPattern)
+                                + " | min=" + displayAttrValue(*currentMin)
+                                + " | max=" + displayAttrValue(*currentMax)
+                                + " | step=" + displayAttrValue(*currentStep)
                                 + " | required=" + (*currentRequired ? "true" : "false")
                                 + " | readonly=" + (*currentReadonly ? "true" : "false")
                                 + " | disabled=" + (*currentDisabled ? "true" : "false");
@@ -401,6 +453,49 @@ inline void glint_demos_window::buildInputs()
     };
   };
 
+  auto addLabeledDecimalInput = [&](glint_element* rowTarget,
+                                    const char* label,
+                                    const char* placeholder,
+                                    std::shared_ptr<std::string> currentValue) {
+    auto* group = rowTarget->add.div([](glint_component_style& group) {
+      group.style.display = "flex";
+      group.style.flexDirection = "column";
+      group.style.flexGrow = 1.f;
+      group.style.minWidth = 0.f;
+    });
+
+    group->add.div([label](glint_component_style& heading) {
+      heading.innerText = label;
+      heading.style.color = glint_demo_theme::heading;
+      heading.style.fontSize = 13.f;
+      heading.style.width = "100%";
+      heading.style.textAlign = EAlign::Near;
+      heading.style.marginBottom = 6.f;
+    });
+
+    auto* input = group->add.input([=](glint_input& inp) {
+      inp.type = "number";
+      inp.placeholder = placeholder;
+      inp.style.width = "100%";
+      inp.style.height = 34.f;
+      inp.style.backgroundColor = glint_demo_theme::surface;
+      inp.style.color = glint_demo_theme::text;
+      inp.style.borderRadius = 4.f;
+      inp.style.borderWidth = 1.f;
+      inp.style.borderColor = glint_demo_theme::border;
+      inp.style.paddingLeft = 10.f;
+      inp.style.fontSize = 13.f;
+    });
+
+    if (!currentValue->empty())
+      input->setValue(*currentValue);
+
+    input->onChange = [currentValue, applyConfig](const std::string& value) {
+      *currentValue = value;
+      applyConfig();
+    };
+  };
+
   addLabeledSelect(
     selectorsRow,
     "Type",
@@ -434,13 +529,16 @@ inline void glint_demos_window::buildInputs()
   addLabeledNumberInput(lengthRow, "Maxlength", "None", currentMaxlength);
   addLabeledNumberInput(lengthRow, "Minlength", "None", currentMinlength);
   addLabeledTextInput(patternRow, "Pattern", "e.g. [a-z]{3,8}", currentPattern);
+  addLabeledDecimalInput(numberRuleRow, "Min", "None", currentMin);
+  addLabeledDecimalInput(numberRuleRow, "Max", "None", currentMax);
+  addLabeledDecimalInput(numberRuleRow, "Step", "None", currentStep);
 
   addBooleanCheckbox(attributeRow, "Required", currentRequired);
   addBooleanCheckbox(attributeRow, "Readonly", currentReadonly);
   addBooleanCheckbox(attributeRow, "Disabled", currentDisabled);
 
   addSpacer(8.f);
-  addNote("Use the controls to compare type and keyboard combinations, then layer on maxlength, minlength, pattern, required, readonly, or disabled without duplicating the page.");
+  addNote("Use the controls to compare type and keyboard combinations, then layer on maxlength, minlength, pattern, min, max, step, required, readonly, or disabled without duplicating the page.");
 
   applyConfig();
 }
