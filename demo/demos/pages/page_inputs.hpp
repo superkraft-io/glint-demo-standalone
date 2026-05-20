@@ -1,9 +1,10 @@
 #pragma once
 
+#include <memory>
+
 inline void glint_demos_window::buildInputs()
 {
-  static constexpr const char* kAutoFocusSearchInputId = "demo-inputs-search-autofocus";
-  bool hasAutoFocusSearchInput = false;
+  const bool compactLayout = isCompactLayout();
 
   auto addHeading = [&](const char* text, float marginBottom = 8.f) {
     mContent->add.div([=](glint_component_style& lbl) {
@@ -45,265 +46,186 @@ inline void glint_demos_window::buildInputs()
     });
   };
 
-  auto addInputDemo = [&](const char* heading,
-                          const char* type,
-                          const char* inputmode,
-                          const char* placeholder,
-                          const char* note,
-                          const char* enterkeyhint = "") {
-    addHeading(heading, 4.f);
-
-    std::string meta = std::string("type=\"") + type + "\"";
-    if (inputmode && inputmode[0] != '\0')
-      meta += std::string("  |  inputmode=\"") + inputmode + "\"";
-    if (enterkeyhint && enterkeyhint[0] != '\0')
-      meta += std::string("  |  enterkeyhint=\"") + enterkeyhint + "\"";
-    addMeta(meta);
-
-    auto* input = mContent->add.input([=](glint_input& inp) {
-      inp.type = type;
-      inp.inputmode = inputmode ? inputmode : "";
-      inp.enterkeyhint = enterkeyhint ? enterkeyhint : "";
-      inp.placeholder = placeholder;
-      inp.style.width = "100%";
-      inp.style.height = 36.f;
-    });
-
-    if (!hasAutoFocusSearchInput && enterkeyhint && std::string(enterkeyhint) == "search")
-    {
-      input->id = kAutoFocusSearchInputId;
-      hasAutoFocusSearchInput = true;
-    }
-
-    addNote(note);
-    addSpacer(14.f);
+  auto normalizeSelectValue = [](const std::string& value) {
+    return value == "None" ? std::string() : value;
   };
 
-  addHeading("Supported input types");
+  auto displayAttrValue = [](const std::string& value, const char* fallback = nullptr) {
+    if (!value.empty()) return value;
+    if (fallback) return std::string("None (defaults to ") + fallback + ")";
+    return std::string("None");
+  };
 
-  addInputDemo(
-    "Text input",
-    "text",
-    "text",
-    "Enter text here\xe2\x80\xa6",
-    "Baseline single-line text editing.");
+  auto placeholderForType = [](const std::string& type) {
+    if (type == "email") return std::string("user@example.com");
+    if (type == "password") return std::string("Enter password\xe2\x80\xa6");
+    if (type == "number") return std::string("42");
+    if (type == "search") return std::string("Search query");
+    if (type == "tel") return std::string("+1 555 123 4567");
+    if (type == "url") return std::string("https://superkraft.io");
+    return std::string("Try different combinations\xe2\x80\xa6");
+  };
 
-  addInputDemo(
-    "Number input",
-    "number",
-    "decimal",
-    "0.0",
-    "Numeric parsing and clamping come from type=\"number\"; the keyboard hint is secondary.");
+  auto makeOptions = [](std::initializer_list<const char*> values) {
+    std::vector<std::string> options;
+    options.reserve(values.size());
+    for (const char* value : values)
+      options.emplace_back(value);
+    return options;
+  };
 
-  addInputDemo(
-    "Password input",
-    "password",
-    "text",
-    "Enter password\xe2\x80\xa6",
-    "Secure-entry masking stays tied to the password type.");
+  addHeading("Configurable input playground");
+  addMeta("One input controlled by three selects. Each menu starts with None to represent an omitted attribute.");
 
-  addInputDemo(
-    "Email input",
-    "email",
-    "email",
-    "user@example.com",
-    "Email semantics are controlled by the type, not by inputmode.");
+  auto* playgroundInput = mContent->add.input([](glint_input& inp) {
+    inp.type = "text";
+    inp.placeholder = "Try different combinations\xe2\x80\xa6";
+    inp.style.width = "100%";
+    inp.style.height = 36.f;
+  });
 
-  addSpacer(6.f);
+  addNote("This playground is for text-editable input combinations. None on type behaves like an omitted HTML type attribute, which defaults to text.");
+  addSpacer(12.f);
 
-  addHeading("Type and inputmode mapping");
+  auto* selectorsRow = mContent->add.div([compactLayout](glint_component_style& row) {
+    row.style.display = "flex";
+    row.style.flexDirection = compactLayout ? "column" : "row";
+    row.style.alignItems = compactLayout ? "stretch" : "flex-start";
+    row.style.gap = 12.f;
+    row.style.width = "100%";
+    row.style.marginBottom = 12.f;
+  });
 
-  addInputDemo(
-    "Text with numeric keyboard hint",
-    "text",
-    "numeric",
-    "12345",
-    "Shows text semantics with a numeric keyboard hint on mobile.");
+  auto currentType = std::make_shared<std::string>();
+  auto currentInputmode = std::make_shared<std::string>();
+  auto currentEnterkeyhint = std::make_shared<std::string>();
 
-  addInputDemo(
-    "Text with decimal keyboard hint",
-    "text",
-    "decimal",
-    "12.34",
-    "Useful for soft-keyboard tuning without switching to number parsing rules.");
+  auto* configFeedback = mContent->add.div([](glint_component_style& feedback) {
+    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None";
+    feedback.style.color = glint_demo_theme::muted;
+    feedback.style.fontSize = 12.f;
+    feedback.style.width = "100%";
+    feedback.style.textAlign = EAlign::Near;
+    feedback.style.marginBottom = 6.f;
+  });
 
-  addInputDemo(
-    "Text with search keyboard hint",
-    "text",
-    "search",
-    "Search terms",
-    "Still a plain text field; inputmode only adjusts the virtual keyboard hint.");
+  auto* valueFeedback = mContent->add.div([](glint_component_style& feedback) {
+    feedback.innerText = "Value: (empty)";
+    feedback.style.color = glint_demo_theme::muted;
+    feedback.style.fontSize = 12.f;
+    feedback.style.width = "100%";
+    feedback.style.textAlign = EAlign::Near;
+    feedback.style.marginBottom = 6.f;
+  });
 
-  addInputDemo(
-    "Email type with conflicting inputmode",
-    "email",
-    "numeric",
-    "user@example.com",
-    "Demonstrates email validation semantics with an inputmode=\"numeric\" number pad keyboard hint.");
+  auto* submitFeedback = mContent->add.div([](glint_component_style& feedback) {
+    feedback.innerText = "Last submitted: (none)";
+    feedback.style.color = glint_demo_theme::muted;
+    feedback.style.fontSize = 12.f;
+    feedback.style.width = "100%";
+    feedback.style.textAlign = EAlign::Near;
+  });
 
-  addInputDemo(
-    "Number type with conflicting inputmode",
-    "number",
-    "text",
-    "42",
-    "Demonstrates number parsing semantics with an inputmode=\"text\" standard text keyboard hint.");
+  glint_element* configFeedbackPtr = configFeedback;
+  glint_element* valueFeedbackPtr = valueFeedback;
+  glint_element* submitFeedbackPtr = submitFeedback;
 
-  addInputDemo(
-    "Text with no software keyboard",
-    "text",
-    "none",
-    "Hardware keyboard / custom input only",
-    "On iOS this suppresses the software keyboard while preserving focus.");
+  playgroundInput->onChange = [valueFeedbackPtr](const std::string& value) {
+    valueFeedbackPtr->innerText = value.empty() ? "Value: (empty)" : std::string("Value: ") + value;
+    valueFeedbackPtr->style.color = glint_demo_theme::muted;
+    valueFeedbackPtr->setDirty(false);
+  };
 
-  addSpacer(6.f);
+  playgroundInput->onSubmit = [submitFeedbackPtr](const std::string& value) {
+    submitFeedbackPtr->innerText = value.empty() ? "Last submitted: (empty)" : std::string("Last submitted: ") + value;
+    submitFeedbackPtr->style.color = glint_demo_theme::success;
+    submitFeedbackPtr->setDirty(false);
+  };
 
-  addHeading("Enter key hints");
+  auto applyConfig = [=]() {
+    const std::string resolvedType = currentType->empty() ? std::string("text") : *currentType;
+    playgroundInput->type = resolvedType;
+    playgroundInput->inputmode = *currentInputmode;
+    playgroundInput->enterkeyhint = *currentEnterkeyhint;
+    playgroundInput->placeholder = placeholderForType(resolvedType);
 
-  addInputDemo(
-    "Search return key hint",
-    "text",
-    "search",
-    "Search query",
-    "On iOS the return key label should follow the search hint.",
-    "search");
+    configFeedbackPtr->innerText = std::string("Current: type=")
+                                + displayAttrValue(*currentType, "text")
+                                + " | inputmode=" + displayAttrValue(*currentInputmode)
+                                + " | enterkeyhint=" + displayAttrValue(*currentEnterkeyhint);
+    playgroundInput->setDirty(false);
+    configFeedbackPtr->setDirty(false);
+  };
 
-  addInputDemo(
-    "Done return key hint",
-    "text",
-    "text",
-    "Finish editing",
-    "On iOS the return key label should follow the done hint.",
-    "done");
-
-  addInputDemo(
-    "Next return key hint",
-    "text",
-    "email",
-    "Move to the next field",
-    "On iOS the return key label should follow the next hint.",
-    "next");
-
-  addInputDemo(
-    "Send return key hint",
-    "text",
-    "text",
-    "Send message",
-    "On iOS the return key label should follow the send hint.",
-    "send");
-
-  addSpacer(6.f);
-
-  addHeading("Fallback type showcases");
-
-  addInputDemo(
-    "Search type fallback",
-    "search",
-    "search",
-    "Search fallback",
-    "Currently uses the text delegate, with iOS keyboard traits derived from the type/inputmode hint.");
-
-  addInputDemo(
-    "Telephone type fallback",
-    "tel",
-    "tel",
-    "+1 555 123 4567",
-    "Currently uses the text delegate, with a phone-style keyboard hint on iOS.");
-
-  addInputDemo(
-    "URL type fallback",
-    "url",
-    "url",
-    "https://superkraft.io",
-    "Currently uses the text delegate, with a URL-style keyboard hint on iOS.");
-
-  addSpacer(4.f);
-
-  {
-    addHeading("Range slider (type=\"range\")");
-    addMeta("type=\"range\"  |  inputmode is not applicable");
-
-    auto* sliderFeedback = mContent->add.div([](glint_component_style& fb) {
-      fb.innerText = "Value: 50";
-      fb.style.color = glint_demo_theme::muted;
-      fb.style.fontSize = 12.f;
-      fb.style.width = "100%";
-      fb.style.textAlign = EAlign::Near;
-      fb.style.marginBottom = 6.f;
+  auto addLabeledSelect = [&](const char* label,
+                              std::vector<std::string> options,
+                              int selectedIndex,
+                              std::function<void(const std::string&)> onValue) {
+    auto* group = selectorsRow->add.div([](glint_component_style& group) {
+      group.style.display = "flex";
+      group.style.flexDirection = "column";
+      group.style.flexGrow = 1.f;
+      group.style.minWidth = 0.f;
     });
 
-    glint_element* fbPtr = sliderFeedback;
-    auto* sl = mContent->add.input([fbPtr](glint_input& inp) {
-      inp.type  = "range";
-      inp.min   = 0.f;
-      inp.max   = 100.f;
-      inp.style.width  = "100%";
-      inp.style.height = 24.f;
-      inp.onChange = [fbPtr](const std::string& v) {
-        fbPtr->innerText = std::string("Value: ") + v;
-        fbPtr->setDirty(false);
-      };
-    });
-    sl->setFloatValue(50.f);
-
-    addNote("Range keeps its slider behavior instead of acting like a text-editable control.");
-    addSpacer(16.f);
-  }
-
-  {
-    addHeading("onChange / onSubmit callbacks", 4.f);
-    addMeta("type=\"text\"  |  inputmode=\"search\"  |  enterkeyhint=\"search\"");
-
-    auto* inp = mContent->add.input([](glint_input& inp) {
-      inp.type = "text";
-      inp.inputmode = "search";
-      inp.enterkeyhint = "search";
-      inp.placeholder = "Type and press Enter\xe2\x80\xa6";
-      inp.style.width = "100%";
-      inp.style.height = 36.f;
+    group->add.div([label](glint_component_style& heading) {
+      heading.innerText = label;
+      heading.style.color = glint_demo_theme::heading;
+      heading.style.fontSize = 13.f;
+      heading.style.width = "100%";
+      heading.style.textAlign = EAlign::Near;
+      heading.style.marginBottom = 6.f;
     });
 
-    addSpacer(6.f);
-
-    auto* feedback = mContent->add.div([](glint_component_style& feedback) {
-      feedback.innerText = "Last submitted: (none)";
-      feedback.style.color = glint_demo_theme::muted;
-      feedback.style.fontSize = 12.f;
-      feedback.style.width = "100%";
-      feedback.style.textAlign = EAlign::Near;
+    auto* select = group->add.fromClass<glint_select>([compactLayout, options = std::move(options), selectedIndex](glint_select& sel) mutable {
+      sel.options = std::move(options);
+      sel.selectedIndex = selectedIndex;
+      sel.style.width = "100%";
+      if (!compactLayout) sel.style.minWidth = 0.f;
+      sel.style.height = 34.f;
+      sel.style.backgroundColor = glint_demo_theme::surface;
+      sel.style.color = glint_demo_theme::text;
+      sel.style.borderRadius = 4.f;
+      sel.style.borderWidth = 1.f;
+      sel.style.borderColor = glint_demo_theme::border;
+      sel.style.paddingLeft = 10.f;
+      sel.style.fontSize = 13.f;
     });
 
-    glint_element* fbPtr = feedback;
-    inp->onChange  = [fbPtr](const std::string& v) {
-      fbPtr->innerText = std::string("Value: ") + v;
-      fbPtr->setDirty(false);
+    select->onChange = [onValue = std::move(onValue)](int /*idx*/, const std::string& value) {
+      onValue(value);
     };
-    inp->onSubmit  = [fbPtr](const std::string& v) {
-      fbPtr->innerText = std::string("Submitted: ") + v;
-      fbPtr->style.color = glint_demo_theme::success;
-      fbPtr->setDirty(false);
-    };
+  };
 
-    addNote("Use this field to test change vs submit behavior with a non-default keyboard hint.");
-  }
-
-  if (!hasAutoFocusSearchInput)
-    return;
-
-  if (mDispatchMain)
-  {
-    mDispatchMain([this]() {
-      if (!mRoot)
-        return;
-
-      if (glint_element* focusTarget = mRoot->getElementByStringId(kAutoFocusSearchInputId))
-        mRoot->SetFocus(focusTarget);
+  addLabeledSelect(
+    "Type",
+    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url" }),
+    0,
+    [currentType, applyConfig, normalizeSelectValue](const std::string& value) {
+      *currentType = normalizeSelectValue(value);
+      applyConfig();
     });
-    return;
-  }
 
-  if (!mRoot)
-    return;
+  addLabeledSelect(
+    "Inputmode",
+    makeOptions({ "None", "text", "decimal", "numeric", "tel", "search", "email", "url", "none" }),
+    0,
+    [currentInputmode, applyConfig, normalizeSelectValue](const std::string& value) {
+      *currentInputmode = normalizeSelectValue(value);
+      applyConfig();
+    });
 
-  if (glint_element* focusTarget = mRoot->getElementByStringId(kAutoFocusSearchInputId))
-    mRoot->SetFocus(focusTarget);
+  addLabeledSelect(
+    "Enterkeyhint",
+    makeOptions({ "None", "enter", "done", "go", "next", "search", "send" }),
+    0,
+    [currentEnterkeyhint, applyConfig, normalizeSelectValue](const std::string& value) {
+      *currentEnterkeyhint = normalizeSelectValue(value);
+      applyConfig();
+    });
+
+  addSpacer(8.f);
+  addNote("Use the three menus to compare combinations like type=None + enterkeyhint=search, or type=text + inputmode=search + enterkeyhint=search, without duplicating the page.");
+
+  applyConfig();
 }
