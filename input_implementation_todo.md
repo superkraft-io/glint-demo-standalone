@@ -44,7 +44,7 @@ Notes:
 - [x] `range`
 - [x] `checkbox`
 - [x] `radio`
-- [ ] `hidden`
+- [x] `hidden`
 - [ ] `date`
 - [ ] `month`
 - [ ] `week`

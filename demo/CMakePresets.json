@@ -225,11 +225,17 @@
     },
     {
       "name": "ios-device-debug",
-      "configurePreset": "ios-device-debug"
+      "configurePreset": "ios-device-debug",
+      "nativeToolOptions": [
+        "-allowProvisioningUpdates"
+      ]
     },
     {
       "name": "ios-device-release",
-      "configurePreset": "ios-device-release"
+      "configurePreset": "ios-device-release",
+      "nativeToolOptions": [
+        "-allowProvisioningUpdates"
+      ]
     },
     {
       "name": "linux",

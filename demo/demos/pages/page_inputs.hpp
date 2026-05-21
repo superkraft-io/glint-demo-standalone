@@ -85,7 +85,7 @@ inline void glint_demos_window::buildInputs()
     inp.style.height = 36.f;
   });
 
-  addNote("This playground is for text-editable input combinations. None on type behaves like an omitted HTML type attribute, which defaults to text.");
+  addNote("This playground is primarily for text-editable input combinations. None on type behaves like an omitted HTML type attribute, which defaults to text; hidden removes the control from layout.");
   addSpacer(12.f);
 
   auto* selectorsRow = mContent->add.div([](glint_component_style& row) {
@@ -530,7 +530,7 @@ inline void glint_demos_window::buildInputs()
   addLabeledSelect(
     selectorsRow,
     "Type",
-    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url" }),
+    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden" }),
     0,
     [currentType, applyConfig, normalizeSelectValue](const std::string& value) {
       *currentType = normalizeSelectValue(value);
