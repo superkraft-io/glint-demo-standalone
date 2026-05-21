@@ -1,0 +1,5 @@
+# Copy this file to demo/project.cmake and replace the values below.
+# This file is loaded automatically by demo/CMakeLists.txt when present.
+
+set(GLINT_IOS_DEVELOPMENT_TEAM "YOUR_TEAM_ID" CACHE STRING "Apple development team ID used for iOS code signing." FORCE)
+set(GLINT_IOS_BUNDLE_IDENTIFIER "io.superkraft.glintdemo" CACHE STRING "Bundle identifier to use for the iOS app target." FORCE)
