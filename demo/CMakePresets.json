@@ -110,7 +110,8 @@
         "CMAKE_SYSTEM_NAME": "iOS",
         "CMAKE_OSX_SYSROOT": "iphoneos",
         "CMAKE_OSX_ARCHITECTURES": "arm64",
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "GLINT_IOS_ENABLE_CODE_SIGNING": "OFF"
       }
     },
     {
@@ -127,6 +128,22 @@
       "binaryDir": "${sourceDir}/build/ios-device",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "ios-device-debug-signed",
+      "inherits": "ios-device-debug",
+      "binaryDir": "${sourceDir}/build/ios-device",
+      "cacheVariables": {
+        "GLINT_IOS_ENABLE_CODE_SIGNING": "ON"
+      }
+    },
+    {
+      "name": "ios-device-release-signed",
+      "inherits": "ios-device-release",
+      "binaryDir": "${sourceDir}/build/ios-device",
+      "cacheVariables": {
+        "GLINT_IOS_ENABLE_CODE_SIGNING": "ON"
       }
     },
     {
@@ -225,14 +242,22 @@
     },
     {
       "name": "ios-device-debug",
-      "configurePreset": "ios-device-debug",
+      "configurePreset": "ios-device-debug"
+    },
+    {
+      "name": "ios-device-release",
+      "configurePreset": "ios-device-release"
+    },
+    {
+      "name": "ios-device-debug-signed",
+      "configurePreset": "ios-device-debug-signed",
       "nativeToolOptions": [
         "-allowProvisioningUpdates"
       ]
     },
     {
-      "name": "ios-device-release",
-      "configurePreset": "ios-device-release",
+      "name": "ios-device-release-signed",
+      "configurePreset": "ios-device-release-signed",
       "nativeToolOptions": [
         "-allowProvisioningUpdates"
       ]

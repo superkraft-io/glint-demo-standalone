@@ -108,7 +108,9 @@ cmake --preset ios-sim-debug
 
 **iPhone / iPad:**
 
-Real-device iOS builds require a local signing configuration.
+Real-device iOS builds compile unsigned by default. This is enough for CI-style build validation and local compile/link checks.
+
+To install or launch on physical hardware, use the signed device presets and a local signing configuration.
 
 To find your Apple development team ID on this Mac, run:
 
@@ -118,21 +120,46 @@ zsh third_party/glint/scripts/get_apple_team_id.sh
 
 The script prints candidate team IDs and a ready-to-paste `demo/project.cmake` snippet.
 
-Create `demo/project.cmake` with your Apple development team ID before running the device preset:
+Create `demo/project.cmake` with your Apple development team ID before running a signed device build:
 
 ```cmake
+set(GLINT_IOS_ENABLE_CODE_SIGNING ON CACHE BOOL "" FORCE)
 set(GLINT_IOS_DEVELOPMENT_TEAM "YOUR_TEAM_ID" CACHE STRING "" FORCE)
 set(GLINT_IOS_BUNDLE_IDENTIFIER "io.superkraft.glintdemo" CACHE STRING "" FORCE)
 ```
 
-Then configure:
+Then configure the signed preset:
+
+```sh
+cd demo
+cmake --preset ios-device-debug-signed
+```
+
+If you have more than one team ID, use the one that matches the Apple account/team you intend to sign with in Xcode.
+
+The VS Code device launch tasks use signed presets and expect that local signing configuration to be present.
+They also require an iOS development certificate plus an iOS provisioning profile; a macOS-only profile or Developer ID certificate is not enough.
+
+After you download the `.mobileprovision` file for your iPhone/iPad, install it onto this Mac by double-clicking it in Finder or copying it into the standard profile directory:
+
+```sh
+mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+cp "/path/to/profile.mobileprovision" "$HOME/Library/MobileDevice/Provisioning Profiles/"
+```
+
+Before attempting a signed device build or the VS Code launch task, verify the local signing setup:
+
+```sh
+zsh third_party/glint/scripts/check_ios_signing.sh
+```
+
+If you only want a compile/link check for physical-device targets and do not need install/launch, keep using the unsigned presets:
 
 ```sh
 cd demo
 cmake --preset ios-device-debug
+cmake --build --preset ios-device-debug
 ```
-
-If you have more than one team ID, use the one that matches the Apple account/team you intend to sign with in Xcode.
 
 **Linux (CPU renderer):**
 
@@ -172,6 +199,9 @@ cmake --build --preset ios-sim-debug
 
 ```sh
 cmake --build --preset ios-device-debug
+
+# Signed build for real-device install / launch
+cmake --build --preset ios-device-debug-signed
 ```
 
 **Linux:**

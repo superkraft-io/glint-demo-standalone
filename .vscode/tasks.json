@@ -157,6 +157,36 @@
       "dependsOn": "cmake: configure (iOS Device Debug)"
     },
     {
+      "label": "check: iOS Device Signing",
+      "type": "shell",
+      "command": "zsh \"${workspaceFolder}/third_party/glint/scripts/check_ios_signing.sh\"",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "cmake: configure (iOS Device Debug Signed)",
+      "type": "shell",
+      "command": "cmake --preset ios-device-debug-signed",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["deps: Ensure Skia iOS Device (Source)", "check: iOS Device Signing"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: iOS Device Debug Signed",
+      "type": "shell",
+      "command": "cmake --build --preset ios-device-debug-signed",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (iOS Device Debug Signed)"
+    },
+    {
       "label": "cmake: configure (iOS Device Release)",
       "type": "shell",
       "command": "cmake --preset ios-device-release",
@@ -176,6 +206,27 @@
       "presentation": { "reveal": "always", "panel": "shared" },
       "problemMatcher": "$gcc",
       "dependsOn": "cmake: configure (iOS Device Release)"
+    },
+    {
+      "label": "cmake: configure (iOS Device Release Signed)",
+      "type": "shell",
+      "command": "cmake --preset ios-device-release-signed",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["deps: Ensure Skia iOS Device (Source)", "check: iOS Device Signing"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: iOS Device Release Signed",
+      "type": "shell",
+      "command": "cmake --build --preset ios-device-release-signed",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (iOS Device Release Signed)"
     },
 
     // ── Skia dependency generation ───────────────────────────────────────────
@@ -328,9 +379,9 @@
     {
       "label": "📱 glint_demo iOS Launch Debug (Device)",
       "type": "shell",
-      "command": "device=\"$(xcrun devicectl list devices | awk 'match($0, /[0-9A-F-]{36}/) { id = substr($0, RSTART, RLENGTH); next } /available/ && id != \"\" { print id; exit }')\" && if [[ -z \"$device\" ]]; then echo 'No available physical iOS device found. Connect and unlock an iPhone, then trust this Mac in Xcode.'; exit 1; fi && xcrun devicectl device install app --device \"$device\" \"${workspaceFolder}/demo/build/ios-device/Debug-iphoneos/glint_demo.app\" && xcrun devicectl device process launch --device \"$device\" io.superkraft.glintdemo",
+      "command": "app=\"${workspaceFolder}/demo/build/ios-device/Debug-iphoneos/glint_demo.app\" && if [[ ! -f \"$app/embedded.mobileprovision\" ]]; then echo 'The iOS device app bundle is unsigned. Enable GLINT_IOS_ENABLE_CODE_SIGNING ON in demo/project.cmake, set a valid Apple team ID, then rerun this launch task.'; exit 1; fi && device=\"$(xcrun devicectl list devices --hide-headers --hide-default-columns --columns Identifier | head -n 1 | tr -d '[:space:]')\" && if [[ -z \"$device\" ]]; then echo 'No connected physical iOS device found. Connect and unlock an iPhone, then trust this Mac in Xcode.'; exit 1; fi && xcrun devicectl device install app --device \"$device\" \"$app\" && xcrun devicectl device process launch --device \"$device\" io.superkraft.glintdemo",
       "options": { "cwd": "${workspaceFolder}/demo" },
-      "dependsOn": ["📱 glint_demo iOS Device Build Debug (CMake)"],
+      "dependsOn": ["build: iOS Device Debug Signed"],
       "dependsOrder": "sequence",
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
@@ -339,9 +390,9 @@
     {
       "label": "📱 glint_demo iOS Launch Release (Device)",
       "type": "shell",
-      "command": "device=\"$(xcrun devicectl list devices | awk 'match($0, /[0-9A-F-]{36}/) { id = substr($0, RSTART, RLENGTH); next } /available/ && id != \"\" { print id; exit }')\" && if [[ -z \"$device\" ]]; then echo 'No available physical iOS device found. Connect and unlock an iPhone, then trust this Mac in Xcode.'; exit 1; fi && xcrun devicectl device install app --device \"$device\" \"${workspaceFolder}/demo/build/ios-device/Release-iphoneos/glint_demo.app\" && xcrun devicectl device process launch --device \"$device\" io.superkraft.glintdemo",
+      "command": "app=\"${workspaceFolder}/demo/build/ios-device/Release-iphoneos/glint_demo.app\" && if [[ ! -f \"$app/embedded.mobileprovision\" ]]; then echo 'The iOS device app bundle is unsigned. Enable GLINT_IOS_ENABLE_CODE_SIGNING ON in demo/project.cmake, set a valid Apple team ID, then rerun this launch task.'; exit 1; fi && device=\"$(xcrun devicectl list devices --hide-headers --hide-default-columns --columns Identifier | head -n 1 | tr -d '[:space:]')\" && if [[ -z \"$device\" ]]; then echo 'No connected physical iOS device found. Connect and unlock an iPhone, then trust this Mac in Xcode.'; exit 1; fi && xcrun devicectl device install app --device \"$device\" \"$app\" && xcrun devicectl device process launch --device \"$device\" io.superkraft.glintdemo",
       "options": { "cwd": "${workspaceFolder}/demo" },
-      "dependsOn": ["📱 glint_demo iOS Device Build Release (CMake)"],
+      "dependsOn": ["build: iOS Device Release Signed"],
       "dependsOrder": "sequence",
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
