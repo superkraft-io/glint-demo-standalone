@@ -59,6 +59,9 @@ node third_party/glint/scripts/init_skia.mjs --source --backend metal --config B
 # iOS Simulator on macOS — Metal
 node third_party/glint/scripts/init_skia.mjs --source --backend metal --target ios-simulator --config Both
 
+# iPhone / iPad on macOS — Metal
+node third_party/glint/scripts/init_skia.mjs --source --backend metal --target ios-device --config Both
+
 # Windows — Direct3D 12 (recommended)
 node third_party/glint/scripts/init_skia.mjs --source --backend d3d12 --config Both
 
@@ -103,6 +106,24 @@ cd demo
 cmake --preset ios-sim-debug
 ```
 
+**iPhone / iPad:**
+
+Real-device iOS builds require a local signing configuration.
+
+Create `demo/project.cmake` with your Apple development team ID before running the device preset:
+
+```cmake
+set(GLINT_IOS_DEVELOPMENT_TEAM "YOUR_TEAM_ID" CACHE STRING "" FORCE)
+set(GLINT_IOS_BUNDLE_IDENTIFIER "io.superkraft.glintdemo" CACHE STRING "" FORCE)
+```
+
+Then configure:
+
+```sh
+cd demo
+cmake --preset ios-device-debug
+```
+
 **Linux (CPU renderer):**
 
 ```sh
@@ -135,6 +156,12 @@ cmake --build --preset macos
 
 ```sh
 cmake --build --preset ios-sim-debug
+```
+
+**iPhone / iPad:**
+
+```sh
+cmake --build --preset ios-device-debug
 ```
 
 **Linux:**

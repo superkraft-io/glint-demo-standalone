@@ -6,3 +6,5 @@ demo/build/
 glint_user_code/cpp/bundle/
 
 cursors/
+
+demo/project.cmake

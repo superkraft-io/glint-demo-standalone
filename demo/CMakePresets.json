@@ -97,6 +97,39 @@
       }
     },
     {
+      "name": "ios-device-base",
+      "inherits": "base",
+      "generator": "Xcode",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "binaryDir": "${sourceDir}/build/ios-device",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_NAME": "iOS",
+        "CMAKE_OSX_SYSROOT": "iphoneos",
+        "CMAKE_OSX_ARCHITECTURES": "arm64",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ios-device-debug",
+      "inherits": "ios-device-base",
+      "binaryDir": "${sourceDir}/build/ios-device",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ios-device-release",
+      "inherits": "ios-device-base",
+      "binaryDir": "${sourceDir}/build/ios-device",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
       "name": "linux",
       "inherits": "base",
       "generator": "Ninja",
@@ -189,6 +222,14 @@
       "name": "ios-sim-release",
       "configurePreset": "ios-sim-debug",
       "configuration": "Release"
+    },
+    {
+      "name": "ios-device-debug",
+      "configurePreset": "ios-device-debug"
+    },
+    {
+      "name": "ios-device-release",
+      "configurePreset": "ios-device-release"
     },
     {
       "name": "linux",

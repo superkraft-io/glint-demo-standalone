@@ -88,7 +88,7 @@ Notes:
 - [x] `pattern`
 - [x] `required`
 - [x] `multiple`
-- [ ] `enterkeyhint`
+- [x] `enterkeyhint`
 - [ ] `autocomplete`
 - [ ] `autocapitalize`
 - [ ] `spellcheck`

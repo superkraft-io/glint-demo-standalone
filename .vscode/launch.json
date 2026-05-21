@@ -210,6 +210,40 @@
     },
 
 
+    { "name": "        " },
+
+
+    // ── iOS Device ────────────────────────────────────────────────────────
+    { "name": "📱 iOS Device" },
+
+    {
+      "name": "├─ 💽 Debug",
+      "type": "lldb",
+      "request": "attach",
+      "targetCreateCommands": [
+        "target create \"${workspaceFolder}/demo/build/ios-device/Debug-iphoneos/glint_demo.app/glint_demo\""
+      ],
+      "processCreateCommands": [
+        "platform select remote-ios",
+        "process attach --name glint_demo --waitfor"
+      ],
+      "preLaunchTask": "📱 glint_demo iOS Launch Debug (Device)"
+    },
+    {
+      "name": "└─ 💽 Release",
+      "type": "lldb",
+      "request": "attach",
+      "targetCreateCommands": [
+        "target create \"${workspaceFolder}/demo/build/ios-device/Release-iphoneos/glint_demo.app/glint_demo\""
+      ],
+      "processCreateCommands": [
+        "platform select remote-ios",
+        "process attach --name glint_demo --waitfor"
+      ],
+      "preLaunchTask": "📱 glint_demo iOS Launch Release (Device)"
+    },
+
+
     { "name": "         " },
 
 

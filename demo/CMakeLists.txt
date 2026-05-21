@@ -10,6 +10,16 @@ set(_GLINT_DEFAULT_DEPS_DIR "${GLINT_REPO_ROOT}/third_party/skia")
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/project.cmake" OPTIONAL)
 
+if(NOT DEFINED GLINT_IOS_BUNDLE_IDENTIFIER)
+  set(GLINT_IOS_BUNDLE_IDENTIFIER "io.superkraft.glintdemo" CACHE STRING
+    "Bundle identifier to use for the iOS app target.")
+endif()
+
+if(NOT DEFINED GLINT_IOS_DEVELOPMENT_TEAM)
+  set(GLINT_IOS_DEVELOPMENT_TEAM "" CACHE STRING
+    "Apple development team ID used for signing real-device iOS builds.")
+endif()
+
 if(NOT DEFINED GLINT_DEPS_DIR OR
    NOT EXISTS "${GLINT_DEPS_DIR}/src/skia/include/core/SkCanvas.h")
   set(GLINT_DEPS_DIR "${_GLINT_DEFAULT_DEPS_DIR}" CACHE PATH
@@ -64,6 +74,11 @@ if(WIN32)
   set_property(TARGET glint_demo PROPERTY
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+  if(NOT CMAKE_OSX_SYSROOT MATCHES "iphonesimulator" AND GLINT_IOS_DEVELOPMENT_TEAM STREQUAL "")
+    message(FATAL_ERROR
+      "Real-device iOS builds require GLINT_IOS_DEVELOPMENT_TEAM to be set. "
+      "Create demo/project.cmake from demo/project.cmake.example and set your Apple development team ID there.")
+  endif()
   add_executable(glint_demo MACOSX_BUNDLE
     demo_ios_main.mm
     LaunchScreen.storyboard
@@ -72,12 +87,23 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
     COMPILE_FLAGS "-x objective-c++")
   set_source_files_properties(LaunchScreen.storyboard PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)
+  set(_glint_ios_code_signing_allowed "NO")
+  if(NOT CMAKE_OSX_SYSROOT MATCHES "iphonesimulator")
+    set(_glint_ios_code_signing_allowed "YES")
+  endif()
   set_target_properties(glint_demo PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER "io.superkraft.glintdemo"
+    MACOSX_BUNDLE_GUI_IDENTIFIER "${GLINT_IOS_BUNDLE_IDENTIFIER}"
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info-iOS.plist"
-    XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
-    XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "io.superkraft.glintdemo"
+    XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "${_glint_ios_code_signing_allowed}"
+    XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "${GLINT_IOS_BUNDLE_IDENTIFIER}"
     XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
+  if(NOT CMAKE_OSX_SYSROOT MATCHES "iphonesimulator")
+    set_property(TARGET glint_demo PROPERTY XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Automatic")
+    if(NOT GLINT_IOS_DEVELOPMENT_TEAM STREQUAL "")
+      set_property(TARGET glint_demo PROPERTY
+        XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "${GLINT_IOS_DEVELOPMENT_TEAM}")
+    endif()
+  endif()
 else()
   add_executable(glint_demo
     demo_main.cpp

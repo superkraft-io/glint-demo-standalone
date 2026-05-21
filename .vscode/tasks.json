@@ -135,6 +135,91 @@
       "problemMatcher": "$gcc",
       "dependsOn": "cmake: configure (iOS Simulator Release)"
     },
+    {
+      "label": "cmake: configure (iOS Device Debug)",
+      "type": "shell",
+      "command": "cmake --preset ios-device-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["deps: Ensure Skia iOS Device (Source)"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: iOS Device Debug",
+      "type": "shell",
+      "command": "cmake --build --preset ios-device-debug",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (iOS Device Debug)"
+    },
+    {
+      "label": "cmake: configure (iOS Device Release)",
+      "type": "shell",
+      "command": "cmake --preset ios-device-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["deps: Ensure Skia iOS Device (Source)"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: iOS Device Release",
+      "type": "shell",
+      "command": "cmake --build --preset ios-device-release",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$gcc",
+      "dependsOn": "cmake: configure (iOS Device Release)"
+    },
+
+    // ── Skia dependency generation ───────────────────────────────────────────
+    {
+      "label": "deps: Skia iOS Simulator (Source)",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/third_party/glint/scripts/init_skia.mjs",
+        "--source",
+        "--backend", "metal",
+        "--target", "ios-simulator",
+        "--config", "Both"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "deps: Skia iOS Device (Source)",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/third_party/glint/scripts/init_skia.mjs",
+        "--source",
+        "--backend", "metal",
+        "--target", "ios-device",
+        "--config", "Both"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "deps: Ensure Skia iOS Device (Source)",
+      "type": "shell",
+      "command": "if [[ -d \"${workspaceFolder}/third_party/skia/ios-device/arm64/Debug\" || -d \"${workspaceFolder}/third_party/skia/ios-device/arm64/Release\" ]]; then echo 'Skia iOS device libraries already present.'; else node \"${workspaceFolder}/third_party/glint/scripts/init_skia.mjs\" --source --backend metal --target ios-device --config Both; fi",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
 
     // ── glint bundler ─────────────────────────────────────────────────────────
     {
@@ -205,6 +290,20 @@
       "problemMatcher": []
     },
     {
+      "label": "📱 glint_demo iOS Device Build Debug (CMake)",
+      "dependsOn": ["build: iOS Device Debug"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 glint_demo iOS Device Build Release (CMake)",
+      "dependsOn": ["build: iOS Device Release"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
       "label": "📱 glint_demo iOS Launch Debug (Simulator)",
       "type": "shell",
       "command": "open -a Simulator && device=\"$(xcrun simctl list devices | awk '/(Booted)/ && /iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\" && if [[ -z \"$device\" ]]; then device=\"$(xcrun simctl list devices available | awk '/iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\"; fi && if [[ -z \"$device\" ]]; then echo 'No available iOS Simulator devices found. Install an iOS Simulator runtime in Xcode > Settings > Platforms.'; exit 1; fi && xcrun simctl boot \"$device\" >/dev/null 2>&1 || true && xcrun simctl bootstatus \"$device\" -b && (xcrun simctl terminate \"$device\" io.superkraft.glintdemo >/dev/null 2>&1 || true) && xcrun simctl install \"$device\" \"${workspaceFolder}/demo/build/ios-sim/Debug-iphonesimulator/glint_demo.app\" && xcrun simctl launch --console \"$device\" io.superkraft.glintdemo",
@@ -221,6 +320,28 @@
       "command": "open -a Simulator && device=\"$(xcrun simctl list devices | awk '/(Booted)/ && /iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\" && if [[ -z \"$device\" ]]; then device=\"$(xcrun simctl list devices available | awk '/iPhone/ { if (match($0, /[0-9A-F-]{36}/)) { print substr($0, RSTART, RLENGTH); exit } }')\"; fi && if [[ -z \"$device\" ]]; then echo 'No available iOS Simulator devices found. Install an iOS Simulator runtime in Xcode > Settings > Platforms.'; exit 1; fi && xcrun simctl boot \"$device\" >/dev/null 2>&1 || true && xcrun simctl bootstatus \"$device\" -b && (xcrun simctl terminate \"$device\" io.superkraft.glintdemo >/dev/null 2>&1 || true) && xcrun simctl install \"$device\" \"${workspaceFolder}/demo/build/ios-sim/Release-iphonesimulator/glint_demo.app\" && xcrun simctl launch --console \"$device\" io.superkraft.glintdemo",
       "options": { "cwd": "${workspaceFolder}/demo" },
       "dependsOn": ["📱 glint_demo iOS Build Release (CMake)"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 glint_demo iOS Launch Debug (Device)",
+      "type": "shell",
+      "command": "device=\"$(xcrun devicectl list devices | awk 'match($0, /[0-9A-F-]{36}/) { id = substr($0, RSTART, RLENGTH); next } /available/ && id != \"\" { print id; exit }')\" && if [[ -z \"$device\" ]]; then echo 'No available physical iOS device found. Connect and unlock an iPhone, then trust this Mac in Xcode.'; exit 1; fi && xcrun devicectl device install app --device \"$device\" \"${workspaceFolder}/demo/build/ios-device/Debug-iphoneos/glint_demo.app\" && xcrun devicectl device process launch --device \"$device\" io.superkraft.glintdemo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["📱 glint_demo iOS Device Build Debug (CMake)"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 glint_demo iOS Launch Release (Device)",
+      "type": "shell",
+      "command": "device=\"$(xcrun devicectl list devices | awk 'match($0, /[0-9A-F-]{36}/) { id = substr($0, RSTART, RLENGTH); next } /available/ && id != \"\" { print id; exit }')\" && if [[ -z \"$device\" ]]; then echo 'No available physical iOS device found. Connect and unlock an iPhone, then trust this Mac in Xcode.'; exit 1; fi && xcrun devicectl device install app --device \"$device\" \"${workspaceFolder}/demo/build/ios-device/Release-iphoneos/glint_demo.app\" && xcrun devicectl device process launch --device \"$device\" io.superkraft.glintdemo",
+      "options": { "cwd": "${workspaceFolder}/demo" },
+      "dependsOn": ["📱 glint_demo iOS Device Build Release (CMake)"],
       "dependsOrder": "sequence",
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },

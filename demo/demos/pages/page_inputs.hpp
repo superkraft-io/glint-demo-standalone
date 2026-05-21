@@ -106,6 +106,15 @@ inline void glint_demos_window::buildInputs()
     row.style.marginBottom = 12.f;
   });
 
+  auto* traitRow = mContent->add.div([](glint_component_style& row) {
+    row.style.display = "flex";
+    row.style.flexDirection = "row";
+    row.style.alignItems = "flex-start";
+    row.style.gap = 12.f;
+    row.style.width = "100%";
+    row.style.marginBottom = 12.f;
+  });
+
   auto* lengthRow = mContent->add.div([](glint_component_style& row) {
     row.style.display = "flex";
     row.style.flexDirection = "row";
@@ -136,6 +145,9 @@ inline void glint_demos_window::buildInputs()
   auto currentType = std::make_shared<std::string>();
   auto currentInputmode = std::make_shared<std::string>();
   auto currentEnterkeyhint = std::make_shared<std::string>();
+  auto currentAutocomplete = std::make_shared<std::string>();
+  auto currentAutocapitalize = std::make_shared<std::string>();
+  auto currentSpellcheck = std::make_shared<std::string>();
   auto currentMaxlength = std::make_shared<int>(-1);
   auto currentMinlength = std::make_shared<int>(-1);
   auto currentPattern = std::make_shared<std::string>();
@@ -148,7 +160,7 @@ inline void glint_demos_window::buildInputs()
   auto currentDisabled = std::make_shared<bool>(false);
 
   auto* configFeedback = mContent->add.div([](glint_component_style& feedback) {
-    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | maxlength=None | minlength=None | pattern=None | min=None | max=None | step=None | required=false | multiple=false | readonly=false | disabled=false";
+    feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | autocomplete=None | autocapitalize=None | spellcheck=None | maxlength=None | minlength=None | pattern=None | min=None | max=None | step=None | required=false | multiple=false | readonly=false | disabled=false";
     feedback.style.color = glint_demo_theme::muted;
     feedback.style.fontSize = 12.f;
     feedback.style.width = "100%";
@@ -273,6 +285,9 @@ inline void glint_demos_window::buildInputs()
     playgroundInput->type = resolvedType;
     playgroundInput->inputmode = *currentInputmode;
     playgroundInput->enterkeyhint = *currentEnterkeyhint;
+    playgroundInput->autocomplete = *currentAutocomplete;
+    playgroundInput->autocapitalize = *currentAutocapitalize;
+    playgroundInput->spellcheck = *currentSpellcheck;
     playgroundInput->maxlength = *currentMaxlength;
     playgroundInput->minlength = *currentMinlength;
     playgroundInput->pattern = *currentPattern;
@@ -289,6 +304,9 @@ inline void glint_demos_window::buildInputs()
                                 + displayAttrValue(*currentType, "text")
                                 + " | inputmode=" + displayAttrValue(*currentInputmode)
                                 + " | enterkeyhint=" + displayAttrValue(*currentEnterkeyhint)
+                                + " | autocomplete=" + displayAttrValue(*currentAutocomplete)
+                                + " | autocapitalize=" + displayAttrValue(*currentAutocapitalize)
+                                + " | spellcheck=" + displayAttrValue(*currentSpellcheck)
                                 + " | maxlength=" + (*currentMaxlength >= 0 ? std::to_string(*currentMaxlength) : std::string("None"))
                                 + " | minlength=" + (*currentMinlength >= 0 ? std::to_string(*currentMinlength) : std::string("None"))
                                 + " | pattern=" + displayAttrValue(*currentPattern)
@@ -539,9 +557,30 @@ inline void glint_demos_window::buildInputs()
       applyConfig();
     });
 
+  addLabeledSelect(
+    traitRow,
+    "Autocapitalize",
+    makeOptions({ "Unset", "none", "sentences", "words", "characters", "off", "on" }),
+    0,
+    [currentAutocapitalize, applyConfig](const std::string& value) {
+      *currentAutocapitalize = value == "Unset" ? std::string() : value;
+      applyConfig();
+    });
+
+  addLabeledSelect(
+    traitRow,
+    "Spellcheck",
+    makeOptions({ "Unset", "true", "false" }),
+    0,
+    [currentSpellcheck, applyConfig](const std::string& value) {
+      *currentSpellcheck = value == "Unset" ? std::string() : value;
+      applyConfig();
+    });
+
   addLabeledNumberInput(lengthRow, "Maxlength", "None", currentMaxlength);
   addLabeledNumberInput(lengthRow, "Minlength", "None", currentMinlength);
   addLabeledTextInput(patternRow, "Pattern", "e.g. [a-z]{3,8}", currentPattern);
+  addLabeledTextInput(patternRow, "Autocomplete", "off / email / username / one-time-code", currentAutocomplete);
   addLabeledDecimalInput(numberRuleRow, "Min", "None", currentMin);
   addLabeledDecimalInput(numberRuleRow, "Max", "None", currentMax);
   addLabeledDecimalInput(numberRuleRow, "Step", "None", currentStep);
@@ -552,7 +591,7 @@ inline void glint_demos_window::buildInputs()
   addBooleanCheckbox(attributeRow, "Disabled", currentDisabled);
 
   addSpacer(8.f);
-  addNote("Use the controls to compare type and keyboard combinations, then layer on maxlength, minlength, pattern, min, max, step, required, multiple, readonly, or disabled without duplicating the page.");
+  addNote("Use the controls to compare type and keyboard combinations, then layer on autocomplete, autocapitalize, spellcheck, maxlength, minlength, pattern, min, max, step, required, multiple, readonly, or disabled without duplicating the page.");
 
   applyConfig();
 }
