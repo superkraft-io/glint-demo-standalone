@@ -110,6 +110,14 @@ cmake --preset ios-sim-debug
 
 Real-device iOS builds require a local signing configuration.
 
+To find your Apple development team ID on this Mac, run:
+
+```sh
+zsh third_party/glint/scripts/get_apple_team_id.sh
+```
+
+The script prints candidate team IDs and a ready-to-paste `demo/project.cmake` snippet.
+
 Create `demo/project.cmake` with your Apple development team ID before running the device preset:
 
 ```cmake
@@ -123,6 +131,8 @@ Then configure:
 cd demo
 cmake --preset ios-device-debug
 ```
+
+If you have more than one team ID, use the one that matches the Apple account/team you intend to sign with in Xcode.
 
 **Linux (CPU renderer):**
 
