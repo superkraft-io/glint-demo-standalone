@@ -105,10 +105,10 @@ Notes:
 
 ## Platform Parity
 
-- [ ] iOS virtual keyboard mapping is correct per `type` and `inputmode`
-- [ ] iOS action button label is configurable via `enterkeyhint` (search glyph still differs from Safari)
-- [ ] Desktop behavior remains consistent after mobile-specific changes
-- [ ] Unsupported types degrade predictably to a safe text-like fallback when required
+- [x] iOS virtual keyboard mapping is correct per `type` and `inputmode`
+- [x] iOS action button label is configurable via `enterkeyhint` (search glyph still differs from Safari)
+- [x] Desktop behavior remains consistent after mobile-specific changes
+- [x] Unsupported types degrade predictably to a safe text-like fallback when required
 
 
 
