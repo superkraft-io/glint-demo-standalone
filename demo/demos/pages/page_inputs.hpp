@@ -581,7 +581,7 @@ inline void glint_demos_window::buildInputs()
   addLabeledSelect(
     selectorsRow,
     "Type",
-    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden", "button", "submit", "reset" }),
+    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden", "button", "submit", "reset", "color" }),
     0,
     [currentType, applyConfig, normalizeSelectValue](const std::string& value) {
       *currentType = normalizeSelectValue(value);

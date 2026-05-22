@@ -49,12 +49,12 @@ Notes:
 - [x] `button`
 - [x] `submit`
 - [x] `reset`
+- [ ] `color`
 - [ ] `date`
 - [ ] `month`
 - [ ] `week`
 - [ ] `time`
 - [ ] `datetime-local`
-- [ ] `color`
 - [ ] `file`
 - [ ] `image`
 
