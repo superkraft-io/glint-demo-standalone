@@ -80,6 +80,20 @@ inline void glint_demos_window::buildInputs()
     return options;
   };
 
+  auto describeFormValues = [](const std::vector<glint_form_value>& values) {
+    if (values.empty()) return std::string("(empty)");
+
+    std::string summary;
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+      if (i) summary += " | ";
+      summary += values[i].name;
+      summary += '=';
+      summary += values[i].value.empty() ? std::string("(empty)") : values[i].value;
+    }
+    return summary;
+  };
+
   addHeading("Configurable input playground");
   addMeta("One input controlled by type and keyboard selects plus a few extra attribute toggles for quick verification.");
 
@@ -629,6 +643,245 @@ inline void glint_demos_window::buildInputs()
 
   addSpacer(8.f);
   addNote("Use the controls to compare type and keyboard combinations, then layer on autocomplete, autocapitalize, spellcheck, maxlength, minlength, pattern, min, max, step, required, multiple, readonly, or disabled without duplicating the page.");
+
+  addSpacer(24.f);
+  addHeading("Form submit and reset");
+  addMeta("This form uses a real form owner: pressing Enter in the first field submits through the form, submit serializes named controls, and reset restores the original default state.");
+
+  auto* formStateFeedback = mContent->add.div([](glint_component_style& feedback) {
+    feedback.innerText = "Form state: valid defaults loaded";
+    feedback.style.color = glint_demo_theme::success;
+    feedback.style.fontSize = 12.f;
+    feedback.style.width = "100%";
+    feedback.style.textAlign = EAlign::Near;
+    feedback.style.marginBottom = 6.f;
+  });
+
+  auto* formSubmitFeedback = mContent->add.div([](glint_component_style& feedback) {
+    feedback.innerText = "Form data: (none)";
+    feedback.style.color = glint_demo_theme::muted;
+    feedback.style.fontSize = 12.f;
+    feedback.style.width = "100%";
+    feedback.style.textAlign = EAlign::Near;
+    feedback.style.marginBottom = 6.f;
+  });
+
+  glint_element* formStateFeedbackPtr = formStateFeedback;
+  glint_element* formSubmitFeedbackPtr = formSubmitFeedback;
+  glint_input* formNameInput = nullptr;
+
+  mContent->add.custom<glint_form>([&](glint_form& form) {
+    form.style.display = "flex";
+    form.style.flexDirection = "column";
+    form.style.gap = 10.f;
+    form.style.width = "100%";
+    form.style.padding = 12.f;
+    form.style.backgroundColor = glint_demo_theme::surfaceHover;
+    form.style.borderRadius = 8.f;
+    form.style.borderWidth = 1.f;
+    form.style.borderColor = glint_demo_theme::border;
+
+    form.onSubmit = [formStateFeedbackPtr, formSubmitFeedbackPtr, describeFormValues](const std::vector<glint_form_value>& values,
+                                                                                       glint_element* submitter) {
+      std::string source = "Enter";
+      if (auto* input = dynamic_cast<glint_input*>(submitter))
+      {
+        if (input->type == "submit")
+          source = input->getValue().empty() ? std::string("submit") : input->getValue();
+      }
+
+      formStateFeedbackPtr->innerText = std::string("Form state: submitted via ") + source;
+      formStateFeedbackPtr->style.color = glint_demo_theme::success;
+      formStateFeedbackPtr->setDirty(false);
+
+      formSubmitFeedbackPtr->innerText = std::string("Form data: ") + describeFormValues(values);
+      formSubmitFeedbackPtr->style.color = values.empty() ? glint_demo_theme::muted : glint_demo_theme::success;
+      formSubmitFeedbackPtr->setDirty(false);
+      return true;
+    };
+
+    form.onReset = [formStateFeedbackPtr, formSubmitFeedbackPtr]() {
+      formStateFeedbackPtr->innerText = "Form state: defaults restored";
+      formStateFeedbackPtr->style.color = glint_demo_theme::warning;
+      formStateFeedbackPtr->setDirty(false);
+
+      formSubmitFeedbackPtr->innerText = "Form data: (reset)";
+      formSubmitFeedbackPtr->style.color = glint_demo_theme::muted;
+      formSubmitFeedbackPtr->setDirty(false);
+    };
+
+    form.add.div([](glint_component_style& heading) {
+      heading.innerText = "Named fields";
+      heading.style.color = glint_demo_theme::heading;
+      heading.style.fontSize = 13.f;
+      heading.style.width = "100%";
+      heading.style.textAlign = EAlign::Near;
+    });
+
+    auto* fieldRow = form.add.div([compactLayout](glint_component_style& row) {
+      row.style.display = "flex";
+      row.style.flexDirection = compactLayout ? std::string("column") : std::string("row");
+      row.style.alignItems = "stretch";
+      row.style.gap = 10.f;
+      row.style.width = "100%";
+    });
+
+    auto* nameGroup = fieldRow->add.div([](glint_component_style& group) {
+      group.style.display = "flex";
+      group.style.flexDirection = "column";
+      group.style.flexGrow = 1.f;
+      group.style.minWidth = 0.f;
+    });
+
+    nameGroup->add.div([](glint_component_style& label) {
+      label.innerText = "Name (required)";
+      label.style.color = glint_demo_theme::heading;
+      label.style.fontSize = 12.f;
+      label.style.width = "100%";
+      label.style.textAlign = EAlign::Near;
+      label.style.marginBottom = 6.f;
+    });
+
+    nameGroup->add.input([&](glint_input& inp) {
+      formNameInput = &inp;
+      inp.name = "name";
+      inp.type = "text";
+      inp.required = true;
+      inp.placeholder = "Ada Lovelace";
+      inp.style.width = "100%";
+      inp.style.height = 34.f;
+      inp.style.backgroundColor = glint_demo_theme::surface;
+      inp.style.color = glint_demo_theme::text;
+      inp.style.borderRadius = 4.f;
+      inp.style.borderWidth = 1.f;
+      inp.style.borderColor = glint_demo_theme::border;
+      inp.style.paddingLeft = 10.f;
+      inp.style.fontSize = 13.f;
+      inp.setValue("Ada");
+    });
+
+    auto* roleGroup = fieldRow->add.div([](glint_component_style& group) {
+      group.style.display = "flex";
+      group.style.flexDirection = "column";
+      group.style.flexGrow = 1.f;
+      group.style.minWidth = 0.f;
+    });
+
+    roleGroup->add.div([](glint_component_style& label) {
+      label.innerText = "Role";
+      label.style.color = glint_demo_theme::heading;
+      label.style.fontSize = 12.f;
+      label.style.width = "100%";
+      label.style.textAlign = EAlign::Near;
+      label.style.marginBottom = 6.f;
+    });
+
+    roleGroup->add.fromClass<glint_select>([](glint_select& sel) {
+      sel.name = "role";
+      sel.options = { "Designer", "Engineer", "Producer" };
+      sel.selectedIndex = 1;
+      sel.style.width = "100%";
+      sel.style.height = 34.f;
+      sel.style.backgroundColor = glint_demo_theme::surface;
+      sel.style.color = glint_demo_theme::text;
+      sel.style.borderRadius = 4.f;
+      sel.style.borderWidth = 1.f;
+      sel.style.borderColor = glint_demo_theme::border;
+      sel.style.paddingLeft = 10.f;
+      sel.style.fontSize = 13.f;
+    });
+
+    auto* notesGroup = form.add.div([](glint_component_style& group) {
+      group.style.display = "flex";
+      group.style.flexDirection = "column";
+      group.style.width = "100%";
+    });
+
+    notesGroup->add.div([](glint_component_style& label) {
+      label.innerText = "Notes";
+      label.style.color = glint_demo_theme::heading;
+      label.style.fontSize = 12.f;
+      label.style.width = "100%";
+      label.style.textAlign = EAlign::Near;
+      label.style.marginBottom = 6.f;
+    });
+
+    notesGroup->add.fromClass<glint_textarea>([](glint_textarea& ta) {
+      ta.name = "notes";
+      ta.placeholder = "Add context for the submission";
+      ta.style.width = "100%";
+      ta.style.height = 88.f;
+      ta.style.backgroundColor = glint_demo_theme::surface;
+      ta.style.color = glint_demo_theme::text;
+      ta.style.borderRadius = 4.f;
+      ta.style.borderWidth = 1.f;
+      ta.style.borderColor = glint_demo_theme::border;
+      ta.style.padding = 10.f;
+      ta.style.fontSize = 13.f;
+      ta.setValue("Ships Friday.");
+    });
+
+    form.add.input([](glint_input& inp) {
+      inp.name = "updates";
+      inp.type = "checkbox";
+      inp.text = "Email me release notes";
+      inp.value = "yes";
+      inp.checked = true;
+      inp.style.width = "fit-content";
+      inp.style.height = 22.f;
+    });
+
+    auto* actionRow = form.add.div([compactLayout](glint_component_style& row) {
+      row.style.display = "flex";
+      row.style.flexDirection = compactLayout ? std::string("column") : std::string("row");
+      row.style.alignItems = "stretch";
+      row.style.gap = 10.f;
+      row.style.width = "100%";
+    });
+
+    actionRow->add.input([](glint_input& inp) {
+      inp.name = "submit-action";
+      inp.type = "submit";
+      inp.style.width = "fit-content";
+      inp.style.height = 34.f;
+      inp.setValue("Submit form");
+    });
+
+    actionRow->add.input([](glint_input& inp) {
+      inp.type = "reset";
+      inp.style.width = "fit-content";
+      inp.style.height = 34.f;
+      inp.setValue("Reset defaults");
+    });
+
+    form.add.div([](glint_component_style& note) {
+      note.innerText = "Clear the required name field to block submission, press Enter in that field to submit through the form owner, or use reset to restore the original defaults.";
+      note.style.color = glint_demo_theme::muted;
+      note.style.fontSize = 12.f;
+      note.style.width = "100%";
+      note.style.textAlign = EAlign::Near;
+    });
+  });
+
+  auto refreshFormState = [formNameInput, formStateFeedbackPtr]() {
+    if (!formNameInput) return;
+    if (formNameInput->satisfiesConstraints())
+    {
+      formStateFeedbackPtr->innerText = "Form state: ready to submit";
+      formStateFeedbackPtr->style.color = glint_demo_theme::success;
+    }
+    else
+    {
+      formStateFeedbackPtr->innerText = "Form state: required name missing";
+      formStateFeedbackPtr->style.color = glint_demo_theme::warning;
+    }
+    formStateFeedbackPtr->setDirty(false);
+  };
+
+  if (formNameInput)
+    formNameInput->onChange = [refreshFormState](const std::string&) { refreshFormState(); };
+
+  refreshFormState();
 
   applyConfig();
 }

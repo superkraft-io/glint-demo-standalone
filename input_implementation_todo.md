@@ -21,6 +21,7 @@ Notes:
 - `type="number"` now validates parse, `min`, `max`, and `step` semantics with parity against the browser demo, without rewriting the current value on blur.
 - `type="email"` now validates email syntax, and `multiple` allows comma-separated addresses with browser-style validity semantics.
 - `type="url"` now validates absolute URL syntax with browser-checked parity for the tested edge cases, including rejecting `https:/`-style single-slash missing-host values.
+- Named `input`, `textarea`, and `select` controls can now participate in a real `glint_form`; submit serializes current values through the form owner, and reset restores captured defaults instead of only firing ad hoc callbacks.
 
 ## Core Mobile Behavior
 
@@ -45,6 +46,9 @@ Notes:
 - [x] `checkbox`
 - [x] `radio`
 - [x] `hidden`
+- [x] `button`
+- [x] `submit`
+- [x] `reset`
 - [ ] `date`
 - [ ] `month`
 - [ ] `week`
@@ -52,10 +56,7 @@ Notes:
 - [ ] `datetime-local`
 - [ ] `color`
 - [ ] `file`
-- [x] `submit`
 - [ ] `image`
-- [x] `reset`
-- [x] `button`
 
 ## Input Modes
 
@@ -70,7 +71,7 @@ Notes:
 
 ## Type vs Inputmode Mapping
 
-- [ ] `type` controls validation and submitted value semantics
+- [x] `type` controls validation and submitted value semantics
 - [x] `inputmode` only affects virtual keyboard choice
 - [x] `type="text" inputmode="numeric"` behaves as text with numeric keyboard hint
 - [x] `type="email"` preserves email semantics even if `inputmode` is absent or different
@@ -89,9 +90,9 @@ Notes:
 - [x] `required`
 - [x] `multiple`
 - [x] `enterkeyhint`
-- [ ] `autocomplete`
-- [ ] `autocapitalize`
-- [ ] `spellcheck`
+- [x] `autocomplete`
+- [x] `autocapitalize`
+- [x] `spellcheck`
 - [ ] `list`
 
 ## Validation Matrix
