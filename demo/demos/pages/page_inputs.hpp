@@ -72,6 +72,15 @@ inline void glint_demos_window::buildInputs()
     return std::string("Try different combinations\xe2\x80\xa6");
   };
 
+  auto styleDemoInput = [](glint_input& inp,
+                           const std::string& type,
+                           const std::string& placeholder,
+                           float height = 34.f) {
+    inp.type = type;
+    inp.placeholder = placeholder;
+    inp.className = height > 34.f ? "demo-input-field demo-input-field--tall" : "demo-input-field";
+  };
+
   auto makeOptions = [](std::initializer_list<const char*> values) {
     std::vector<std::string> options;
     options.reserve(values.size());
@@ -97,11 +106,8 @@ inline void glint_demos_window::buildInputs()
   addHeading("Configurable input playground");
   addMeta("One input controlled by type and keyboard selects plus a few extra attribute toggles for quick verification.");
 
-  auto* playgroundInput = mContent->add.input([](glint_input& inp) {
-    inp.type = "text";
-    inp.placeholder = "Try different combinations\xe2\x80\xa6";
-    inp.style.width = "100%";
-    inp.style.height = 36.f;
+  auto* playgroundInput = mContent->add.input([styleDemoInput](glint_input& inp) {
+    styleDemoInput(inp, "text", "Try different combinations\xe2\x80\xa6", 36.f);
   });
 
   addNote("None on type behaves like an omitted HTML type attribute, which defaults to text; hidden removes the control from layout; button-like types reuse the same playground and route clicks through the action feedback below.");
@@ -349,6 +355,8 @@ inline void glint_demos_window::buildInputs()
     playgroundInput->readonly = *currentReadonly;
     playgroundInput->disabled = *currentDisabled;
     playgroundInput->placeholder = placeholderForType(resolvedType);
+    if (resolvedType == "color") playgroundInput->style.width = 44.f;
+    else                           playgroundInput->style.width = "100%";
 
     configFeedbackPtr->innerText = std::string("Current: type=")
                                 + displayAttrValue(*currentType, "text")
@@ -435,18 +443,8 @@ inline void glint_demos_window::buildInputs()
     });
 
     auto* input = group->add.input([=](glint_input& inp) {
-      inp.type = "number";
-      inp.placeholder = placeholder;
+      styleDemoInput(inp, "number", placeholder);
       inp.min = 0.f;
-      inp.style.width = "100%";
-      inp.style.height = 34.f;
-      inp.style.backgroundColor = glint_demo_theme::surface;
-      inp.style.color = glint_demo_theme::text;
-      inp.style.borderRadius = 4.f;
-      inp.style.borderWidth = 1.f;
-      inp.style.borderColor = glint_demo_theme::border;
-      inp.style.paddingLeft = 10.f;
-      inp.style.fontSize = 13.f;
     });
 
     if (*currentValue >= 0)
@@ -513,17 +511,7 @@ inline void glint_demos_window::buildInputs()
     });
 
     auto* input = group->add.input([=](glint_input& inp) {
-      inp.type = "text";
-      inp.placeholder = placeholder;
-      inp.style.width = "100%";
-      inp.style.height = 34.f;
-      inp.style.backgroundColor = glint_demo_theme::surface;
-      inp.style.color = glint_demo_theme::text;
-      inp.style.borderRadius = 4.f;
-      inp.style.borderWidth = 1.f;
-      inp.style.borderColor = glint_demo_theme::border;
-      inp.style.paddingLeft = 10.f;
-      inp.style.fontSize = 13.f;
+      styleDemoInput(inp, "text", placeholder);
     });
 
     if (!currentValue->empty())
@@ -556,17 +544,7 @@ inline void glint_demos_window::buildInputs()
     });
 
     auto* input = group->add.input([=](glint_input& inp) {
-      inp.type = "number";
-      inp.placeholder = placeholder;
-      inp.style.width = "100%";
-      inp.style.height = 34.f;
-      inp.style.backgroundColor = glint_demo_theme::surface;
-      inp.style.color = glint_demo_theme::text;
-      inp.style.borderRadius = 4.f;
-      inp.style.borderWidth = 1.f;
-      inp.style.borderColor = glint_demo_theme::border;
-      inp.style.paddingLeft = 10.f;
-      inp.style.fontSize = 13.f;
+      styleDemoInput(inp, "number", placeholder);
     });
 
     if (!currentValue->empty())
