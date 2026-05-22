@@ -52,10 +52,10 @@ Notes:
 - [ ] `datetime-local`
 - [ ] `color`
 - [ ] `file`
-- [ ] `submit`
+- [x] `submit`
 - [ ] `image`
-- [ ] `reset`
-- [ ] `button`
+- [x] `reset`
+- [x] `button`
 
 ## Input Modes
 
@@ -100,7 +100,7 @@ Notes:
 - [x] Numeric types enforce numeric parsing rules correctly
 - [ ] Date and time types enforce normalized value formats correctly
 - [ ] File inputs reflect picker results and selected files correctly
-- [ ] Button-like types do not pretend to be text-editable controls
+- [x] Button-like types do not pretend to be text-editable controls
 
 ## Platform Parity
 

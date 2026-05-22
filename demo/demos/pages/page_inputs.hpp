@@ -57,7 +57,12 @@ inline void glint_demos_window::buildInputs()
     return std::string("None");
   };
 
+  auto isButtonLikeType = [](const std::string& type) {
+    return type == "button" || type == "submit" || type == "reset";
+  };
+
   auto placeholderForType = [](const std::string& type) {
+    if (type == "button" || type == "submit" || type == "reset" || type == "hidden") return std::string();
     if (type == "email") return std::string("user@example.com");
     if (type == "password") return std::string("Enter password\xe2\x80\xa6");
     if (type == "number") return std::string("42");
@@ -85,7 +90,7 @@ inline void glint_demos_window::buildInputs()
     inp.style.height = 36.f;
   });
 
-  addNote("This playground is primarily for text-editable input combinations. None on type behaves like an omitted HTML type attribute, which defaults to text; hidden removes the control from layout.");
+  addNote("None on type behaves like an omitted HTML type attribute, which defaults to text; hidden removes the control from layout; button-like types reuse the same playground and route clicks through the action feedback below.");
   addSpacer(12.f);
 
   auto* selectorsRow = mContent->add.div([](glint_component_style& row) {
@@ -199,9 +204,29 @@ inline void glint_demos_window::buildInputs()
   glint_element* submitFeedbackPtr = submitFeedback;
   glint_element* constraintFeedbackPtr = constraintFeedback;
 
+  auto refreshValueFeedback = [=]() {
+    const std::string value = playgroundInput->getValue();
+    if (isButtonLikeType(playgroundInput->type))
+      valueFeedbackPtr->innerText = value.empty() ? "Label: (empty)" : std::string("Label: ") + value;
+    else
+      valueFeedbackPtr->innerText = value.empty() ? "Value: (empty)" : std::string("Value: ") + value;
+    valueFeedbackPtr->style.color = glint_demo_theme::muted;
+    valueFeedbackPtr->setDirty(false);
+  };
+
   auto refreshConstraintFeedback = [=]() {
     std::string message = "Constraints: valid";
     const char* color = glint_demo_theme::success;
+
+    if (isButtonLikeType(playgroundInput->type))
+    {
+      message = "Constraints: not applicable to button-like types";
+      color = glint_demo_theme::muted;
+      constraintFeedbackPtr->innerText = std::move(message);
+      constraintFeedbackPtr->style.color = color;
+      constraintFeedbackPtr->setDirty(false);
+      return;
+    }
 
     if (playgroundInput->type == "number")
     {
@@ -269,6 +294,17 @@ inline void glint_demos_window::buildInputs()
     refreshConstraintFeedback();
   };
 
+  playgroundInput->onClick = [playgroundInput, submitFeedbackPtr](const std::string& value) {
+    if (playgroundInput->type == "submit") return;
+
+    const bool isResetType = (playgroundInput->type == "reset");
+    submitFeedbackPtr->innerText = value.empty()
+      ? std::string(isResetType ? "Last clicked reset: (empty)" : "Last clicked button: (empty)")
+      : std::string(isResetType ? "Last clicked reset: " : "Last clicked button: ") + value;
+    submitFeedbackPtr->style.color = isResetType ? glint_demo_theme::warning : glint_demo_theme::success;
+    submitFeedbackPtr->setDirty(false);
+  };
+
   playgroundInput->onSubmit = [submitFeedbackPtr](const std::string& value) {
     submitFeedbackPtr->innerText = value.empty() ? "Last submitted: (empty)" : std::string("Last submitted: ") + value;
     submitFeedbackPtr->style.color = glint_demo_theme::success;
@@ -319,6 +355,7 @@ inline void glint_demos_window::buildInputs()
                                 + " | disabled=" + (*currentDisabled ? "true" : "false");
     playgroundInput->setDirty(false);
     configFeedbackPtr->setDirty(false);
+    refreshValueFeedback();
     refreshConstraintFeedback();
   };
 
@@ -530,7 +567,7 @@ inline void glint_demos_window::buildInputs()
   addLabeledSelect(
     selectorsRow,
     "Type",
-    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden" }),
+    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden", "button", "submit", "reset" }),
     0,
     [currentType, applyConfig, normalizeSelectValue](const std::string& value) {
       *currentType = normalizeSelectValue(value);
