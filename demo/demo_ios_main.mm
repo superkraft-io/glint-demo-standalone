@@ -115,12 +115,44 @@
 
 @synthesize window = _window;
 
+- (UIWindowScene*)glint_activeWindowScene
+{
+  if (@available(iOS 13.0, *))
+  {
+    for (UIScene* scene in UIApplication.sharedApplication.connectedScenes)
+    {
+      if (![scene isKindOfClass:[UIWindowScene class]])
+        continue;
+      if (scene.activationState != UISceneActivationStateForegroundActive)
+        continue;
+      return (UIWindowScene*)scene;
+    }
+
+    for (UIScene* scene in UIApplication.sharedApplication.connectedScenes)
+    {
+      if ([scene isKindOfClass:[UIWindowScene class]])
+        return (UIWindowScene*)scene;
+    }
+  }
+
+  return nil;
+}
+
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
   (void)application;
   (void)launchOptions;
 
-  self.window = [[[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds] autorelease];
+  UIWindow* window = nil;
+  if (@available(iOS 13.0, *))
+  {
+    if (UIWindowScene* windowScene = [self glint_activeWindowScene])
+      window = [[[UIWindow alloc] initWithWindowScene:windowScene] autorelease];
+  }
+  if (!window)
+    window = [[[UIWindow alloc] initWithFrame:CGRectZero] autorelease];
+
+  self.window = window;
   GlintDemoViewController* controller = [[[GlintDemoViewController alloc] init] autorelease];
   self.window.rootViewController = controller;
   [self.window makeKeyAndVisible];

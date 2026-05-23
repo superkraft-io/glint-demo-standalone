@@ -49,14 +49,14 @@ Notes:
 - [x] `button`
 - [x] `submit`
 - [x] `reset`
-- [ ] `color`
+- [x] `file`
+- [x] `image`
+- [x] `color`
 - [ ] `date`
 - [ ] `month`
 - [ ] `week`
 - [ ] `time`
 - [ ] `datetime-local`
-- [ ] `file`
-- [ ] `image`
 
 ## Input Modes
 
