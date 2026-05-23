@@ -8,3 +8,5 @@ glint_user_code/cpp/bundle/
 cursors/
 
 demo/project.cmake
+
+.github/agents/glint_dev_doc.agent.md
