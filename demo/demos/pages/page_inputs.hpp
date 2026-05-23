@@ -444,6 +444,7 @@ inline void glint_demos_window::buildInputs()
 
     auto* input = group->add.input([=](glint_input& inp) {
       styleDemoInput(inp, "number", placeholder);
+      inp.style.width = "100%";
       inp.min = 0.f;
     });
 
@@ -512,6 +513,7 @@ inline void glint_demos_window::buildInputs()
 
     auto* input = group->add.input([=](glint_input& inp) {
       styleDemoInput(inp, "text", placeholder);
+      inp.style.width = "100%";
     });
 
     if (!currentValue->empty())
@@ -545,6 +547,7 @@ inline void glint_demos_window::buildInputs()
 
     auto* input = group->add.input([=](glint_input& inp) {
       styleDemoInput(inp, "number", placeholder);
+      inp.style.width = "100%";
     });
 
     if (!currentValue->empty())
