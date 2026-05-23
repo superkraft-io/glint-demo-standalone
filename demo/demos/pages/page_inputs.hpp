@@ -62,7 +62,7 @@ inline void glint_demos_window::buildInputs()
   };
 
   auto placeholderForType = [](const std::string& type) {
-    if (type == "button" || type == "submit" || type == "reset" || type == "hidden") return std::string();
+    if (type == "button" || type == "submit" || type == "reset" || type == "hidden" || type == "file" || type == "image") return std::string();
     if (type == "email") return std::string("user@example.com");
     if (type == "password") return std::string("Enter password\xe2\x80\xa6");
     if (type == "number") return std::string("42");
@@ -333,6 +333,7 @@ inline void glint_demos_window::buildInputs()
 
   auto applyConfig = [=]() {
     const std::string resolvedType = currentType->empty() ? std::string("text") : *currentType;
+    static constexpr const char* kImageInputDemoSrc = "/img/demo.png";
     auto parseOptionalFloat = [](const std::string& value, float unsetValue) {
       if (value.empty() || value == "-" || value == "." || value == "-.") return unsetValue;
       try { return std::stof(value); } catch (...) { return unsetValue; }
@@ -355,8 +356,21 @@ inline void glint_demos_window::buildInputs()
     playgroundInput->readonly = *currentReadonly;
     playgroundInput->disabled = *currentDisabled;
     playgroundInput->placeholder = placeholderForType(resolvedType);
-    if (resolvedType == "color") playgroundInput->style.width = 44.f;
-    else                           playgroundInput->style.width = "100%";
+    if (resolvedType == "image")
+    {
+      playgroundInput->src = kImageInputDemoSrc;
+      playgroundInput->alt = "Submit image";
+      playgroundInput->style.width = 96.f;
+      playgroundInput->style.height = 48.f;
+    }
+    else
+    {
+      playgroundInput->src.clear();
+      playgroundInput->alt.clear();
+      playgroundInput->style.height = 36.f;
+      if (resolvedType == "color") playgroundInput->style.width = 44.f;
+      else                           playgroundInput->style.width = "100%";
+    }
 
     configFeedbackPtr->innerText = std::string("Current: type=")
                                 + displayAttrValue(*currentType, "text")
@@ -562,7 +576,7 @@ inline void glint_demos_window::buildInputs()
   addLabeledSelect(
     selectorsRow,
     "Type",
-    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden", "button", "submit", "reset", "color" }),
+    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden", "button", "submit", "reset", "color", "file", "image" }),
     0,
     [currentType, applyConfig, normalizeSelectValue](const std::string& value) {
       *currentType = normalizeSelectValue(value);

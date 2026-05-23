@@ -1,0 +1,309 @@
+INPUT TYPE=FILE AND TYPE=IMAGE PARITY NOTES
+
+Purpose
+
+This document describes the behavior Glint should match for input[type=file]
+and input[type=image], using the WHATWG HTML standard as the source of truth
+and current Safari/Chrome behavior as the parity target.
+
+Use /Users/splitterai/Desktop/repos/superkraft-io/glint-demo-ios_android/input_file_image_reference.html
+as the local browser-reference page when verifying behavior.
+
+Important framing
+
+1. The data model is standardized, but the visible shell is not fully standardized.
+   For file inputs, exact button captions, empty-state text, spacing, and picker
+   visuals are UA/platform-defined. Parity means native-looking platform behavior,
+   not a hardcoded cross-platform caption.
+2. The picker itself must stay native. Do not build a fake picker UI and do not
+   expose real filesystem paths.
+3. Match shared Safari/Chrome behavior first. Only chase browser-specific quirks
+   after they are reproduced in the reference page and proven necessary.
+
+======================================================================
+FILE INPUT
+======================================================================
+
+Conceptual model
+
+- input[type=file] represents a list of selected files.
+- Each selected file has a filename, MIME type, and file body.
+- The true source path is never exposed to page script.
+- Without the multiple attribute, there must never be more than one selected file.
+
+What the visible control should be
+
+- Treat the visible control as native shell chrome for a file picker.
+- The standard only broadly describes it as "a label and a button".
+- The exact button text and empty-state text are implementation-defined and locale-
+  sensitive.
+- For parity, Glint should not hardcode one browser's English strings globally.
+  The visible shell should instead be modeled as native UA chrome or a close native
+  approximation for the current platform.
+
+Picker behavior
+
+- Activating the control opens the native file picker.
+- If disabled, the picker must not open.
+- The user agent may also allow other native selection paths, such as drag-and-drop.
+- The picker must respect multiple when enabled.
+- The picker must use accept as a filter hint.
+
+State and exposed APIs
+
+- The internal state is selected files, not a plain text string.
+- input.files returns a FileList representing the current selection.
+- The same FileList object may be returned until the selection changes.
+- input.value is in filename mode:
+  - getter: returns "C:\\fakepath\\" + first filename, or "" if empty
+  - setter with "": clears the selection
+  - setter with any non-empty string: throws InvalidStateError
+- The value content attribute must be omitted for type=file.
+- If the input's type changes from a non-filename mode into type=file, the value
+  must be cleared.
+
+Security constraints
+
+- Never expose the real filesystem path through value, events, or form submission.
+- Never allow script to set a fake non-empty filename string.
+- Preserve the historical fakepath behavior for value reads.
+- Server-side validation is still required. The client-side control is not a
+  security boundary.
+
+Events
+
+- input and change apply to type=file.
+- When the file selection changes because of user interaction:
+  1. update selected files
+  2. fire input
+  3. fire change
+- Scripted value changes do not fire input/change.
+- Resetting the form clears the selection through the reset algorithm and does not
+  count as a user edit.
+- Current browsers also expose cancel in file-picker dismissal / no-change cases.
+  That event is useful to match, but the standard allows latitude in dismissal
+  interpretation. Do not make the core implementation depend on cancel existing.
+
+accept attribute
+
+- accept applies to type=file only.
+- It is a comma-separated list of unique file type specifiers.
+- Valid token forms are:
+  - .ext
+  - exact MIME type without parameters, for example image/png
+  - image/*
+  - audio/*
+  - video/*
+- Matching is ASCII case-insensitive.
+- Duplicate tokens are invalid.
+- Browsers use accept as a picker hint/filter, not as final validation.
+- Browsers should prevent selecting non-matching files when the native picker can
+  enforce it, but users can still bypass this in some environments.
+- Mobile browsers may map image/*, video/*, or audio/* to capture flows or media
+  libraries.
+- Best-practice parity: when authors care about a format, allow both extensions
+  and MIME types, because platform type registration is inconsistent.
+
+Practical implementation rule for accept
+
+- Treat accept as a native picker filter first.
+- If Glint offers any custom drag-and-drop or programmatic FileList injection path,
+  use the same accept-matching logic for that path too.
+- Do not treat accept as constraint validation. It should not set validity errors by
+  itself.
+
+multiple attribute
+
+- multiple applies to type=file.
+- Without multiple, only one file may be selected.
+- With multiple, any number of files may be selected.
+- In form submission, multiple selected files create repeated entries under the same
+  control name, in selection order.
+
+required / disabled / readonly / other attributes
+
+- required applies to type=file.
+- A required file input is value-missing when its selected-file list is empty.
+- disabled applies and removes interactivity and submission participation.
+- readonly does not apply to type=file.
+- The following do not apply to type=file and should not influence behavior:
+  autocomplete, list, min, max, step, pattern, placeholder, size, src, alt,
+  maxlength, minlength.
+
+Form submission
+
+- type=file is a successful control when it has a non-empty name and is not disabled.
+- For multipart/form-data:
+  - each selected file becomes its own file part under the input name
+  - repeated files use repeated fields with the same name
+- If no files are selected, the spec still creates an entry containing an empty File
+  with empty filename, application/octet-stream type, and empty body.
+- For application/x-www-form-urlencoded and text/plain conversions, file entries are
+  reduced to the File.name string. An empty selected-file state therefore becomes an
+  empty filename string at that conversion layer.
+- Only successful controls are included in FormData(form) and native submission.
+
+Reset behavior
+
+- form.reset() clears the selected-file list.
+- Reset does not behave like user input and should not fire input/change.
+- After reset:
+  - files.length is 0
+  - value is ""
+  - the shell returns to native empty-state UI
+
+Recommended internal model for Glint
+
+- Store selected files as the source of truth.
+- Derive visible text from that state rather than storing a separate editable text
+  value.
+- Keep button caption / empty-state text in the shell layer, not in form-submission
+  state.
+- Route activation to a native platform file picker.
+- Preserve file order from the native selection result.
+
+======================================================================
+IMAGE INPUT
+======================================================================
+
+Conceptual model
+
+- input[type=image] is a submit button rendered as an image.
+- If the image loads, the control represents a clickable image whose clicked
+  coordinate becomes submission data.
+- If the image is unavailable, the control falls back to a submit button whose
+  label is the alt text.
+- type=image is not a file picker and has nothing to do with accept.
+
+What the control is and is not
+
+- It is a submit button.
+- It is not a value-editing field.
+- It does not expose a selected image file.
+- It does not use value for data entry.
+- It does not fire input or change.
+
+Required attributes and display behavior
+
+- src is the image resource to display.
+- alt is the accessible fallback label and should be treated as required for parity.
+- width and height apply as image dimensions / rendered box hints.
+- The resource should behave like an image resource, not an interactive document.
+- Executable content must not run.
+- Multi-page image resources should render only the first page.
+- Standard image loading behavior matters here: load timing, error fallback, and
+  replaced-element sizing should feel like an img element that also submits a form.
+
+State and exposed APIs
+
+- type=image uses value in default mode, but the value content attribute must be
+  omitted and does not carry the clicked coordinate.
+- The meaningful transient state is the selected coordinate used for submission.
+- The selected coordinate starts at (0, 0).
+- width and height IDL reflect rendered dimensions when available.
+
+Activation and coordinates
+
+- Activating the control submits the owning form.
+- If the activation included an explicit click/tap coordinate on the rendered image,
+  that coordinate becomes the selected coordinate.
+- Coordinates are in CSS pixels relative to the image box, with +x to the right and
+  +y downward.
+- If submission happens without an explicit coordinate selection, browsers use the
+  default coordinate state, effectively (0, 0).
+
+Form submission
+
+- type=image contributes data only when it is the actual submitter.
+- If it is not the submitter, it contributes nothing.
+- If name is "foo", form submission adds:
+  - foo.x = clicked x
+  - foo.y = clicked y
+- If name is missing or empty, submission uses:
+  - x
+  - y
+- The control does not submit a normal value payload the way input[type=submit]
+  does.
+- submitter-specific overrides apply exactly like other submit buttons:
+  formaction, formenctype, formmethod, formnovalidate, formtarget.
+
+Events
+
+- input and change do not apply.
+- Normal pointer / click events still apply as regular DOM events.
+- Form submission then proceeds through the submit algorithm.
+- In SubmitEvent, event.submitter should be the image input when it triggered the
+  submission.
+
+disabled / required / readonly / other attributes
+
+- disabled applies and prevents activation/submission.
+- required does not apply.
+- readonly does not apply.
+- accept does not apply.
+- multiple does not apply.
+- min, max, step, pattern, placeholder, list, maxlength, minlength do not apply.
+
+Reset behavior
+
+- There is no user-editable value to clear.
+- Reset should not synthesize input/change events.
+- The control simply remains an image submit button after reset.
+
+Recommended internal model for Glint
+
+- Treat type=image as a submit-button subtype, not as a text-field subtype.
+- Reuse submit-button ownership, form override, disabled, and activation logic.
+- Add image resource loading and rendering on top of submit-button semantics.
+- Store the most recent activation coordinate transiently for the current submission.
+- Do not add editable text state, selection APIs, or value sanitization behavior that
+  belongs to text-like inputs.
+
+======================================================================
+SHARED IMPLEMENTATION RULES
+======================================================================
+
+1. Attribute applicability matters.
+   Ignore non-applicable attributes instead of trying to make them do something.
+
+2. Native shell and submission state are separate.
+   File shell text is UA chrome. File submission state is selected files.
+   Image display is replaced-image UI. Image submission state is the clicked
+   coordinate plus submit-button overrides.
+
+3. Reset is not user input.
+   Reset should update state, but should not be treated like user-generated input.
+
+4. Disabled controls are not successful controls.
+   They do not participate in submission, and file/image activation must not run.
+
+5. FormData parity matters.
+   new FormData(form, submitter) should mirror native submission rules, including
+   image submitter coordinates and file entries.
+
+6. Keep the browser-reference page authoritative for QA.
+   Before calling behavior done, compare Glint against
+   /Users/splitterai/Desktop/repos/superkraft-io/glint-demo-ios_android/input_file_image_reference.html
+   in Safari and Chrome.
+
+======================================================================
+IMPLEMENTATION CHECKLIST
+======================================================================
+
+- type=file opens native picker on activation
+- disabled type=file does nothing on activation
+- accept filters native picker choices
+- multiple preserves multiple selection and repeated submission entries
+- input.value for type=file returns fakepath form
+- setting non-empty input.value for type=file throws InvalidStateError
+- setting empty input.value clears file selection
+- form.reset() clears file selection
+- required file input reports valueMissing when empty
+- FormData(form) includes file entries correctly
+- empty file selection serializes as empty File entry per spec
+- type=image behaves as a submit button, not a text field
+- type=image submits only when it is the submitter
+- type=image contributes name.x/name.y or x/y
+- type=image does not fire input/change
+- image submitter honors formaction/formmethod/formenctype/formnovalidate/formtarget
+- disabled type=image does not submit
