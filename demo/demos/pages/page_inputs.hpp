@@ -80,6 +80,7 @@ inline void glint_demos_window::buildInputs()
   auto sampleValueForType = [](const std::string& type) {
     if (type == "date") return std::string("2026-05-23");
     if (type == "month") return std::string("2026-05");
+    if (type == "week") return std::string("2026-W21");
     return std::string();
   };
 
