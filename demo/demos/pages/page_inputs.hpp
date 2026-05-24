@@ -63,6 +63,11 @@ inline void glint_demos_window::buildInputs()
 
   auto placeholderForType = [](const std::string& type) {
     if (type == "button" || type == "submit" || type == "reset" || type == "hidden" || type == "file" || type == "image") return std::string();
+    if (type == "date") return std::string("2026-05-23");
+    if (type == "month") return std::string("2026-05");
+    if (type == "week") return std::string("2026-W21");
+    if (type == "time") return std::string("13:30");
+    if (type == "datetime-local") return std::string("2026-05-23T13:30");
     if (type == "email") return std::string("user@example.com");
     if (type == "password") return std::string("Enter password\xe2\x80\xa6");
     if (type == "number") return std::string("42");
@@ -70,6 +75,11 @@ inline void glint_demos_window::buildInputs()
     if (type == "tel") return std::string("+1 555 123 4567");
     if (type == "url") return std::string("https://superkraft.io");
     return std::string("Try different combinations\xe2\x80\xa6");
+  };
+
+  auto sampleValueForType = [](const std::string& type) {
+    if (type == "date") return std::string("2026-05-23");
+    return std::string();
   };
 
   auto styleDemoInput = [](glint_input& inp,
@@ -183,6 +193,7 @@ inline void glint_demos_window::buildInputs()
   auto currentMultiple = std::make_shared<bool>(false);
   auto currentReadonly = std::make_shared<bool>(false);
   auto currentDisabled = std::make_shared<bool>(false);
+  auto lastAppliedPlaygroundType = std::make_shared<std::string>("text");
 
   auto* configFeedback = mContent->add.div([](glint_component_style& feedback) {
     feedback.innerText = "Current: type=None (defaults to text) | inputmode=None | enterkeyhint=None | autocomplete=None | autocapitalize=None | spellcheck=None | maxlength=None | minlength=None | pattern=None | min=None | max=None | step=None | required=false | multiple=false | readonly=false | disabled=false";
@@ -333,6 +344,7 @@ inline void glint_demos_window::buildInputs()
 
   auto applyConfig = [=]() {
     const std::string resolvedType = currentType->empty() ? std::string("text") : *currentType;
+    const bool typeChanged = *lastAppliedPlaygroundType != resolvedType;
     static constexpr const char* kImageInputDemoSrc = "/img/demo.png";
     auto parseOptionalFloat = [](const std::string& value, float unsetValue) {
       if (value.empty() || value == "-" || value == "." || value == "-.") return unsetValue;
@@ -371,6 +383,11 @@ inline void glint_demos_window::buildInputs()
       if (resolvedType == "color") playgroundInput->style.width = 44.f;
       else                           playgroundInput->style.width = "100%";
     }
+
+    if (typeChanged)
+      playgroundInput->setValue(sampleValueForType(resolvedType));
+
+    *lastAppliedPlaygroundType = resolvedType;
 
     configFeedbackPtr->innerText = std::string("Current: type=")
                                 + displayAttrValue(*currentType, "text")
@@ -576,7 +593,7 @@ inline void glint_demos_window::buildInputs()
   addLabeledSelect(
     selectorsRow,
     "Type",
-    makeOptions({ "None", "text", "email", "password", "number", "search", "tel", "url", "hidden", "button", "submit", "reset", "color", "file", "image" }),
+    makeOptions({ "None", "text", "search", "tel", "url", "email", "password", "number", "date", "month", "week", "time", "datetime-local", "hidden", "button", "submit", "reset", "color", "file", "image" }),
     0,
     [currentType, applyConfig, normalizeSelectValue](const std::string& value) {
       *currentType = normalizeSelectValue(value);

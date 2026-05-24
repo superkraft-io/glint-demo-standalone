@@ -57,6 +57,7 @@ Notes:
 - [ ] `week`
 - [ ] `time`
 - [ ] `datetime-local`
+- [ ] `datetime` (deprecated; do not implement)
 
 ## Input Modes
 
@@ -100,7 +101,7 @@ Notes:
 - [ ] Text-like types sanitize and validate correctly
 - [x] Numeric types enforce numeric parsing rules correctly
 - [ ] Date and time types enforce normalized value formats correctly
-- [ ] File inputs reflect picker results and selected files correctly
+- [x] File inputs reflect picker results and selected files correctly
 - [x] Button-like types do not pretend to be text-editable controls
 
 ## Platform Parity
