@@ -155,11 +155,11 @@ inline void glint_demos_window::buildScroll()
     }
   });
 
-  // ── 4. DOM scroll properties (scrollTop / scrollLeft / scrollWidth / scrollHeight) ─
-  addHeading("DOM scroll properties  (scrollTop, scrollLeft, scrollWidth, scrollHeight)");
+  // ── 4. Programmatic scroll API ─────────────────────────────────────────────
+  addHeading("Programmatic scroll API  (scrollTo, scrollTop, scrollLeft, scrollWidth, scrollHeight)");
 
   mContent->add.div([](glint_component_style& sub) {
-    sub.innerText          = "Live readout via the 'scroll' event. Buttons show programmatic scrollTop / scrollLeft assignment.";
+    sub.innerText          = "Live readout via the 'scroll' event. Buttons below use glint_element::scrollTo(left, top).";
     sub.style.color        = glint_demo_theme::muted;
     sub.style.fontSize     = 12.f;
     sub.style.width        = "100%";
@@ -230,12 +230,12 @@ inline void glint_demos_window::buildScroll()
     row.style.marginBottom  = 20.f;
   });
 
-  struct BtnDef { const char* label; float topVal; float leftVal; };
+  struct BtnDef { const char* label; float leftVal; float topVal; };
   const BtnDef btns[] = {
-    { "Scroll to top",    0.f,    -1.f },
-    { "Scroll to bottom", 9999.f, -1.f },
-    { "Scroll left",     -1.f,    0.f  },
-    { "Scroll right",    -1.f,    9999.f },
+    { "scrollTo(0, 0)",        0.f,    0.f },
+    { "scrollTo(0, 9999)",     0.f,    9999.f },
+    { "scrollTo(9999, 0)",     9999.f, 0.f },
+    { "scrollTo(220, 120)",    220.f,  120.f },
   };
   for (const auto& bd : btns)
   {
@@ -254,11 +254,10 @@ inline void glint_demos_window::buildScroll()
       btn.hover.borderColor     = glint_demo_theme::border;
       btn.hover.borderWidth     = 1.f;
       btn.hover.borderRadius    = 4.f;
-      const float topV  = bd.topVal;
       const float leftV = bd.leftVal;
+      const float topV  = bd.topVal;
       btn.onClick = [domBoxPtr, topV, leftV] {
-        if (topV  >= 0.f) domBoxPtr->scrollTop  = topV;
-        if (leftV >= 0.f) domBoxPtr->scrollLeft = leftV;
+        domBoxPtr->scrollTo(leftV, topV);
         domBoxPtr->setDirty(false);
       };
     });
