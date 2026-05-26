@@ -52,11 +52,11 @@ Notes:
 - [x] `file`
 - [x] `image`
 - [x] `color`
-- [ ] `date`
-- [ ] `month`
-- [ ] `week`
+- [x] `date`
+- [x] `month`
+- [x] `week`
 - [ ] `time`
-- [ ] `datetime-local`
+- [x] `datetime-local`
 - [ ] `datetime` (deprecated; do not implement)
 
 ## Input Modes
