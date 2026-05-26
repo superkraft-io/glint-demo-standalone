@@ -67,7 +67,6 @@ inline void glint_demos_window::buildInputs()
     if (type == "month") return std::string("2026-05");
     if (type == "week") return std::string("2026-W21");
     if (type == "time") return std::string("13:30");
-    if (type == "datetime-local") return std::string("2026-05-23T13:30");
     if (type == "email") return std::string("user@example.com");
     if (type == "password") return std::string("Enter password\xe2\x80\xa6");
     if (type == "number") return std::string("42");
@@ -596,7 +595,7 @@ inline void glint_demos_window::buildInputs()
   addLabeledSelect(
     selectorsRow,
     "Type",
-    makeOptions({ "None", "text", "search", "tel", "url", "email", "password", "number", "date", "month", "week", "time", "datetime-local", "hidden", "button", "submit", "reset", "color", "file", "image" }),
+    makeOptions({ "None", "text", "search", "tel", "url", "email", "password", "number", "date", "month", "week", "time", "hidden", "button", "submit", "reset", "color", "file", "image" }),
     0,
     [currentType, applyConfig, normalizeSelectValue](const std::string& value) {
       *currentType = normalizeSelectValue(value);
