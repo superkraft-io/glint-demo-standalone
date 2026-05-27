@@ -55,7 +55,7 @@ Notes:
 - [x] `date`
 - [x] `month`
 - [x] `week`
-- [ ] `time`
+- [x] `time`
 - [x] `datetime-local`
 - [ ] `datetime` (deprecated; do not implement)
 
