@@ -198,7 +198,7 @@ inline void glint_demos_window::buildShaders()
     bdRow.style.height        = 160.f;
     bdRow.style.marginBottom  = 4.f;
 
-    // -- Liquid Glass --
+    // -- Wave --
     bdRow.add.div([&](auto& card) {
       card.style.flexGrow        = 1.f;
       card.style.height          = "100%";
@@ -318,7 +318,7 @@ inline void glint_demos_window::buildShaders()
     });
   });
 
-  glassPtr->style.backdropFilter = "shader(gl, liquid_glass)";
+  glassPtr->style.backdropFilter = "shader(gl, wave)";
   glassPtr->shaders["gl"]->params["strength"] = 15.f;
   caPtr->style.backdropFilter = "shader(ca, chromatic_aberration)";
   caPtr->shaders["ca"]->params["strength"] = 28.f;
@@ -327,7 +327,7 @@ inline void glint_demos_window::buildShaders()
   ripPtr->shaders["rip"]->params["wavelength"] = 34.f;
 
   lgTogPtr->onChange = [glassPtr](bool on) {
-    glassPtr->style.backdropFilter = on ? "shader(gl, liquid_glass)" : "";
+    glassPtr->style.backdropFilter = on ? "shader(gl, wave)" : "";
     glassPtr->setDirty(false);
   };
   caTogPtr->onChange = [caPtr](bool on) {
@@ -347,7 +347,7 @@ inline void glint_demos_window::buildShaders()
     row.style.width         = "100%";
     row.style.marginBottom  = 16.f;
     row.add.div([](auto& l) {
-      l.innerText       = "Liquid Glass  (liquid_glass)";
+      l.innerText       = "Wave  (wave)";
       l.style.flexGrow  = 1.f;
       l.style.color     = glint_demo_theme::subtle;
       l.style.fontSize  = 11.f;

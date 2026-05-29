@@ -3,10 +3,10 @@
 #include "glint_shader_base.hpp"
 #include "glint_shader_registry.hpp"
 
-class glint_liquid_glass : public glint_shader_base
+class glint_wave : public glint_shader_base
 {
 public:
-  glint_liquid_glass() { animated = true; isBackdrop = true; }
+  glint_wave() { animated = true; isBackdrop = true; }
   float sampleRadius() const override { return getFloat("strength", 18.f) + 4.f; }
 
   const char* sksl() const override
@@ -43,5 +43,5 @@ public:
   }
 };
 
-static bool _sk_liquid_glass_reg = glint_shader_registry::add(
-  "liquid_glass", [] { return std::make_unique<glint_liquid_glass>(); });
+static bool _sk_wave_reg = glint_shader_registry::add(
+  "wave", [] { return std::make_unique<glint_wave>(); });

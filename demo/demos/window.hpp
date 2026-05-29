@@ -95,6 +95,7 @@ enum class DemoSection
   BackdropFilters,
   Transitions,
   Shaders,
+  LiquidGlassShader,
   Fonts,
   Select,
   Masks,
@@ -139,6 +140,7 @@ static constexpr const char* kSectionNames[] = {
   "Backdrop Filters",
   "Transitions",
   "Shaders",
+  "Liquid Glass Shader",
   "Fonts",
   "Select",
   "Masks",
@@ -873,6 +875,7 @@ private:
       case DemoSection::BackdropFilters: buildBackdropFilters(); break;
       case DemoSection::Transitions: buildTransitions(); break;
       case DemoSection::Shaders: buildShaders(); break;
+      case DemoSection::LiquidGlassShader: buildLiquidGlassShader(); break;
       case DemoSection::Fonts: buildFonts(); break;
       case DemoSection::Select: buildSelects(); break;
       case DemoSection::Masks: buildMasks(); break;
@@ -936,7 +939,9 @@ private:
 
   static bool isUserSection(DemoSection section)
   {
-    return section == DemoSection::Switches || section == DemoSection::Shaders;
+    return section == DemoSection::Switches
+        || section == DemoSection::Shaders
+        || section == DemoSection::LiquidGlassShader;
   }
 
   static bool sectionBelongsToMode(DemoSection section, DemoMode mode)
@@ -1029,6 +1034,7 @@ private:
   void buildTransforms();
   void buildTransitions();
   void buildShaders();
+  void buildLiquidGlassShader();
   void buildFonts();
   void buildSelects();
   void buildMasks();
@@ -1063,6 +1069,7 @@ inline glint_demos_window* glint_demos_window::sInstance = nullptr;
 #include "pages/page_transforms.hpp"
 #include "pages/page_transitions.hpp"
 #include "pages/page_shaders.hpp"
+#include "pages/page_liquid_glass_shader.hpp"
 #include "pages/page_fonts.hpp"
 #include "pages/page_selects.hpp"
 #include "pages/page_masks.hpp"
