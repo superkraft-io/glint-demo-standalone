@@ -193,7 +193,9 @@ inline void glint_demos_window::buildLiquidGlassShader()
   glint_checkbox*    glassPillTogPtr = nullptr;
   glint_element*     controlSidebarPtr = nullptr;
   glint_textarea*    serializedParamsPtr = nullptr;
-  glint_colorpicker* glassColorPickerPtr = nullptr;
+  // Shared holder: the Glass Theme select callback outlives this function and
+  // the picker is only created further down, so capture the holder by value.
+  auto glassColorPickerPtr = std::make_shared<glint_colorpicker*>(nullptr);
 
   mContent->add.div([&](auto& glassRow) {
     glassRow.style.display       = "flex";
@@ -996,7 +998,7 @@ inline void glint_demos_window::buildLiquidGlassShader()
   addSliderControl(samplingCtx, "Sample Offset Y", "sampleOffsetY", 0.f, -160.f, 160.f, 1.f, 0, {}, refreshSerializedParams);
   addSliderControl(samplingCtx, "Corner Radius", "cornerRadius", 80.f, 0.f, 80.f, 1.f, 0, {}, refreshSerializedParams);
 
-  addControlGroup(sidebarCtx, "Optics", [addSelectControl, addLiveSliderControl, cssState, applyCssState, applyChromaticState, refreshSerializedParams, glassThemeColor, &glassColorPickerPtr](auto& group) {
+  addControlGroup(sidebarCtx, "Optics", [addSelectControl, addLiveSliderControl, cssState, applyCssState, applyChromaticState, refreshSerializedParams, glassThemeColor, glassColorPickerPtr](auto& group) {
     addSelectControl(group, "Blur Type", { "Gaussian" }, 0, [](int, const std::string&) {});
     addLiveSliderControl(group, "Blur", cssState->blurAmount, 0.f, 48.f, 1.f, 0, {}, [cssState, applyCssState, refreshSerializedParams](float value) {
       cssState->blurAmount = value;
@@ -1017,10 +1019,10 @@ inline void glint_demos_window::buildLiquidGlassShader()
       if (*applyChromaticState) (*applyChromaticState)();
       if (*refreshSerializedParams) (*refreshSerializedParams)();
     });
-    addSelectControl(group, "Glass Theme", { "System", "Cool", "Warm" }, cssState->glassTheme, [cssState, applyCssState, refreshSerializedParams, glassThemeColor, &glassColorPickerPtr](int idx, const std::string&) {
+    addSelectControl(group, "Glass Theme", { "System", "Cool", "Warm" }, cssState->glassTheme, [cssState, applyCssState, refreshSerializedParams, glassThemeColor, glassColorPickerPtr](int idx, const std::string&) {
       cssState->glassTheme = idx;
       cssState->glassColor = glassThemeColor(idx);
-      if (glassColorPickerPtr) glassColorPickerPtr->setValue(cssState->glassColor);
+      if (*glassColorPickerPtr) (*glassColorPickerPtr)->setValue(cssState->glassColor);
       if (*applyCssState) (*applyCssState)();
       if (*refreshSerializedParams) (*refreshSerializedParams)();
     });
@@ -1060,7 +1062,7 @@ inline void glint_demos_window::buildLiquidGlassShader()
   });
 
   auto* cssAppearanceGroup = addControlGroupBox(sidebarCtx, "CSS Glass Appearance");
-  addColorControl(*cssAppearanceGroup, "Glass Color", cssState->glassColor, &glassColorPickerPtr, [cssState, applyCssState, refreshSerializedParams](glint_color nextColor) {
+  addColorControl(*cssAppearanceGroup, "Glass Color", cssState->glassColor, glassColorPickerPtr.get(), [cssState, applyCssState, refreshSerializedParams](glint_color nextColor) {
     cssState->glassColor = nextColor;
     if (*applyCssState) (*applyCssState)();
     if (*refreshSerializedParams) (*refreshSerializedParams)();

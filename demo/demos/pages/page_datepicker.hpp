@@ -178,12 +178,17 @@ inline void glint_demos_window::buildDatePicker()
       : RECT{};
 #endif
 
-    auto onChanged = [fb2Ptr](int y, int m, int d) {
-      sWinY = y; sWinM = m; sWinD = d;
-      char buf[32];
-      std::snprintf(buf, sizeof(buf), "Picked: %04d-%02d-%02d", y, m, d);
-      fb2Ptr->innerText = buf;
-      fb2Ptr->setDirty(false);
+    // The popup calls this on its own thread; post back to the label's
+    // thread (also skipped if the page was rebuilt and the label is gone).
+    auto post = fb2Ptr->ownerThreadPoster();
+    auto onChanged = [fb2Ptr, post](int y, int m, int d) {
+      post([fb2Ptr, y, m, d] {
+        sWinY = y; sWinM = m; sWinD = d;
+        char buf[32];
+        std::snprintf(buf, sizeof(buf), "Picked: %04d-%02d-%02d", y, m, d);
+        fb2Ptr->innerText = buf;
+        fb2Ptr->setDirty(false);
+      });
     };
 
     if (sDpWin->isVisible()) {
