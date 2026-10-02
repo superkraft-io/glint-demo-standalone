@@ -10,3 +10,6 @@ cursors/
 demo/project.cmake
 
 .github/agents/glint_dev_doc.agent.md
+
+# Build / simulator logs
+*.log

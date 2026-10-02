@@ -339,7 +339,7 @@ private:
       note.style.backgroundColor = glint_demo_theme::amberBg;
       note.style.color = glint_demo_theme::heading;
       note.style.fontSize = 13.f;
-      note.style.lineHeight = 18.f;
+      note.style.lineHeightPx = 18.f;   // 18px (lineHeight is a multiplier)
       note.style.textAlign = EAlign::Near;
     });
   }

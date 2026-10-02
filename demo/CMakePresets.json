@@ -9,7 +9,9 @@
       "cacheVariables": {
         "GLINT_RENDER_GPU": "ON",
         "GLINT_ENABLE_D3D12": "ON",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GLINT_BUNDLE_SHALLOW": "OFF",
+        "GLINT_BUNDLE_DEEP": "OFF"
       }
     },
     {
@@ -246,7 +248,8 @@
     },
     {
       "name": "ios-device-release",
-      "configurePreset": "ios-device-release"
+      "configurePreset": "ios-device-release",
+      "configuration": "Release"
     },
     {
       "name": "ios-device-debug-signed",
@@ -258,6 +261,7 @@
     {
       "name": "ios-device-release-signed",
       "configurePreset": "ios-device-release-signed",
+      "configuration": "Release",
       "nativeToolOptions": [
         "-allowProvisioningUpdates"
       ]

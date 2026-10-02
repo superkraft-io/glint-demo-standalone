@@ -159,7 +159,7 @@
       "preLaunchTask": "💽 glint_demo macOS Build Release (CMake)"
     },
     {
-      "name": "├─ 📦 Release (shallow bundle",
+      "name": "├─ 📦 Release (shallow bundle)",
       "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/demo/build/macos/glint_demo",
@@ -183,7 +183,7 @@
     { "name": "📱 iOS Simulator" },
 
     {
-      "name": "├─ 💽 Debug",
+      "name": "├─ 💽 Debug (Simulator)",
       "type": "lldb",
       "request": "attach",
       "targetCreateCommands": [
@@ -196,7 +196,7 @@
       "preLaunchTask": "📱 glint_demo iOS Launch Debug (Simulator)"
     },
     {
-      "name": "└─ 💽 Release",
+      "name": "└─ 💽 Release (Simulator)",
       "type": "lldb",
       "request": "attach",
       "targetCreateCommands": [
@@ -217,7 +217,7 @@
     { "name": "📱 iOS Device" },
 
     {
-      "name": "├─ 💽 Debug",
+      "name": "├─ 💽 Debug (Device)",
       "type": "lldb",
       "request": "attach",
       "targetCreateCommands": [
@@ -230,7 +230,7 @@
       "preLaunchTask": "📱 glint_demo iOS Launch Debug (Device)"
     },
     {
-      "name": "└─ 💽 Release",
+      "name": "└─ 💽 Release (Device)",
       "type": "lldb",
       "request": "attach",
       "targetCreateCommands": [
@@ -248,6 +248,9 @@
 
 
     // ── Linux (WSL) bundle variants ────────────────────────────────────────
+    // gdb runs inside WSL, so program/cwd are Linux paths: the Linux build
+    // tasks link /tmp/vscode-wsl-<folder> to this workspace
+    // (.vscode/wsl_link_workspace.sh).  Requires gdb in WSL (sudo apt install gdb).
     { "name": "🐧 Linux (WSL)" },
 
     // Debug
@@ -255,8 +258,8 @@
       "name": "├─ 💽 Debug (CPU)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/demo/build/linux/glint_demo",
-      "cwd": "${workspaceFolder}/demo/build/linux",
+      "program": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux/glint_demo",
+      "cwd": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux",
       "environment": [{ "name": "DISPLAY", "value": ":0" }],
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
@@ -273,8 +276,8 @@
       "name": "└─ 💽 Debug (OpenGL GPU)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/demo/build/linux-opengl/glint_demo",
-      "cwd": "${workspaceFolder}/demo/build/linux-opengl",
+      "program": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux-opengl/glint_demo",
+      "cwd": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux-opengl",
       "environment": [{ "name": "DISPLAY", "value": ":0" }],
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
@@ -288,15 +291,15 @@
       "preLaunchTask": "💽 glint_demo Linux Build Debug OpenGL (CMake)"
     },
 
-    { "name": "          " },
+    { "name": "            " },
 
     // Release (DebInfo)
     {
       "name": "└─ 💽 Release w DebInfo",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/demo/build/linux/glint_demo",
-      "cwd": "${workspaceFolder}/demo/build/linux",
+      "program": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux/glint_demo",
+      "cwd": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux",
       "environment": [{ "name": "DISPLAY", "value": ":0" }],
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
@@ -317,8 +320,8 @@
       "name": "└─ 💽 Release",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/demo/build/linux/glint_demo",
-      "cwd": "${workspaceFolder}/demo/build/linux",
+      "program": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux/glint_demo",
+      "cwd": "/tmp/vscode-wsl-${workspaceFolderBasename}/demo/build/linux",
       "environment": [{ "name": "DISPLAY", "value": ":0" }],
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
