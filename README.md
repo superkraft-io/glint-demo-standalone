@@ -8,7 +8,7 @@ A demo application built on top of [glint](https://github.com/superkraft-io/glin
 
 - **Node.js** (v18+)
 - **CMake** (3.25+)
-- **Windows**: Visual Studio 2022 with the "Desktop development with C++" workload
+- **Windows**: Visual Studio 2022 with the "Desktop development with C++" workload, plus the "C++ Clang Compiler for Windows" component to build Skia from source
 - **macOS**: Xcode command line tools
 - **Linux / WSL2**: Clang 18+, Ninja, `libx11-dev`, `libegl-dev`, `libgl-dev`
 - **Python 3** (required by Skia's build system)
@@ -80,6 +80,8 @@ node third_party/glint/scripts/init_skia.mjs --source --backend opengl --config 
 | `cpu` | macOS, Windows, Linux | Software CPU renderer |
 
 > `--config Both` builds both Debug and Release Skia libraries, which are required for the respective CMake build configurations. Only applicable for `--source`.
+
+> **Windows:** the source build compiles Skia with clang-cl, found automatically from Visual Studio (Installer → Modify → Individual components → "C++ Clang Compiler for Windows") or a standalone LLVM install. Skia built with MSVC renders 10–40× slower on the CPU (text, anti-aliased shapes, shadows), which also hurts GPU apps whenever they fall back to CPU rendering. The script stops with instructions if clang-cl is missing. To reuse an existing Skia checkout instead of downloading one, add `--skia-src <path> --skip-sync`.
 
 ### 4. Configure with CMake
 
