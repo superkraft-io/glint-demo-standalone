@@ -38,9 +38,12 @@
 #include "glint/shaders/glint_shaders.hpp"
 #include "glint_user_code/cpp/ui/glint_switch.hpp"
 
+#include <atomic>
+#include <chrono>
 #include <cmath>
 #include <functional>
 #include <string>
+#include <thread>
 
 #if defined(GLINT_BUNDLE_SHALLOW) || defined(GLINT_BUNDLE_DEEP)
 #include "glint_user_code/cpp/bundle/glint_bundle_library.hpp"
@@ -178,6 +181,14 @@ public:
   {
     return sInstance && sInstance->isRunning();
   }
+
+#if defined(_WIN32)
+  /** Blocks until the window is closed (no polling wake-ups meanwhile). */
+  static void waitUntilClosed()
+  {
+    if (sInstance) sInstance->glint_window_win32::waitUntilClosed();
+  }
+#endif
 #endif
 
   glint_demos_window() = default;
@@ -688,7 +699,59 @@ private:
   void onCreated() override
   {
     completeDocumentSetup(GLINT_DEMO_PLATFORM_MAC);
+#if defined(_WIN32)
+    startShaderCaptureTour();
+#endif
   }
+
+#if defined(_WIN32)
+  // GLINT_D3D_SHADER_CAPTURE=<pack> (see glint_d3d_shader_cache.hpp): opens
+  // every page, scrolls through it, then closes the window, so the pack holds
+  // the shaders the demo draws. demo/CMakeLists.txt embeds
+  // demo/shaders/glint_d3d_shaders.bin.
+  void startShaderCaptureTour()
+  {
+    const char* pack = std::getenv("GLINT_D3D_SHADER_CAPTURE");
+    if (!pack || !*pack || !mRoot) return;
+    std::weak_ptr<glint_task_queue> queue = mRoot->taskQueue();
+    std::thread([this, queue] {
+      // Runs `task` on the window thread; false once the window is gone.
+      auto post = [&queue](std::function<void()> task) {
+        auto q = queue.lock();
+        if (q) q->post(std::move(task));
+        return q != nullptr;
+      };
+      auto wait = [](int ms) { std::this_thread::sleep_for(std::chrono::milliseconds(ms)); };
+      wait(1000);
+      for (int i = 0; i < static_cast<int>(DemoSection::_Count); ++i)
+      {
+        const auto section = static_cast<DemoSection>(i);
+        if (!post([this, section] {
+              setMode(modeForSection(section));
+              if (mSidebar) mSidebar->selectItemById(kSectionNames[static_cast<int>(section)]);
+            }))
+          return;
+        wait(400);
+        for (int step = 0; step < 40; ++step)
+        {
+          mCaptureScrollMoved = false;
+          if (!post([this] {
+                if (!mContent) return;
+                const float before = mContent->mScrollTop;
+                mContent->scrollToY(before + 400.f);
+                mCaptureScrollMoved = mContent->mScrollTop > before + 0.5f;
+              }))
+            return;
+          wait(150);
+          if (!mCaptureScrollMoved) break;
+        }
+      }
+      post([this] { if (mRoot && mRoot->hwnd) ::PostMessageW(mRoot->hwnd, WM_CLOSE, 0, 0); });
+    }).detach();
+  }
+
+  std::atomic<bool> mCaptureScrollMoved{ false };
+#endif
 
   void onThreadEnded() override
   {

@@ -140,6 +140,9 @@ target_include_directories(glint_demo PRIVATE
 if(WIN32)
   target_link_libraries(glint_demo PRIVATE glint::host_win32)
   glint_configure_win32_app(glint_demo)
+  # Compiled D3D shaders shipped in the exe; refresh with the
+  # "glint_demo: capture D3D shaders" task after Skia or page changes.
+  glint_embed_d3d_shaders(glint_demo "${CMAKE_CURRENT_SOURCE_DIR}/shaders/glint_d3d_shaders.bin")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
   target_link_libraries(glint_demo PRIVATE glint::host_ios)
 elseif(APPLE)

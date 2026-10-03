@@ -1,6 +1,18 @@
 {
   "version": "2.0.0",
   "tasks": [
+    // A running glint_demo.exe locks the exe, the link fails (LNK1168) and a
+    // launch could then start the previous build. Every Windows build closes
+    // it first; exits 0 whether or not one was running.
+    {
+      "label": "glint_demo: close running (Win)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-Command",
+               "Get-Process glint_demo -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep -Milliseconds 200; exit 0"],
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
     {
       "label": "cmake: configure",
       "type": "shell",
@@ -18,7 +30,8 @@
       "group": { "kind": "build", "isDefault": true },
       "presentation": { "reveal": "always", "panel": "shared" },
       "problemMatcher": "$msCompile",
-      "dependsOn": "cmake: configure"
+      "dependsOn": ["glint_demo: close running (Win)", "cmake: configure"],
+      "dependsOrder": "sequence"
     },
     {
       "label": "build: RelWithDebInfo",
@@ -28,7 +41,8 @@
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
       "problemMatcher": "$msCompile",
-      "dependsOn": "cmake: configure"
+      "dependsOn": ["glint_demo: close running (Win)", "cmake: configure"],
+      "dependsOrder": "sequence"
     },
     {
       "label": "build: Release",
@@ -38,7 +52,20 @@
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
       "problemMatcher": "$msCompile",
-      "dependsOn": "cmake: configure"
+      "dependsOn": ["glint_demo: close running (Win)", "cmake: configure"],
+      "dependsOrder": "sequence"
+    },
+    // Refreshes demo/shaders/glint_d3d_shaders.bin (compiled D3D shaders
+    // embedded in the exe). Run after updating Skia or changing what pages draw.
+    {
+      "label": "glint_demo: capture D3D shaders (Win)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+               "${workspaceFolder}/demo/scripts/capture_d3d_shaders.ps1"],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": "$msCompile",
+      "dependsOn": "glint_demo: close running (Win)"
     },
     {
       "label": "cmake: configure (macOS Debug)",
@@ -523,7 +550,8 @@
       "options": { "cwd": "${workspaceFolder}/demo" },
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "dependsOn": "glint_demo: close running (Win)"
     },
     {
       "label": "cmake: build only (Win RelWithDebInfo)",
@@ -532,7 +560,8 @@
       "options": { "cwd": "${workspaceFolder}/demo" },
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "dependsOn": "glint_demo: close running (Win)"
     },
     {
       "label": "cmake: build only (Win Release)",
@@ -541,7 +570,8 @@
       "options": { "cwd": "${workspaceFolder}/demo" },
       "group": "build",
       "presentation": { "reveal": "always", "panel": "shared" },
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "dependsOn": "glint_demo: close running (Win)"
     },
     {
       "label": "📦 glint_demo Win Build Debug Shallow (CMake)",

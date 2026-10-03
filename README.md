@@ -9,7 +9,8 @@ A demo application built on top of [glint](https://github.com/superkraft-io/glin
 - **Node.js** (v18+)
 - **CMake** (3.25+)
 - **Windows**: Visual Studio 2022 with the "Desktop development with C++" workload, plus the "C++ Clang Compiler for Windows" component to build Skia from source
-- **macOS**: Xcode command line tools
+- **macOS**: Xcode command line tools. To debug from VS Code / Cursor, install CodeLLDB (`vadimcn.vscode-lldb`) and, for the iOS launch entries, point it at Xcode's LLDB in your **user** settings (not the workspace settings, so Windows and Linux keep CodeLLDB's own LLDB):
+  `"lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB"`
 - **Linux / WSL2**: Clang 18+, Ninja, `libx11-dev`, `libegl-dev`, `libgl-dev`
 - **Python 3** (required by Skia's build system)
 - **Git**
@@ -81,7 +82,7 @@ node third_party/glint/scripts/init_skia.mjs --source --backend opengl --config 
 
 > `--config Both` builds both Debug and Release Skia libraries, which are required for the respective CMake build configurations. Only applicable for `--source`.
 
-> **Windows:** the source build compiles Skia with clang-cl, found automatically from Visual Studio (Installer → Modify → Individual components → "C++ Clang Compiler for Windows") or a standalone LLVM install. Skia built with MSVC renders 10–40× slower on the CPU (text, anti-aliased shapes, shadows), which also hurts GPU apps whenever they fall back to CPU rendering. The script stops with instructions if clang-cl is missing. To reuse an existing Skia checkout instead of downloading one, add `--skia-src <path> --skip-sync`.
+> **Windows:** the source build compiles Skia with clang-cl, found automatically from Visual Studio (Installer → Modify → Individual components → "C++ Clang Compiler for Windows") or a standalone LLVM install. Skia built with MSVC renders 10–40× slower on the CPU (text, anti-aliased shapes, shadows), which also hurts GPU apps whenever they fall back to CPU rendering. The script stops with instructions if clang-cl is missing, and CMake refuses Skia libraries that weren't built with clang-cl. To reuse an existing Skia checkout instead of downloading one, add `--skia-src <path> --skip-sync`.
 
 ### 4. Configure with CMake
 
@@ -247,6 +248,8 @@ DISPLAY=:0 ./build/linux-opengl/glint_demo
 ## VS Code
 
 Open the `glint_demo` folder in VS Code. Launch configurations and build tasks are already set up in `.vscode/`. Use the **Run and Debug** panel to build and launch the demo.
+
+> **Compiled shaders (Windows):** the demo ships its Direct3D shaders inside the exe (`demo/shaders/glint_d3d_shaders.bin`), so pages open without compiling shaders. After updating Skia or changing what pages draw, run the **glint_demo: capture D3D shaders (Win)** task to refresh it (it opens every page by itself, then rebuilds). See Glint's [guide.md](third_party/glint/guide.md), "Ship compiled shaders".
 
 > **Linux / WSL2:** The VS Code launch configurations use `pipeTransport` with `wsl.exe` to build and debug through WSL2. Requires the [C/C++ extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) and `gdb` installed in WSL (`sudo apt install gdb`). The distribution is assumed to be `Ubuntu-24.04`; edit `.vscode/tasks.json` and `.vscode/launch.json` if yours differs.
 

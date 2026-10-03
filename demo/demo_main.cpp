@@ -6,10 +6,7 @@
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 {
   glint_demos_window::open();
-
-  while (glint_demos_window::isOpen())
-    ::Sleep(16);
-
+  glint_demos_window::waitUntilClosed();
   return 0;
 }
 
