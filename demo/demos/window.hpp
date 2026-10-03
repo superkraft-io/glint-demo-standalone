@@ -706,8 +706,9 @@ private:
 
 #if defined(_WIN32)
   // GLINT_D3D_SHADER_CAPTURE=<pack> (see glint_d3d_shader_cache.hpp): opens
-  // every page, scrolls through it, then closes the window, so the pack holds
-  // the shaders the demo draws. demo/CMakeLists.txt embeds
+  // every page, scrolls through it and moves the pointer over each screenful
+  // (hover states draw with their own shaders), then closes the window, so
+  // the pack holds the shaders the demo draws. demo/CMakeLists.txt embeds
   // demo/shaders/glint_d3d_shaders.bin.
   void startShaderCaptureTour()
   {
@@ -722,6 +723,27 @@ private:
         return q != nullptr;
       };
       auto wait = [](int ms) { std::this_thread::sleep_for(std::chrono::milliseconds(ms)); };
+      // Hover a grid of points over the visible content, one per frame.
+      auto hoverSweep = [&]() {
+        for (int k = 0; k < 400; ++k)
+        {
+          mCaptureHoverDone = false;
+          if (!post([this, k] {
+                if (!mContent || !mRoot) { mCaptureHoverDone = true; return; }
+                constexpr float kStep = 120.f;
+                const glint_rect r = mContent->mRect;
+                const int cols = std::max(1, static_cast<int>((r.R - r.L) / kStep));
+                const float x = r.L + kStep * 0.5f + static_cast<float>(k % cols) * kStep;
+                const float y = r.T + kStep * 0.5f + static_cast<float>(k / cols) * kStep;
+                if (y > r.B) { mCaptureHoverDone = true; return; }
+                mRoot->OnMouseOver(x, y, glint_mouse_mod{});
+              }))
+            return false;
+          wait(20);
+          if (mCaptureHoverDone) break;
+        }
+        return post([this] { if (mRoot) mRoot->OnMouseOut(); });
+      };
       wait(1000);
       for (int i = 0; i < static_cast<int>(DemoSection::_Count); ++i)
       {
@@ -732,6 +754,7 @@ private:
             }))
           return;
         wait(400);
+        if (!hoverSweep()) return;
         for (int step = 0; step < 40; ++step)
         {
           mCaptureScrollMoved = false;
@@ -744,6 +767,7 @@ private:
             return;
           wait(150);
           if (!mCaptureScrollMoved) break;
+          if (!hoverSweep()) return;
         }
       }
       post([this] { if (mRoot && mRoot->hwnd) ::PostMessageW(mRoot->hwnd, WM_CLOSE, 0, 0); });
@@ -751,6 +775,7 @@ private:
   }
 
   std::atomic<bool> mCaptureScrollMoved{ false };
+  std::atomic<bool> mCaptureHoverDone{ false };
 #endif
 
   void onThreadEnded() override
