@@ -1,0 +1,16 @@
+# Demo page "Liquid Glass Shader": screenshots and memory at two sizes.
+size 1600 1000 1
+wait
+mem start
+page Liquid Glass Shader
+wait
+shot 1600
+mem 1600
+scroll 900 500 800
+wait
+shot 1600_scrolled
+size 2560 1440 1
+scroll 900 500 -2000
+wait
+shot 2560
+mem 2560

@@ -710,6 +710,25 @@ private:
   // (hover states draw with their own shaders), then closes the window, so
   // the pack holds the shaders the demo draws. demo/CMakeLists.txt embeds
   // demo/shaders/glint_d3d_shaders.bin.
+  // Headless scripts (glint_headless_win32.hpp): "page <name>" opens a page,
+  // by its sidebar name (e.g. "page Blend Modes").
+  bool onHeadlessCommand(const std::vector<std::string>& args, std::string& error) override
+  {
+    if (args.empty() || args[0] != "page") return false;
+    std::string name;
+    for (size_t i = 1; i < args.size(); ++i) name += (i > 1 ? " " : "") + args[i];
+    for (int i = 0; i < static_cast<int>(DemoSection::_Count); ++i)
+    {
+      if (name != kSectionNames[i]) continue;
+      const auto section = static_cast<DemoSection>(i);
+      setMode(modeForSection(section));
+      if (mSidebar) mSidebar->selectItemById(kSectionNames[i]);
+      return true;
+    }
+    error = "no page named \"" + name + "\"";
+    return false;
+  }
+
   void startShaderCaptureTour()
   {
     const char* pack = std::getenv("GLINT_D3D_SHADER_CAPTURE");
