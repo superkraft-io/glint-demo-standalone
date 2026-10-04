@@ -733,6 +733,7 @@ private:
   {
     const char* pack = std::getenv("GLINT_D3D_SHADER_CAPTURE");
     if (!pack || !*pack || !mRoot) return;
+    if (glint_headless::enabled()) return;   // a headless script drives the pages
     std::weak_ptr<glint_task_queue> queue = mRoot->taskQueue();
     std::thread([this, queue] {
       // Runs `task` on the window thread; false once the window is gone.
